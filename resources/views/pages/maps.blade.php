@@ -133,11 +133,6 @@
                   <span class="nav-link-text">Tables</span>
                 </a>
               </li>
-            <li class="nav-item mb-5 mr-4 ml-4 pl-1 bg-danger" style="position: absolute; bottom: 0;">
-                <a class="nav-link text-white" href="{{route('upgrade')}}">
-                    <i class="ni ni-cloud-download-95"></i> Upgrade to PRO
-                </a>
-            </li>
         </ul>
           <!-- Divider -->
           <hr class="my-3">
@@ -467,7 +462,7 @@
   <script src="../assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
   <script src="../assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
   <!-- Optional JS -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTTfWur0PDbZWPr7Pmq8K3jiDp0_xUziI"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAY1eKS7YpH7XjCvtkNSUWxyspYCmMgsr8"></script>
   <!-- Argon JS -->
   <script src="../assets/js/argon.js?v=1.2.0"></script>
 </body>
