@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'bg-default'])
+@extends('layouts.app', ['class' => 'bg-secondary'])
 
 @section('content')
     @include('layouts.headers.guest')
@@ -41,7 +41,7 @@
                                 @endif
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary my-4">{{ __('Send Password Reset Link') }}</button>
+                                <button type="submit" class="btn btn-warning my-4">{{ __('Send Password Reset Link') }}</button>
                             </div>
                         </form>
                     </div>

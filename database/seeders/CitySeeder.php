@@ -14,8 +14,7 @@ class CitySeeder extends Seeder
      */
     public function run()
     {
-        DB::insert("
-        INSERT INTO 'cities' ('id', 'province_id', 'name', 'type', 'postal_code', 'created_at', 'updated_at') VALUES
+         DB::insert("INSERT INTO `cities` (`id`, `province_id`, `name`, `type`, `postal_code`, `created_at`, `updated_at`) VALUES
         (1, 21, 'Aceh Barat', 'Kabupaten', '23681', '2021-04-27 12:55:53', '2021-04-27 12:55:53'),
         (2, 21, 'Aceh Barat Daya', 'Kabupaten', '23764', '2021-04-27 12:55:53', '2021-04-27 12:55:53'),
         (3, 21, 'Aceh Besar', 'Kabupaten', '23951', '2021-04-27 12:55:53', '2021-04-27 12:55:53'),
@@ -516,7 +515,6 @@ class CitySeeder extends Seeder
         (498, 10, 'Wonosobo', 'Kabupaten', '56311', '2021-04-27 12:55:54', '2021-04-27 12:55:54'),
         (499, 24, 'Yahukimo', 'Kabupaten', '99041', '2021-04-27 12:55:54', '2021-04-27 12:55:54'),
         (500, 24, 'Yalimo', 'Kabupaten', '99481', '2021-04-27 12:55:54', '2021-04-27 12:55:54'),
-        (501, 5, 'Yogyakarta', 'Kota', '55111', '2021-04-27 12:55:54', '2021-04-27 12:55:54');
-        ");
+        (501, 5, 'Yogyakarta', 'Kota', '55111', '2021-04-27 12:55:54', '2021-04-27 12:55:54');");
     }
 }

@@ -14,7 +14,7 @@ class DistrictSeeder extends Seeder
      */
     public function run()
     {
-        DB::insert("INSERT INTO 'districts' ('id', 'province_id', 'city_id', 'name', 'created_at', 'updated_at') VALUES
+        DB::insert("INSERT INTO `districts` (`id`, `province_id`, `city_id`, `name`, `created_at`, `updated_at`) VALUES
         (1, 21, 1, 'Arongan Lambalek', '2021-04-27 13:00:56', '2021-04-27 13:00:56'),
         (2, 21, 1, 'Bubon', '2021-04-27 13:00:56', '2021-04-27 13:00:56'),
         (3, 21, 1, 'Johan Pahlawan', '2021-04-27 13:00:56', '2021-04-27 13:00:56'),
