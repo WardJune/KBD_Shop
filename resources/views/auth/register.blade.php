@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'bg-secondary'])
+@extends('layouts.app', ['class' => 'bg-default'])
 
 @section('content')
     @include('layouts.headers.guest')
@@ -7,7 +7,7 @@
         <!-- Table -->
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8">
-                <div class="card bg-secondary shadow border-0">
+                <div class="card bg-white shadow border-0">
                     <div class="card-header bg-transparent pb-5">
                         <div class="text-muted text-center mt-2 mb-4"><small>{{ __('Sign up with') }}</small></div>
                         <div class="text-center">

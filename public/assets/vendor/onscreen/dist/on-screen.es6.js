@@ -14,8 +14,8 @@ function attach() {
         }
     }
 
-    container.addEventListener('scroll', this._scroll, { passive: true });
-    window.addEventListener('resize', this._scroll, { passive: true });
+    container.addEventListener('scroll', this._scroll);
+    window.addEventListener('resize', this._scroll);
     this._scroll();
     this.attached = true;
 }

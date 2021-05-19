@@ -19,12 +19,12 @@ class CreateProductsTable extends Migration
             $table->string('slug');
             $table->integer('price');
             $table->foreignId('category_id');
-            $table->foreignId('merk_id');
-            $table->string('type');
+            $table->foreignId('merk_id')->nullable();
+            $table->string('type')->nullable();
             $table->string('image');
             $table->integer('weight');
-            $table->tinyInteger('status');
-            $table->text('desc');
+            $table->boolean('status')->default(true);
+            $table->json('desc');
             $table->text('fulldesc');
             $table->timestamps();
         });

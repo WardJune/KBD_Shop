@@ -110,7 +110,6 @@
     .navbar-nav .nav-link {
         display: flex;
         align-items: center;
-        white-space: nowrap;
     }
 
     .navbar-nav .nav-link[data-toggle="collapse"] {
@@ -266,31 +265,18 @@
                     .navbar-nav .nav .nav-link {
                         padding-top: $navbar-vertical-nav-link-padding-y / 1.5;
                         padding-bottom: $navbar-vertical-nav-link-padding-y / 1.5;
-                        padding-left: 15px;
-                        span.sidenav-normal{
-                          padding-left: 8px;
-                          transition: all .1s ease 0s;
-                        }
-
-                        span.sidenav-mini-icon{
-                          width: 34px;
-                          text-align: center;
-                          transition: all .1s ease 0s;
-                        }
+                        padding-left: $navbar-vertical-padding-x + $navbar-icon-min-width;
                     }
 
 
                     // Third level
                     .navbar-nav .nav .nav .nav-link {
                         padding-left: $navbar-vertical-padding-x * 1.5 + $navbar-icon-min-width;
-
                     }
                 }
             }
         }
     }
-
-
 }
 
 
@@ -342,7 +328,7 @@
 
 .sidenav {
     z-index: 1050;
-    transition: all 0.4s ease;
+    @include transition($transition-base);
 
     @include media-breakpoint-up(xl) {
         &:hover {
@@ -355,20 +341,9 @@
     }
 
     .navbar-brand,
-    .navbar-heading .docs-normal {
-      display: none;
-    }
-
-    .navbar-heading .docs-mini{
-      padding-left: 3px;
-    }
-
-    .navbar-heading{
-      transition: all .1s ease;
-    }
-
-    .navbar-brand{
-      padding: 1.5rem;
+    .navbar-heading {
+        padding: 1.5rem;
+        display: none;
     }
 }
 
@@ -382,26 +357,13 @@
 .g-sidenav-show {
     .sidenav {
         .navbar-brand,
-        .navbar-heading .docs-normal {
+        .navbar-heading {
             display: block;
         }
-        .navbar-heading .docs-mini {
-          display: none;
-        }
-
 
         .nav-item .collapse {
             height: auto;
             @include transition($transition-base);
-        }
-
-        .nav-link-text{
-          transition: 0.3s ease;
-          opacity: 1;
-        }
-
-        .nav-item .sidenav-mini-icon{
-          opacity: 0;
         }
     }
 }
@@ -427,12 +389,12 @@
             }
         }
 
-        .nav-item .collapse .sidenav-normal {
+        .nav-item .collapse {
             display: none !important;
         }
 
         .nav-link-text {
-            opacity: 0;
+            display: none !important;
         }
     }
 }
@@ -446,13 +408,13 @@
                 }
             }
         }
-
-        .nav-item .collapse .sidenav-normal {
+        
+        .nav-item .collapse {
             display: none !important;
         }
 
         .nav-link-text {
-            opacity: 0;
+            display: none !important;
         }
     }
 }

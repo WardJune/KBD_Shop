@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = Category::orderBy('id','asc')->paginate(10);
+        $category = Category::orderBy('id','asc')->paginate('10');
 
         return view('admin.categories.index', compact('category'));
     }
@@ -37,17 +37,6 @@ class CategoryController extends Controller
         Category::create($category);
 
         return redirect(route('category.index'))->with(['success' => 'The New Category has been added']);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -74,9 +63,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        Category::find($id)->delete();
+        $category->delete();
 
         return redirect(route('category.index'))->with(['success' => 'The Category has been deleted']);
     }

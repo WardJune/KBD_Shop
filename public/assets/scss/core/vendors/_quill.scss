@@ -55,7 +55,7 @@
     }
 
     // Customize the `:focus` state to imitate native WebKit styles.
-    @include form-control-focus($ignore-warning: true);
+    @include form-control-focus();
 
     &:focus {
         border-color: $input-border-color;

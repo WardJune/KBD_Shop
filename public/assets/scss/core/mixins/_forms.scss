@@ -1,4 +1,4 @@
-@mixin form-control-focus($ignore-warning) {
+@mixin form-control-focus() {
   &:focus {
     color: $input-focus-color;
     background-color: $input-focus-bg;
@@ -104,9 +104,6 @@
 
   // custom file
   .custom-file-input {
-    opacity: 1 !important;
-    width: 60% !important;
-    margin: 8px !important;
     .was-validated &:#{$state},
     &.is-#{$state} {
       ~ .custom-file-label {
@@ -125,10 +122,6 @@
           box-shadow: 0 0 0 $input-focus-width rgba($color, .25);
         }
       }
-    }
-
-    &:focus {
-      outline: none;
     }
   }
 }

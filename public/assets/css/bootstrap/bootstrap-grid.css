@@ -1,5 +1,5 @@
 /*!
- * Bootstrap Grid v4.4.1 (https://getbootstrap.com/)
+ * Bootstrap Grid v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -55,59 +55,13 @@ html
     }
 }
 
-.container-fluid,
-.container-sm,
-.container-md,
-.container-lg,
-.container-xl
+.container-fluid
 {
     width: 100%;
     margin-right: auto;
     margin-left: auto; 
     padding-right: 15px;
     padding-left: 15px;
-}
-
-@media (min-width: 576px)
-{
-    .container,
-    .container-sm
-    {
-        max-width: 540px;
-    }
-}
-
-@media (min-width: 768px)
-{
-    .container,
-    .container-sm,
-    .container-md
-    {
-        max-width: 720px;
-    }
-}
-
-@media (min-width: 992px)
-{
-    .container,
-    .container-sm,
-    .container-md,
-    .container-lg
-    {
-        max-width: 960px;
-    }
-}
-
-@media (min-width: 1200px)
-{
-    .container,
-    .container-sm,
-    .container-md,
-    .container-lg,
-    .container-xl
-    {
-        max-width: 1140px;
-    }
 }
 
 .row
@@ -216,48 +170,6 @@ html
 
     flex-basis: 0;
     flex-grow: 1;
-}
-
-.row-cols-1 > *
-{
-    max-width: 100%; 
-
-    flex: 0 0 100%;
-}
-
-.row-cols-2 > *
-{
-    max-width: 50%; 
-
-    flex: 0 0 50%;
-}
-
-.row-cols-3 > *
-{
-    max-width: 33.33333%; 
-
-    flex: 0 0 33.33333%;
-}
-
-.row-cols-4 > *
-{
-    max-width: 25%; 
-
-    flex: 0 0 25%;
-}
-
-.row-cols-5 > *
-{
-    max-width: 20%; 
-
-    flex: 0 0 20%;
-}
-
-.row-cols-6 > *
-{
-    max-width: 16.66667%; 
-
-    flex: 0 0 16.66667%;
 }
 
 .col-auto
@@ -491,42 +403,6 @@ html
         flex-basis: 0;
         flex-grow: 1;
     }
-    .row-cols-sm-1 > *
-    {
-        max-width: 100%; 
-
-        flex: 0 0 100%;
-    }
-    .row-cols-sm-2 > *
-    {
-        max-width: 50%; 
-
-        flex: 0 0 50%;
-    }
-    .row-cols-sm-3 > *
-    {
-        max-width: 33.33333%; 
-
-        flex: 0 0 33.33333%;
-    }
-    .row-cols-sm-4 > *
-    {
-        max-width: 25%; 
-
-        flex: 0 0 25%;
-    }
-    .row-cols-sm-5 > *
-    {
-        max-width: 20%; 
-
-        flex: 0 0 20%;
-    }
-    .row-cols-sm-6 > *
-    {
-        max-width: 16.66667%; 
-
-        flex: 0 0 16.66667%;
-    }
     .col-sm-auto
     {
         width: auto;
@@ -724,42 +600,6 @@ html
 
         flex-basis: 0;
         flex-grow: 1;
-    }
-    .row-cols-md-1 > *
-    {
-        max-width: 100%; 
-
-        flex: 0 0 100%;
-    }
-    .row-cols-md-2 > *
-    {
-        max-width: 50%; 
-
-        flex: 0 0 50%;
-    }
-    .row-cols-md-3 > *
-    {
-        max-width: 33.33333%; 
-
-        flex: 0 0 33.33333%;
-    }
-    .row-cols-md-4 > *
-    {
-        max-width: 25%; 
-
-        flex: 0 0 25%;
-    }
-    .row-cols-md-5 > *
-    {
-        max-width: 20%; 
-
-        flex: 0 0 20%;
-    }
-    .row-cols-md-6 > *
-    {
-        max-width: 16.66667%; 
-
-        flex: 0 0 16.66667%;
     }
     .col-md-auto
     {
@@ -959,42 +799,6 @@ html
         flex-basis: 0;
         flex-grow: 1;
     }
-    .row-cols-lg-1 > *
-    {
-        max-width: 100%; 
-
-        flex: 0 0 100%;
-    }
-    .row-cols-lg-2 > *
-    {
-        max-width: 50%; 
-
-        flex: 0 0 50%;
-    }
-    .row-cols-lg-3 > *
-    {
-        max-width: 33.33333%; 
-
-        flex: 0 0 33.33333%;
-    }
-    .row-cols-lg-4 > *
-    {
-        max-width: 25%; 
-
-        flex: 0 0 25%;
-    }
-    .row-cols-lg-5 > *
-    {
-        max-width: 20%; 
-
-        flex: 0 0 20%;
-    }
-    .row-cols-lg-6 > *
-    {
-        max-width: 16.66667%; 
-
-        flex: 0 0 16.66667%;
-    }
     .col-lg-auto
     {
         width: auto;
@@ -1192,42 +996,6 @@ html
 
         flex-basis: 0;
         flex-grow: 1;
-    }
-    .row-cols-xl-1 > *
-    {
-        max-width: 100%; 
-
-        flex: 0 0 100%;
-    }
-    .row-cols-xl-2 > *
-    {
-        max-width: 50%; 
-
-        flex: 0 0 50%;
-    }
-    .row-cols-xl-3 > *
-    {
-        max-width: 33.33333%; 
-
-        flex: 0 0 33.33333%;
-    }
-    .row-cols-xl-4 > *
-    {
-        max-width: 25%; 
-
-        flex: 0 0 25%;
-    }
-    .row-cols-xl-5 > *
-    {
-        max-width: 20%; 
-
-        flex: 0 0 20%;
-    }
-    .row-cols-xl-6 > *
-    {
-        max-width: 16.66667%; 
-
-        flex: 0 0 16.66667%;
     }
     .col-xl-auto
     {

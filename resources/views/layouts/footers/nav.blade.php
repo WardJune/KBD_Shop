@@ -1,12 +1,12 @@
-<div class="row align-items-center justify-content-xl-between">
-    <div class="col-xl-6">
-        <div class="copyright text-center text-xl-left text-muted">
+<div class="row align-items-center justify-content-xl-between bg-transparent">
+    <div class="col-lg-6">
+        <div class="copyright text-center text-lg-left text-muted">
             &copy; {{ now()->year }} <a href="https://www.creative-tim.com" class="font-weight-bold ml-1 text-warning" target="_blank">Creative Tim</a> &amp;
             <a href="https://www.updivision.com" class="font-weight-bold ml-1 text-warning" target="_blank">Updivision</a>
         </div>
     </div>
-    <div class="col-xl-6">
-        <ul class="nav nav-footer justify-content-center justify-content-xl-end">
+    <div class="col-lg-6">
+        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
             <li class="nav-item">
                 <a href="https://www.creative-tim.com" class="nav-link" target="_blank">Creative Tim</a>
             </li>

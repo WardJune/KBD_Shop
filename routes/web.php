@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +20,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::get('/search', 'App\Http\Controllers\SearchController@index')->name('product.search');
 
 Route::group(['middleware' => 'auth', 'prefix' => 'administrator'], function () {
 	Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
@@ -35,4 +35,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'administrator'], function () 
 
 	// Category route
 	Route::resource('category', 'App\Http\Controllers\CategoryController', ['except' => ['show', 'create']]);
+	// Product Route
+	Route::resource('product', 'App\Http\Controllers\ProductController');
+	// Merk Route
+	Route::resource('merk', 'App\Http\Controllers\MerkController')->except(['show','create']);
 });
