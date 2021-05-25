@@ -57,8 +57,13 @@
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between">
                         <h4>Product</h4>
-                        <a href="{{route('product.create')}}" class="btn btn-sm btn-success d-lg-inline-block">Add New
-                            Product</a>
+                        <div class="right">
+                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                                data-target="#uploadModal">
+                                Mass Upload
+                            </button>
+                            <a href="{{route('product.create')}}" class="btn btn-sm btn-success d-lg-inline-block">Add New Product</a>
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -136,6 +141,55 @@
                             @endforelse
                         </tbody>
                     </table>
+                    {{-- Mass Upload Modal --}}
+                    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Mass Upload Form</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form action="{{route('product.bulk')}}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="category">Category</label>
+                                        <select class="form-control" id="category" name="category_id">
+                                        @foreach ($category as $cat)
+                                            <option value="{{$cat->id}}">{{$cat->name}}</option>
+                                        @endforeach
+                                        </select>
+                                        @error('category_id')
+                                        <div class="text-danger">
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="image">Excel File </label><small class="text-muted"> *).xls format file only</small>
+                                        <div class="input-group mb-3 rounded">
+                                            <div class="custom-file">
+                                                <input name="file" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" value="{{ old('file') }}">
+                                                <label class="custom-file-label" for="inputGroupFile01">Choose
+                                                    file</label>
+                                            </div>
+                                            <p class="text-danger">{{ $errors->first('file') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- Mass Upload Modal --}}
                 </div>
                 {{ $product->links()}}
             </div>
@@ -143,3 +197,11 @@
     </div>
 </div>
 @endsection
+@push('js')
+    <script>
+        $('.custom-file-input').on('change', function () {
+            let fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass('selected').html(fileName);
+        })
+    </script>
+@endpush

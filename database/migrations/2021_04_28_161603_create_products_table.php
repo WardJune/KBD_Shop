@@ -22,7 +22,7 @@ class CreateProductsTable extends Migration
             $table->foreignId('merk_id')->nullable();
             $table->string('type')->nullable();
             $table->string('image');
-            $table->integer('weight');
+            $table->float('weight');
             $table->boolean('status')->default(true);
             $table->json('desc');
             $table->text('fulldesc');

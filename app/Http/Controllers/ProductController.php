@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
+use App\Imports\ProductImport;
+use App\Jobs\ProductJob;
 use App\Models\Category;
 use App\Models\Merk;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -19,7 +22,10 @@ class ProductController extends Controller
     public function index()
     {   
         $product = Product::latest()->paginate('10');
-        return view('admin.product.index', compact('product'));
+        return view('admin.product.index', [
+            'product' => $product,
+            'category' => Category::orderBy('name', 'ASC')->get()
+        ]);
     }
 
     /**
@@ -122,5 +128,23 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect(route('product.index'))->with(['success' => 'The Product has been deletd']);
+    }
+
+    // mass upload
+    public function massUpload(Request $request){
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'file' => 'required|mimes:xlsx'
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file;
+            $filename = time() . '-product.' . $request->file->extension();
+            $file->storeAs('uploads', $filename); 
+
+            ProductJob::dispatch($request->category_id, $filename);
+            return redirect()->back()->with(['success' => 'Upload Product has been Scheduled']);
+
+        }
     }
 }

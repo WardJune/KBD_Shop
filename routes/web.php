@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,8 +36,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'administrator'], function () 
 
 	// Category route
 	Route::resource('category', 'App\Http\Controllers\CategoryController', ['except' => ['show', 'create']]);
-	// Product Route
-	Route::resource('product', 'App\Http\Controllers\ProductController');
 	// Merk Route
 	Route::resource('merk', 'App\Http\Controllers\MerkController')->except(['show','create']);
+	// Product Route
+	Route::resource('product', 'App\Http\Controllers\ProductController');
+	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');
 });
