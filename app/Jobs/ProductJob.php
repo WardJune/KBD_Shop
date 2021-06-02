@@ -54,6 +54,7 @@ class ProductJob implements ShouldQueue
                 'name' => $row[0],
                 'slug' => Str::slug($row[0]),
                 'price' => $row[2],
+                'merk_id' => $row[3] ,
                 'category_id' => $this->category,
                 'image' => 'products/' . $filename,
                 'weight' => $row[6],

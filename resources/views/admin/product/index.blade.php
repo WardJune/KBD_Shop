@@ -191,8 +191,8 @@
                     </div>
                     {{-- Mass Upload Modal --}}
                 </div>
-                {{ $product->links()}}
             </div>
+            {{ $product->links()}}
         </div>
     </div>
 </div>

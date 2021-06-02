@@ -10,33 +10,32 @@
 
     <title>{{ config('app.name', 'KBD Shop') }}</title>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans&display=swap" rel="stylesheet">
 
     <!-- Icons -->
     <link href="{{ asset('assets') }}/vendor/nucleo/css/nucleo.css" rel="stylesheet">
     <link href="{{ asset('assets') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <!-- Argon CSS -->
-    <link type="text/css" href="{{ asset('assets') }}/css/argon.min.css" rel="stylesheet">
-    {{-- <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.0.0" rel="stylesheet"> --}}
+    <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.0.0" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('assets') }}/vendor/owl-carousel/owl.carousel.min.css">
+    <link rel="stylesheet" href="{{asset('assets') }}/vendor/owl-carousel/owl.theme.green.min.css">
+
 </head>
 
-<body class="{{ $class ?? '' }}">
-    @auth()
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-        @csrf
-    </form>
-    @include('layouts.navbars.sidebar')
-    @endauth
+<body class="{{ $class ?? ""}}">
+    {{-- header area --}}
+    @include('layouts.ecommerce.nav.navbar')
+    {{-- end of header area --}}
 
-    <div class="main-content">
-        @include('layouts.navbars.navbar')
-        @yield('content')
-    </div>
+    {{-- start content area --}}
+    @yield('content')
+    {{-- end of content area --}}
+   
+    @include('layouts.ecommerce.footers.footer')
 
-    @guest()
-    @include('layouts.footers.guest')
-    @endguest
-
+    <script src="{{asset('assets/vendor/owl-carousel/owl.carousel.js')}}"></script>
+    <script src="{{asset('assets/vendor/owl-carousel/owl.carousel.min.js')}}"></script>
     <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js')}}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ asset('assets/vendor/js-cookie/js.cookie.js')}}"></script>
@@ -44,7 +43,7 @@
     <script src="{{ asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')}}"></script>
 
     @stack('js')
-		
+
     <!-- Argon JS -->
     <script src="{{ asset('assets') }}/js/argon.js?v=1.0.0"></script>
 

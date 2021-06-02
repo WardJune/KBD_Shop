@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Ecommerce\FrontController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -15,15 +16,35 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Auth::routes();
+// Auth::routes();
 
+//! Admin Routes
 Route::get('/search', 'App\Http\Controllers\SearchController@index')->name('product.search');
+//? Auth admin
+Route::group(['prefix' => 'administrator'], function(){
+	// Authentication Routes...
+	Route::get('login', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login');
+	Route::post('login', 'App\Http\Controllers\Auth\LoginController@login');
+	Route::post('logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');
+
+	// Registration Routes...
+	Route::get('register', 'App\Http\Controllers\Auth\RegisterController@showRegistrationForm')->name('register');
+	Route::post('register', 'App\Http\Controllers\Auth\RegisterController@register');
+
+	// Password Reset Routes...
+	Route::get('password/reset', 'App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm');
+	Route::post('password/email', 'App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail');
+	Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\ResetPasswordController@showResetForm');
+Route::post('password/reset', 'App\Http\Controllers\Auth\ResetPasswordController@reset');
+});
+//? End of Auth Admin
 
 Route::group(['middleware' => 'auth', 'prefix' => 'administrator'], function () {
+
 	Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
 	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
@@ -42,3 +63,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'administrator'], function () 
 	Route::resource('product', 'App\Http\Controllers\ProductController');
 	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');
 });
+//! End Of Admin Routes
+
+Route::get('/', [FrontController::class, 'index'])->name('front');
+Route::get('/product', [FrontController::class, 'product'])->name('front.product');
+Route::get('/category/{slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
+Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('front.show');
