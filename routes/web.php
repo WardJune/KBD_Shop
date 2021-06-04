@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Ecommerce\CartController;
 use App\Http\Controllers\Ecommerce\FrontController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -69,3 +70,7 @@ Route::get('/', [FrontController::class, 'index'])->name('front');
 Route::get('/product', [FrontController::class, 'product'])->name('front.product');
 Route::get('/category/{slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
 Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('front.show');
+
+Route::post('/cart', [CartController::class, 'addToCart'])->name('front.cart');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('front.update_cart');
+Route::get('/cart', [CartController::class, 'showCart'])->name('front.show_cart');
