@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->string('customer_phone');
             $table->string('customer_address');
             $table->foreignId('district_id');
+            $table->integer('subtotal');
             $table->timestamps();
         });
     }

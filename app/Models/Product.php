@@ -28,4 +28,8 @@ class Product extends Model
     public function merk(){
         return $this->belongsTo(Merk::class);
     }
+
+    public function orderDetail(){
+        return $this->hasMany(OrderDetail::class);
+    }
 }

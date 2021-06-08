@@ -57,12 +57,12 @@
                                 {{-- button increase and decrement --}}
                                 <div class=" d-flex col-md-4 border-bottom border-neutral px-0">
                                     <button
-                                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 1 ) result.value--;return false;"
                                         class="btn btn-sm shadow-none--hover mr-0" type="button">
                                         <i class="fas fa-minus"></i>
                                     </button>
                                     <input class="form-control form-control-flush text-center" type="text" name="qty"
-                                        id="sst" maxlength="5" value="1" title="Quantity:" class="input-text qty">
+                                        id="sst" minlength="1" value="1" title="Quantity:" class="input-text qty">
                                     <button
                                         onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                                         class="btn btn-sm shadow-none--hover" type="button">
@@ -70,6 +70,9 @@
                                     </button>
                                     {{-- end button --}}
                                 </div>
+                                @error('qty')
+                                    <small class="text-danger ml-2">{{ $message }}</small>
+                                @enderror
                             </div>
                             <hr class="border-dark my-3">
 

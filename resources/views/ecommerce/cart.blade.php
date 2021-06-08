@@ -83,14 +83,15 @@
                     {{-- buttons --}}
                     <tr>
                         <td colspan="3">
-                            <button class="btn btn-default rounded-0">CONTINUE SHOPPING</button>
+                            <a href="{{ route('front.product') }}" class="btn btn-default rounded-0">CONTINUE
+                                SHOPPING</a>
                             <button class="btn btn-default rounded-0">EMPTY CART</button>
                             <button class="btn btn-default rounded-0" type="submit"
                                 formaction="{{ route('front.update_cart') }}">UPDATE
                                 CART</button>
                         </td>
                         <td colspan="2">
-                            <button class="btn btn-default btn-block rounded-0">CHECKOUT</button>
+                            <a href="{{ route('front.checkout') }}" class="btn btn-default rounded-0">CHECKOUT</a>
                         </td>
                     </tr>
                     </form>
@@ -99,9 +100,9 @@
             </table>
         </div>
     @else
-        <div class="container text-center">
+        <div class="container text-center min-vh-100 align-items-center">
             <h4>An order must have at least one item. Your cart is currently empty!</h4>
-            <div class="btn btn-default rounded-0">Contiue Shopping</div>
+            <a href="{{ route('front.product') }}" class="btn btn-default rounded-0">Continue Shopping</a>
         </div>
 
     @endif

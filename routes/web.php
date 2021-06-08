@@ -74,3 +74,6 @@ Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('f
 Route::post('/cart', [CartController::class, 'addToCart'])->name('front.cart');
 Route::post('/cart/update', [CartController::class, 'updateCart'])->name('front.update_cart');
 Route::get('/cart', [CartController::class, 'showCart'])->name('front.show_cart');
+Route::get('/checkout', [CartController::class, 'checkout'])->name('front.checkout');
+Route::post('/checkout', [CartController::class, 'processCheckout'])->name('front.processCheckout');
+Route::get('/checkout/{order:invoice}', [CartController::class, 'checkoutFinish'])->name('front.finish_checkout');

@@ -19,8 +19,6 @@
     <!-- Argon CSS -->
     <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.0.0" rel="stylesheet">
     <link type="text/css" href="{{ asset('assets') }}/css/own.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/owl-carousel/owl.carousel.min.css">
-    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/owl-carousel/owl.theme.green.min.css">
 
 </head>
 
@@ -35,8 +33,6 @@
 
     @include('layouts.ecommerce.footers.footer')
 
-    <script src="{{ asset('assets/vendor/owl-carousel/owl.carousel.js') }}"></script>
-    <script src="{{ asset('assets/vendor/owl-carousel/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/js-cookie/js.cookie.js') }}"></script>

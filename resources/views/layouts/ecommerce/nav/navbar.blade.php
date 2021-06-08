@@ -20,7 +20,7 @@
     </div>
 </nav> --}}
 
-<nav class="navbar navbar-horizontal navbar-expand-lg navbar-light bg-lighter">
+<nav class="navbar navbar-horizontal navbar-expand-lg sticky-top navbar-light bg-lighter">
     <div class="container">
         <a class="navbar-brand h1" href="{{ route('front') }}">KBD <span class="text-orange">Shop</span></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-default"
