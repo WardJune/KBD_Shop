@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Ecommerce\CartController;
 use App\Http\Controllers\Ecommerce\FrontController;
+use App\Http\Controllers\Ecommerce\LoginController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -77,3 +78,14 @@ Route::get('/cart', [CartController::class, 'showCart'])->name('front.show_cart'
 Route::get('/checkout', [CartController::class, 'checkout'])->name('front.checkout');
 Route::post('/checkout', [CartController::class, 'processCheckout'])->name('front.processCheckout');
 Route::get('/checkout/{order:invoice}', [CartController::class, 'checkoutFinish'])->name('front.finish_checkout');
+
+Route::group(['prefix' => 'user', 'namespace' => 'ECommerce'],function(){
+	Route::get('login', [LoginController::class, 'loginForm'])->name('customer.login');
+	Route::post('login', [LoginController::class, 'login'])->name('customer.post_login');
+	Route::get('verify/{customer:activate_token}', [FrontController::class, 'verifyCustomerRegistration'])->name('customer.verify');
+
+	Route::group(['middleware' => 'customer'], function(){
+		Route::get('dasboard', [LoginController::class, 'dashboard'])->name('customer.dashboard');
+		Route::get('logout', [LoginController::class, 'logout'])->name('customer.logout');
+	});
+});

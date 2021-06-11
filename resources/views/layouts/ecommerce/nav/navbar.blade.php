@@ -65,10 +65,13 @@
                         <span class="nav-link-inner--text d-lg-none">Profile</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        @if (auth()->guard('customer')->check())
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="{{ route('customer.logout') }}">Logout</a>
+                        @else
+                            <a class="dropdown-item" href="{{ route('customer.login') }}">Login</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                        @endif
                     </div>
                 </li>
                 <li class="nav-item">

@@ -1,10 +1,15 @@
 @extends('layouts.ecommerce', ['class' => 'bg-neutral'])
 
 @section('content')
-    @if (session('error'))
-        <p class="text-danger">{{ session('error') }}</p>
-    @endif
     <div class="container mt-4 mb-6">
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span class="alert-text">{{ session('error') }}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
         <div class="row">
             <div class="col-md-7">
                 <h3>SHIPPING INFORMATION</h3>

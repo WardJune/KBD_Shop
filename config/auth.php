@@ -40,7 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
+        // custom guard customer
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customers'
+        ],
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -70,6 +74,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        // custom provider
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
+        ]
 
         // 'users' => [
         //     'driver' => 'database',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use App\Mail\CustomerRegisterMail;
 use App\Models\City;
 use App\Models\Customer;
 use App\Models\District;
@@ -13,6 +14,7 @@ use App\Models\Province;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
@@ -71,7 +73,7 @@ class CartController extends Controller
     }
 
     public function updateCart(Request $request){
-        $carts = json_decode(request()->cookie('cart'),true);
+        $carts = $this->getCarts();
 
         // loop request product_id karena data array 
         foreach ($request->product_id as $key => $row) {
@@ -108,7 +110,7 @@ class CartController extends Controller
         $this->validate($request,[
             'customer_name' => 'required|string|max:100',
             'customer_phone' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:customers',
             'customer_address' => 'required',
             'province_id' => 'required|exists:provinces,id',
             'city_id' => 'required|exists:cities,id',
@@ -121,8 +123,8 @@ class CartController extends Controller
             // check if customer data exists
             $customer = Customer::where('email', $request->email)->first();
             // check is auth check and $customer
-            if (!auth()->check() && $customer) {
-                return false;
+            if (!auth()->guard('customer')->check() && $customer) {
+                return redirect()->back()->with(['error' => 'Please Login First']);
             }
 
             $carts = $this->getCarts();
@@ -131,12 +133,15 @@ class CartController extends Controller
             });
 
             // create new customer
+            $password = Str::random(8);
             $customer = Customer::create([
                 'name' => $request->customer_name,
                 'email' => $request->email,
+                'password' => bcrypt($password),
                 'phone_number' => $request->customer_phone,
                 'address' => $request->customer_address,
                 'district_id' => $request->district_id,
+                'activate_token' => Str::random(30),
                 'status' => false
             ]);
 
@@ -170,11 +175,12 @@ class CartController extends Controller
 
             $cookie = Cookie::forget('cart');
 
+            Mail::to($request->email)->send(new CustomerRegisterMail($customer, $password));
             return redirect(route('front.finish_checkout', $order->invoice))->cookie($cookie);
         } catch (\Exception $e) {
             // jika error rollback datanya
             DB::rollback();
-
+            
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }    
