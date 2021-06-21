@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Imports\ProductImport;
 use App\Jobs\ProductJob;
@@ -20,7 +21,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
+    {
         $product = Product::latest()->paginate('10');
         return view('admin.product.index', [
             'product' => $product,
@@ -49,15 +50,15 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $validate)
     {
-       $product = $validate->all();
+        $product = $validate->all();
         // check apakah ada gambar
-       if ($validate->hasFile('image')) {
+        if ($validate->hasFile('image')) {
             $file = $validate->image;
             // nama file kombinasi waktu + slug 
             $filename = Str::slug($validate->name) . '.' . $validate->image->extension();
             $file->storeAs('products', $filename);
 
-            $product['image'] ='products/' . $filename;            
+            $product['image'] = 'products/' . $filename;
         }
 
         $product['slug'] = Str::slug($validate->name);
@@ -66,7 +67,7 @@ class ProductController extends Controller
         $product['desc'] = $validate->desc;
 
         Product::create($product);
-        return redirect(route('product.index'))->with(['success'=> 'The New Product has been added']);
+        return redirect(route('product.index'))->with(['success' => 'The New Product has been added']);
     }
 
     /**
@@ -83,11 +84,11 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-    return view('admin.product.edit',[
-        'product' => $product,
-        'category' => Category::all(),
-        'merk' => Merk::all()
-    ]);
+        return view('admin.product.edit', [
+            'product' => $product,
+            'category' => Category::all(),
+            'merk' => Merk::all()
+        ]);
     }
 
     /**
@@ -100,13 +101,13 @@ class ProductController extends Controller
     public function update(ProductRequest $validate, Product $product)
     {
         $products = $validate->all();
-    
+
         if ($validate->hasFile('image')) {
             Storage::delete($product->image);
             $file = $validate->image;
             $filename = Str::slug($product->slug) . '.' . $file->extension();
             $file->storeAs('products', $filename);
-            $products['image'] ='products/' . $filename;        
+            $products['image'] = 'products/' . $filename;
         } else {
             $products['image'] = $product->image;
         }
@@ -131,7 +132,8 @@ class ProductController extends Controller
     }
 
     // mass upload
-    public function massUpload(Request $request){
+    public function massUpload(Request $request)
+    {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'file' => 'required|mimes:xlsx'
@@ -140,11 +142,10 @@ class ProductController extends Controller
         if ($request->hasFile('file')) {
             $file = $request->file;
             $filename = time() . '-product.' . $request->file->extension();
-            $file->storeAs('uploads', $filename); 
+            $file->storeAs('uploads', $filename);
 
             ProductJob::dispatch($request->category_id, $filename);
             return redirect()->back()->with(['success' => 'Upload Product has been Scheduled']);
-
         }
     }
 }

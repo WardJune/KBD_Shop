@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Support\Facades\DB;
@@ -17,5 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProvinceSeeder::class);
         $this->call(CitySeeder::class);
         $this->call(DistrictSeeder::class);
+        $this->call(CategorySeeder::class);
+        $this->call(MerkSeeder::class);
     }
 }

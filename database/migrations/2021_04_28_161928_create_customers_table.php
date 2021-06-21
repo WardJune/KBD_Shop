@@ -16,11 +16,12 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('email');
-            $table->integer('phone_number');
-            $table->text('address');
-            $table->foreignId('district_id');
-            $table->boolean('status');
+            $table->string('email')->unique();
+            $table->string('phone');
+            $table->string('gender');
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
     }

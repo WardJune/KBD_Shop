@@ -18,12 +18,21 @@
     <link href="{{ asset('assets') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <!-- Argon CSS -->
     <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.0.0" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('assets') }}/vendor/owl-carousel/owl.carousel.min.css">
-    <link rel="stylesheet" href="{{asset('assets') }}/vendor/owl-carousel/owl.theme.green.min.css">
+    <link type="text/css" href="{{ asset('assets') }}/css/own.css" rel="stylesheet">
 
 </head>
 
-<body class="{{ $class ?? ""}}">
+<body class="{{ $class ?? '' }}">
+    @if (auth('customer')->check() && !auth('customer')->user()->email_verified_at)
+        <div class="alert alert-warning rounded-0 mb-0 text-center mb-n1" role="alert">
+            Please Verify your Email,
+            <a href="" onclick=" event.preventDefault(); document.getElementById('requestForm').submit();">
+                click here to request another</a>
+            <form class="d-none" action="{{ route('verification.request') }}" method="POST" id="requestForm">
+                @csrf
+            </form>
+        </div>
+    @endif
     {{-- header area --}}
     @include('layouts.ecommerce.nav.navbar')
     {{-- end of header area --}}
@@ -31,16 +40,14 @@
     {{-- start content area --}}
     @yield('content')
     {{-- end of content area --}}
-   
+
     @include('layouts.ecommerce.footers.footer')
 
-    <script src="{{asset('assets/vendor/owl-carousel/owl.carousel.js')}}"></script>
-    <script src="{{asset('assets/vendor/owl-carousel/owl.carousel.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/js-cookie/js.cookie.js')}}"></script>
-    <script src="{{ asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js')}}"></script>
+    <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/js-cookie/js.cookie.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js') }}"></script>
 
     @stack('js')
 
