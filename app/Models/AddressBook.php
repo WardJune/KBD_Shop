@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class AddressBook extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
+    protected $with = ['district'];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
 }

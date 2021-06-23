@@ -22,8 +22,8 @@
 
 <body class="{{ $class ?? '' }}">
     @auth()
-        <form id="logout-form" action="{{ route('logout.admin') }}" method="POST" style="display: none;">
-            @csrf
+        <form id="logout-form" action="{{ route('logout.admin') }}" method="GET" style="display: none;">
+            {{ csrf_field() }}
         </form>
         @include('layouts.navbars.sidebar')
     @endauth
