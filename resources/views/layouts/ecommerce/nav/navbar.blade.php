@@ -65,20 +65,25 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
                         @if (auth('customer')->check())
-                            <form class="invisible" action="{{ route('logout') }}" method="post" id="logoutForm">
+
+                            <div class="dropdown-header noti-title">
+                                <h6 class="text-overflow m-0"><span class="text-muted">Welcome</span>
+                                    {{ auth('customer')->user()->name }}</h6>
+                            </div>
+                            <a class="dropdown-item" href="{{ route('profile.user') }}">Profile</a>
+
+                            <form class="invisible" action="{{ route('logout') }}" method="post" id="logout">
                                 @csrf
                             </form>
-
+                            <div class="dropdown-divider"></div>
                             <a href="{{ route('logout') }}" class="dropdown-item"
-                                onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                onclick="event.preventDefault(); document.getElementById('logout').submit();">
                                 <span>{{ __('Logout') }}</span>
                             </a>
                         @else
                             <a class="dropdown-item" href="{{ route('login') }}">Login</a>
                             <a class="dropdown-item" href="{{ route('register') }}">Register</a>
                         @endif
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
                     </div>
                 </li>
                 <li class="nav-item">

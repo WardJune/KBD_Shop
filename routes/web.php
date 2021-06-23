@@ -1,40 +1,25 @@
 <?php
 
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Ecommerce\Auth\EmailVerificationController;
 use App\Http\Controllers\Ecommerce\Auth\LoginController;
 use App\Http\Controllers\Ecommerce\Auth\LogoutController;
 use App\Http\Controllers\Ecommerce\Auth\RegisterController;
 use App\Http\Controllers\Ecommerce\Auth\ResetPasswordController;
 use App\Http\Controllers\Ecommerce\FrontController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Ecommerce\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-// Auth::routes();
-
 /// Admin Routes
-Route::get('/search', 'App\Http\Controllers\SearchController@index')->name('product.search');
+Route::get('/search', [SearchController::class, 'index'])->name('product.search');
 //? Auth admin
 Route::group(['prefix' => 'admin'], function () {
 	// Authentication Routes...
 	Route::get('login', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login.admin');
 	Route::post('login', 'App\Http\Controllers\Auth\LoginController@login');
-	Route::post('logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout.admin');
+	Route::get('logout', 'App\Http\Controllers\Auth\LogoutController@logout')->name('logout.admin');
 
 	// Registration Routes...
 	Route::get('register', 'App\Http\Controllers\Auth\RegisterController@showRegistrationForm')->name('register.admin');
@@ -54,15 +39,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
+	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 
 	// Category route
-	Route::resource('category', 'App\Http\Controllers\CategoryController', ['except' => ['show', 'create']]);
+	Route::resource('category', 'App\Http\Controllers\Admin\CategoryController', ['except' => ['show', 'create']]);
 
 	// Merk Route
-	Route::resource('merk', 'App\Http\Controllers\MerkController')->except(['show', 'create']);
+	Route::resource('merk', 'App\Http\Controllers\Admin\MerkController')->except(['show', 'create']);
 
 	// Product Route
-	Route::resource('product', 'App\Http\Controllers\ProductController');
+	Route::resource('product', ProductController::class);
 	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');
 });
 /// End Of Admin Routes
@@ -100,4 +86,21 @@ Route::group(['middleware' => 'auth:customer'], function () {
 	Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('auth:customer', 'signed')->name('verification.verify');
 });
 
+Route::group(['middleware' => 'auth:customer', 'prefix' => 'profile'], function () {
+	Route::get('', [ProfileController::class, 'show'])->name('profile.user');
+	Route::patch('', [ProfileController::class, 'userEdit'])->name('profile.user-edit');
+
+	Route::get('/change-password', [ProfileController::class, 'userPassword'])->name('profile.password-edit');
+	Route::patch('/change-password', [ProfileController::class, 'userPasswordUpdate'])->name('profile.password-update');
+
+	Route::group(['prefix' => 'address-book'], function () {
+		Route::get('/', [ProfileController::class, 'showAddress'])->name('profile.address');
+		Route::get('/add', [ProfileController::class, 'showAddressForm'])->name('profile.address-form');
+		Route::post('/', [ProfileController::class, 'addressHandle'])->name('profile.address-add');
+		Route::get('/{id}/edit', [ProfileController::class, 'edit'])->name('profile.address-edit');
+		Route::patch('/{id}/edit', [ProfileController::class, 'update'])->name('profile.address-update');
+		Route::delete('/{id}/delete', [ProfileController::class, 'destroy'])->name('profile.address-destroy');
+	});
+});
+	
 //! End of User Auth Routes
