@@ -26,7 +26,7 @@
     </div>
 
     <div class="container justify-content-center card w-75 shadow-none">
-        @if ($addresses)
+        @if ($addresses->count() > 0)
             <div class="card-body text-center mb-5">
                 <a href="{{ route('profile.address-form') }}" class="btn btn-outline-default rounded-0 ">Add
                     New Address

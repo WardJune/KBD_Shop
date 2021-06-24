@@ -87,12 +87,13 @@ Route::group(['middleware' => 'auth:customer'], function () {
 });
 
 Route::group(['middleware' => 'auth:customer', 'prefix' => 'profile'], function () {
+	// Edit user info
 	Route::get('', [ProfileController::class, 'show'])->name('profile.user');
 	Route::patch('', [ProfileController::class, 'userEdit'])->name('profile.user-edit');
-
+	// Change password
 	Route::get('/change-password', [ProfileController::class, 'userPassword'])->name('profile.password-edit');
 	Route::patch('/change-password', [ProfileController::class, 'userPasswordUpdate'])->name('profile.password-update');
-
+	// Address book route
 	Route::group(['prefix' => 'address-book'], function () {
 		Route::get('/', [ProfileController::class, 'showAddress'])->name('profile.address');
 		Route::get('/add', [ProfileController::class, 'showAddressForm'])->name('profile.address-form');

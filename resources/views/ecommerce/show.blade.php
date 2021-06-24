@@ -62,7 +62,7 @@
                                         class="btn btn-sm shadow-none--hover mr-0" type="button">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <input class="form-control form-control-flush text-center" type="text" name="qty"
+                                    <input class="form-control form-control-flush text-center" type="number" name="qty"
                                         id="sst" minlength="1" value="1" title="Quantity:" class="input-text qty">
                                     <button
                                         onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
@@ -103,32 +103,24 @@
                     xmlns="http://www.w3.org/2000/svg" role="img"
                     aria-label="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera: 200x200"
                     preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>A generic square placeholder image with a white border around it, making it resemble a photograph
-                        taken with an old instant camera</title>
                     <rect width="100%" height="100%" fill="#6c757d"></rect>
                 </svg>
                 <svg class="bd-placeholder-img img-thumbnail rounded-0 mr-2" width="75" height="75"
                     xmlns="http://www.w3.org/2000/svg" role="img"
                     aria-label="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera: 200x200"
                     preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>A generic square placeholder image with a white border around it, making it resemble a photograph
-                        taken with an old instant camera</title>
                     <rect width="100%" height="100%" fill="#6c757d"></rect>
                 </svg>
                 <svg class="bd-placeholder-img img-thumbnail rounded-0 mr-2" width="75" height="75"
                     xmlns="http://www.w3.org/2000/svg" role="img"
                     aria-label="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera: 200x200"
                     preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>A generic square placeholder image with a white border around it, making it resemble a photograph
-                        taken with an old instant camera</title>
                     <rect width="100%" height="100%" fill="#6c757d"></rect>
                 </svg>
                 <svg class="bd-placeholder-img img-thumbnail rounded-0 mr-2" width="75" height="75"
                     xmlns="http://www.w3.org/2000/svg" role="img"
                     aria-label="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera: 200x200"
                     preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>A generic square placeholder image with a white border around it, making it resemble a photograph
-                        taken with an old instant camera</title>
                     <rect width="100%" height="100%" fill="#6c757d"></rect>
                 </svg>
             </div>
