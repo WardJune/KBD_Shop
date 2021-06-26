@@ -20,9 +20,9 @@
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
-                <span class="alert-text text-sm">"{{ session('success') }}" has been
+                <span class="alert-text text-sm">"{{ $product->name }}" has been
                     added to
-                    your cart. You can <a href="{{ route('front.show_cart') }}">view
+                    your cart. You can <a href="{{ route('cart.show') }}">view
                         your cart</a> and checkout any time.</span>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -63,7 +63,7 @@
                                         <i class="fas fa-minus"></i>
                                     </button>
                                     <input class="form-control form-control-flush text-center" type="number" name="qty"
-                                        id="sst" minlength="1" value="1" title="Quantity:" class="input-text qty">
+                                        id="sst" min="1" minlength="1" value="1" title="Quantity:" class="input-text qty">
                                     <button
                                         onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                                         class="btn btn-sm shadow-none--hover" type="button">
@@ -79,7 +79,8 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-8 col-8">
-                                    <button type="submit" class="btn btn-danger btn-block" formaction="">ADD TO
+                                    <button type="submit" class="btn btn-danger btn-block"
+                                        formaction="{{ route('cart.add', ['cart' => 'cart']) }}">ADD TO
                                         CART
                                     </button>
                                 </div>
@@ -89,7 +90,8 @@
                                 </div>
                             </div>
 
-                            <button class="btn btn-warning btn-block" type="submit" formaction="">BUY IT NOW
+                            <button class="btn btn-warning btn-block" type="submit"
+                                formaction="{{ route('cart.add', ['buy' => 'buy']) }}">BUY IT NOW
                             </button>
                         </form>
                     </div>

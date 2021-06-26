@@ -87,7 +87,7 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link nav-link-icon" href="#">
+                    <a class="nav-link nav-link-icon" href="{{ route('cart.show') }}">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="nav-link-inner--text d-lg-none">Chart</span>
                     </a>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Ecommerce\Auth\LoginController;
 use App\Http\Controllers\Ecommerce\Auth\LogoutController;
 use App\Http\Controllers\Ecommerce\Auth\RegisterController;
 use App\Http\Controllers\Ecommerce\Auth\ResetPasswordController;
+use App\Http\Controllers\Ecommerce\CartController;
 use App\Http\Controllers\Ecommerce\FrontController;
 use App\Http\Controllers\Ecommerce\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -53,11 +54,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 });
 /// End Of Admin Routes
 
-Route::get('/', [FrontController::class, 'index'])->name('front');
-Route::get('/product', [FrontController::class, 'product'])->name('front.product');
-Route::get('/category/{slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
-Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('front.show');
-
 //! User Auth Routes
 
 Route::group(['middleware' => 'guest:customer'], function () {
@@ -86,6 +82,7 @@ Route::group(['middleware' => 'auth:customer'], function () {
 	Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('auth:customer', 'signed')->name('verification.verify');
 });
 
+/// profile
 Route::group(['middleware' => 'auth:customer', 'prefix' => 'profile'], function () {
 	// Edit user info
 	Route::get('', [ProfileController::class, 'show'])->name('profile.user');
@@ -103,5 +100,19 @@ Route::group(['middleware' => 'auth:customer', 'prefix' => 'profile'], function 
 		Route::delete('/{id}/delete', [ProfileController::class, 'destroy'])->name('profile.address-destroy');
 	});
 });
-	
+
 //! End of User Auth Routes
+
+Route::get('/', [FrontController::class, 'index'])->name('front');
+Route::get('/product', [FrontController::class, 'product'])->name('front.product');
+Route::get('/category/{slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
+Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('front.show');
+
+Route::group(['middleware' => 'auth:customer'], function () {
+
+	Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
+	Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+	Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+	Route::post('/cart/empty', [CartController::class, 'emptyCart'])->name('cart.empty');
+	Route::get('/cart/destroy/{cart:id}', [CartController::class, 'destroy'])->name('cart.destroy');
+});

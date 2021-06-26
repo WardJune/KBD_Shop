@@ -32,6 +32,11 @@ class Customer extends Authenticatable implements MustVerifyEmail
 
     public function addressBooks()
     {
-        $this->hasMany(AddressBook::class);
+        return $this->hasMany(AddressBook::class);
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
     }
 }
