@@ -10,6 +10,7 @@ use App\Http\Controllers\Ecommerce\Auth\ResetPasswordController;
 use App\Http\Controllers\Ecommerce\CartController;
 use App\Http\Controllers\Ecommerce\FrontController;
 use App\Http\Controllers\Ecommerce\ProfileController;
+use App\Http\Controllers\Ecommerce\WishlistController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -108,11 +109,16 @@ Route::get('/product', [FrontController::class, 'product'])->name('front.product
 Route::get('/category/{slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
 Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('front.show');
 
-Route::group(['middleware' => 'auth:customer'], function () {
+Route::group(['middleware' => 'auth:customer', 'prefix' => 'cart'], function () {
+	Route::get('/', [CartController::class, 'show'])->name('cart.show');
+	Route::post('/add', [CartController::class, 'addToCart'])->name('cart.add');
+	Route::post('/update', [CartController::class, 'updateCart'])->name('cart.update');
+	Route::post('/empty', [CartController::class, 'emptyCart'])->name('cart.empty');
+	Route::get('/destroy/{cart:id}', [CartController::class, 'destroy'])->name('cart.destroy');
+});
 
-	Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
-	Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-	Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
-	Route::post('/cart/empty', [CartController::class, 'emptyCart'])->name('cart.empty');
-	Route::get('/cart/destroy/{cart:id}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::group(['middleware' => 'auth:customer'], function () {
+	Route::get('wishlist', [WishlistController::class, 'show'])->name('wishlist.show');
+	Route::post('wishlist', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
+	Route::post('wishlist/destroy/{wishlist:id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 });

@@ -30,6 +30,17 @@
             </div>
         @endif
 
+        @if (session('wishlist'))
+            <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
+                <span class="alert-text text-sm">"{{ $product->name }}" has been
+                    added to
+                    your wishlist.</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
         <div class="row justify-content-between">
             <div class="col-md-7 bg-transparent">
                 <div class="card rounded-0 shadow-none">
@@ -85,7 +96,12 @@
                                     </button>
                                 </div>
                                 <div class="col-md-4 col-4">
-                                    <button type="submit" class="btn btn-warning btn-block"><i class="fas fa-heart"></i>
+                                    <button type="submit"
+                                        class="btn btn-block {{ $wishlist == null ? 'btn-warning' : 'btn-outline-warning' }}"
+                                        data-toggle="tooltip" data-placement="top"
+                                        title="{{ $wishlist == null ? 'Add To Wishlist' : 'Remove From Wishlist' }}"
+                                        formaction="{{ $wishlist == null ? route('wishlist.add') : route('wishlist.destroy', $wishlist->id) }}"><i
+                                            class="fas fa-heart"></i>
                                     </button>
                                 </div>
                             </div>

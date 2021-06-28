@@ -42,13 +42,15 @@
                             <input type="hidden" name="cart_id[]" value="{{ $cart->id }}">
                             <tr class="border-bottom">
                                 <th class="align-middle">
-                                    <div class="media align-items-center">
-                                        <img src="{{ asset('/storage/' . $cart->product->image) }}" class="mr-3"
-                                            width="75px">
-                                        <div class="media-body">
-                                            <h5 class="mt-0">{{ $cart->product->name }}</h5>
+                                    <a href="{{ route('front.show', $cart->product->slug) }}">
+                                        <div class="media align-items-center">
+                                            <img src="{{ asset('/storage/' . $cart->product->image) }}" class="mr-3"
+                                                width="75px">
+                                            <div class="media-body">
+                                                <h5 class="mt-0">{{ $cart->product->name }}</h5>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </th>
                                 <td class="align-middle">IDR {{ number_format($cart->product->price) }}</td>
                                 <td class="align-middle">

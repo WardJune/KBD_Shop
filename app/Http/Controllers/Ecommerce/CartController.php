@@ -51,6 +51,8 @@ class CartController extends Controller
         } else {
             return redirect()->route('cart.show');
         }
+
+        dd(request()->all());
     }
 
     public function updateCart()

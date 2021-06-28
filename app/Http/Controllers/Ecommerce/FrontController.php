@@ -5,10 +5,20 @@ namespace App\Http\Controllers\Ecommerce;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
 class FrontController extends Controller
 {
+    public function getId()
+    {
+        if (auth('customer')->check()) {
+            $id = auth('customer')->user()->id;
+            return $id;
+        }
+        return false;
+    }
+
     public function index()
     {
         $product = Product::latest()->take(3)->get();
@@ -29,6 +39,11 @@ class FrontController extends Controller
 
     public function show(Product $product)
     {
-        return view('ecommerce.show', compact('product'));
+        $wishlist = Wishlist::where('product_id', $product->id)
+            ->where('customer_id', $this->getId())
+            ->first();
+
+        // dd($wishlist);
+        return view('ecommerce.show', compact('product', 'wishlist'));
     }
 }
