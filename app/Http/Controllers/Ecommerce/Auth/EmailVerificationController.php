@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 
 class EmailVerificationController extends Controller
 {
+
+    public function show()
+    {
+        if (!auth('customer')->user()->hasVerifiedEmail()) {
+            return view('ecommerce.auth.verified');
+        };
+        return redirect(route('front'));
+    }
     public function request()
     {
         auth('customer')->user()->sendEmailVerificationNotification();

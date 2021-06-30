@@ -21,3 +21,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('city', [RegionController::class, 'getCity']);
 Route::get('district', [RegionController::class, 'getDistrict']);
+Route::get('address', [RegionController::class, 'getAddress']);

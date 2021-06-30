@@ -95,7 +95,7 @@
                                 formaction="{{ route('cart.update') }}">UPDATE CART</button>
                         </td>
                         <td colspan="2">
-                            <a href="" class="btn btn-default rounded-0">CHECKOUT</a>
+                            <a href="{{ route('cart.checkout') }}" class="btn btn-default rounded-0">CHECKOUT</a>
                         </td>
                     </tr>
                     </form>

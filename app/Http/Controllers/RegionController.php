@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AddressBook;
 use App\Models\City;
 use App\Models\District;
 use Illuminate\Http\Request;
@@ -27,6 +28,22 @@ class RegionController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $districts
+        ]);
+    }
+
+    public function getAddress()
+    {
+        $address = AddressBook::where('id', request()->address_book)->first();
+        $cities = City::where('province_id', $address->district->province->id)->get();
+        $districts = District::where('province_id', $address->district->province->id)
+            ->where('city_id', $address->district->city->id)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $address,
+            'city' => $cities,
+            'district' => $districts
         ]);
     }
 }

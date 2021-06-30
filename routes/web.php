@@ -79,7 +79,7 @@ Route::post('logout', [LogoutController::class, 'handle'])->name('logout');
 /// verify
 Route::group(['middleware' => 'auth:customer'], function () {
 	Route::post('verify-email/request', [EmailVerificationController::class, 'request'])->middleware('auth:customer')->name('verification.request');
-
+	Route::get('verify/email', [EmailVerificationController::class, 'show'])->name('verification.notice');
 	Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('auth:customer', 'signed')->name('verification.verify');
 });
 
@@ -109,14 +109,20 @@ Route::get('/product', [FrontController::class, 'product'])->name('front.product
 Route::get('/category/{slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
 Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('front.show');
 
-Route::group(['middleware' => 'auth:customer', 'prefix' => 'cart'], function () {
+/// cart routes
+Route::group(['middleware' => ['auth:customer', 'verified'], 'prefix' => 'cart'], function () {
 	Route::get('/', [CartController::class, 'show'])->name('cart.show');
 	Route::post('/add', [CartController::class, 'addToCart'])->name('cart.add');
 	Route::post('/update', [CartController::class, 'updateCart'])->name('cart.update');
 	Route::post('/empty', [CartController::class, 'emptyCart'])->name('cart.empty');
 	Route::get('/destroy/{cart:id}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+	Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+	Route::post('/checkout', [CartController::class, 'processCheckout'])->name('cart.process-checkout');
+	Route::get('/checkout/order/{order:invoice}', [CartController::class, 'checkoutFinish'])->name('cart.finish');
 });
 
+/// wishlist routes
 Route::group(['middleware' => 'auth:customer'], function () {
 	Route::get('wishlist', [WishlistController::class, 'show'])->name('wishlist.show');
 	Route::post('wishlist', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
