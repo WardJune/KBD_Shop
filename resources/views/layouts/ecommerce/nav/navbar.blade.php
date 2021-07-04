@@ -71,6 +71,7 @@
                                     {{ auth('customer')->user()->name }}</h6>
                             </div>
                             <a class="dropdown-item" href="{{ route('profile.user') }}">Profile</a>
+                            <a class="dropdown-item" href="{{ route('order.dashboard') }}">My Orders</a>
                             <a class="dropdown-item" href="{{ route('wishlist.show') }}">Wishlist</a>
 
                             <form class="invisible d-none" action="{{ route('logout') }}" method="post" id="logout">

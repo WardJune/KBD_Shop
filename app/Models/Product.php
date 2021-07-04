@@ -9,7 +9,7 @@ class Product extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $with = ['category', 'merk', 'carts'];
+    protected $with = ['carts'];
     protected $casts = [
         'desc' => 'array'
     ];

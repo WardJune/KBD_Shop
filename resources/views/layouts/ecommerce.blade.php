@@ -16,6 +16,7 @@
     <!-- Icons -->
     <link href="{{ asset('assets') }}/vendor/nucleo/css/nucleo.css" rel="stylesheet">
     <link href="{{ asset('assets') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ asset('assets') }}/img/brand/kbd1.png" type="image/x-icon">
     <!-- Argon CSS -->
     <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.0.0" rel="stylesheet">
     <link type="text/css" href="{{ asset('assets') }}/css/own.css" rel="stylesheet">

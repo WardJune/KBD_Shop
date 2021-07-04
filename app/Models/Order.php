@@ -21,4 +21,23 @@ class Order extends Model
     {
         return $this->hasMany(OrderDetail::class);
     }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    public function getStatusLabelAttribute()
+    {
+        if ($this->status == 0) {
+            return '<span class="text-warning">New</span>';
+        } elseif ($this->status == 1) {
+            return '<span class="text-warning">Awaiting Confirmation</span>';
+        } elseif ($this->status == 2) {
+            return '<span class="text-warning">Process</span>';
+        } elseif ($this->status == 3) {
+            return '<span class="text-warning">Sent</span>';
+        }
+        return '<span class="text-warning">Done</span>';
+    }
 }

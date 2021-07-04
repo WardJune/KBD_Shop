@@ -9,6 +9,7 @@ use App\Http\Controllers\Ecommerce\Auth\RegisterController;
 use App\Http\Controllers\Ecommerce\Auth\ResetPasswordController;
 use App\Http\Controllers\Ecommerce\CartController;
 use App\Http\Controllers\Ecommerce\FrontController;
+use App\Http\Controllers\Ecommerce\OrderController;
 use App\Http\Controllers\Ecommerce\ProfileController;
 use App\Http\Controllers\Ecommerce\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -127,4 +128,16 @@ Route::group(['middleware' => 'auth:customer'], function () {
 	Route::get('wishlist', [WishlistController::class, 'show'])->name('wishlist.show');
 	Route::post('wishlist', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
 	Route::post('wishlist/destroy/{wishlist:id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+});
+
+Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function () {
+	Route::get('dashboard', [OrderController::class, 'dashboard'])->name('order.dashboard');
+	Route::get('a-payment', [OrderController::class, 'awaitingPayment'])->name('order.a-payment');
+	Route::get('a-confirm', [OrderController::class, 'awaitingConfirm'])->name('order.a-confirm');
+	Route::get('process', [OrderController::class, 'process'])->name('order.process');
+	Route::get('sent', [OrderController::class, 'sent'])->name('order.sent');
+	Route::get('done', [OrderController::class, 'done'])->name('order.done');
+	Route::get('/confirm-payment/{order:invoice}', [OrderController::class, 'paymentForm'])->name('payment.form');
+	Route::post('/confirm-payment', [OrderController::class, 'savePayment'])->name('payment.save');
+	Route::get('/{order:invoice}', [OrderController::class, 'show'])->name('order.show');
 });
