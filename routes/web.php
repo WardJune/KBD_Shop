@@ -140,4 +140,5 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function ()
 	Route::get('/confirm-payment/{order:invoice}', [OrderController::class, 'paymentForm'])->name('payment.form');
 	Route::post('/confirm-payment', [OrderController::class, 'savePayment'])->name('payment.save');
 	Route::get('/{order:invoice}', [OrderController::class, 'show'])->name('order.show');
+	Route::get('/pdf/{order:invoice}', [OrderController::class, 'pdf'])->name('order.show-pdf');
 });

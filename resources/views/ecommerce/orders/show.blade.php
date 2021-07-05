@@ -14,8 +14,8 @@
                             <div class="card-body my-md--2 d-md-flex justify-content-between">
                                 <a class="d-md-block" href="{{ route('order.dashboard') }}">
                                     &#60; Back</a>
-                                <span class="d-block">Invoice : <span
-                                        class="font-weight-bold">{{ $order->invoice }}</span> |
+                                <span class="d-block">Invoice : <span class="font-weight-bold">
+                                        {{ $order->invoice }} </span> |
                                     {!! $order->status_label !!}</span>
                             </div>
                         </div>
@@ -29,7 +29,7 @@
                                 <table>
                                     <tr>
                                         <td width="30%">Full Name</td>
-                                        <td width="5%">:</td>
+                                        <td width="6%">:</td>
                                         <th>{{ $order->customer_name }}</th>
                                     </tr>
                                     <tr>
@@ -101,8 +101,12 @@
                     </div>
                     <div class="col-md-12 ">
                         <div class="card bg-secondary rounded-0 shadow-sm">
-                            <div class="card-header bg-transparent">
-                                <span class="h4">Details</span>
+                            <div class="card-header bg-transparent d-flex justify-content-between">
+                                <span class="h4 d-block">Details</span>
+                                @if ($order->status == 4)
+                                    <a href="{{ route('order.show-pdf', $order->invoice) }}" target="_blank"
+                                        class="btn btn-sm btn-warning rounded-0">Print invoice</a>
+                                @endif
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">

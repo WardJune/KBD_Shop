@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Ecommerce;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
+// use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -60,12 +62,18 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        return view('ecommerce.orders.show', compact('order'));
+        if (Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
+            return view('ecommerce.orders.show', compact('order'));
+        }
+        return abort(403, 'You are not supposed to do that :(');
     }
 
     public function paymentForm(Order $order)
     {
-        return view('ecommerce.orders.payment', compact('order'));
+        if (Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
+            return view('ecommerce.orders.payment', compact('order'));
+        }
+        return abort(403, 'You are not supposed to do that :(');
     }
 
     public function savePayment()
@@ -88,7 +96,7 @@ class OrderController extends Controller
             //  make sure the status is 0 && there is image file
             if ($order->status == 0 && request()->hasFile('proof')) {
                 $file = request()->proof;
-                $filename = request()->invoice . '-proof' . $file->extension();
+                $filename = request()->invoice . '-proof.' . $file->extension();
                 $file->storeAs('proofs', $filename);
 
                 Payment::create([
@@ -115,5 +123,16 @@ class OrderController extends Controller
 
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
+    }
+
+    public function pdf(Order $order)
+    {
+        if (!Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
+            return redirect(route('order.show', $order->invoice));
+        }
+
+        $pdf = \PDF::loadView('ecommerce.orders.pdf', compact('order'));
+
+        return $pdf->stream();
     }
 }

@@ -10,6 +10,7 @@ class OrderDetail extends Model
     use HasFactory;
 
     protected $guarded = [];
+    protected $with = ['product'];
     public function order()
     {
         return $this->belongsTo(Order::class);
