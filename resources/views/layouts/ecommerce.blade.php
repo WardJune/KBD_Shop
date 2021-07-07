@@ -18,7 +18,7 @@
     <link href="{{ asset('assets') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="{{ asset('assets') }}/img/brand/kbd1.png" type="image/x-icon">
     <!-- Argon CSS -->
-    <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.0.0" rel="stylesheet">
+    <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.1.0" rel="stylesheet">
     <link type="text/css" href="{{ asset('assets') }}/css/own.css" rel="stylesheet">
 
 </head>
@@ -49,11 +49,11 @@
     <script src="{{ asset('assets/vendor/js-cookie/js.cookie.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js') }}"></script>
-
+    <script src="{{ asset('assets/vendor/dropzone/dist/min/dropzone.min.js') }}"></script>
     @stack('js')
 
     <!-- Argon JS -->
-    <script src="{{ asset('assets') }}/js/argon.js?v=1.0.0"></script>
+    <script src="{{ asset('assets') }}/js/argon.js?v=1.1.0"></script>
 
 </body>
 

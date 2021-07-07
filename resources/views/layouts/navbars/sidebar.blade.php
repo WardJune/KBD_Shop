@@ -50,19 +50,25 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('administrator/category') }}">
+                        <a class="nav-link" href="{{ route('orders.index') }}">
+                            <i class="ni ni-bullet-list-67 text-danger"></i> <span
+                                class="nav-link-text">{{ __('Orders') }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('admin/category') }}">
                             <i class="ni ni-collection text-info"></i> <span
                                 class="nav-link-text">{{ __('Category') }}</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('administrator/merk') }}">
+                        <a class="nav-link" href="{{ url('admin/merk') }}">
                             <i class="ni ni-archive-2 text-warning"></i> <span
                                 class="nav-link-text">{{ __('Merk') }}</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('administrator/product') }}">
+                        <a class="nav-link" href="{{ url('admin/product') }}">
                             <i class="ni ni-shop text-success"></i><span
                                 class="nav-link-text">{{ __('Product') }}</span>
                         </a>

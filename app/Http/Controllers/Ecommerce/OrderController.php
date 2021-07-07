@@ -4,59 +4,61 @@ namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderReturn;
 use App\Models\Payment;
 // use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
 
-    private function getOrder()
+    private function getOrder($status = null)
     {
-        $orders = Order::where('customer_id', auth('customer')->user()->id);
+        if ($status != null) {
+            $orders = Order::withCount(['return'])->where('customer_id', auth('customer')->user()->id)
+                ->where('status', $status)->latest()->get();
+        } else {
+            $orders = Order::withCount(['return'])->where('customer_id', auth('customer')->user()->id);
+        }
         return $orders;
     }
+
     public function dashboard()
     {
         $orders = $this->getOrder()->latest()->get();
-
         return view('ecommerce.orders.dashboard', compact('orders'));
     }
 
     public function awaitingPayment()
     {
-        $orders = $this->getOrder()->where('status', 0)->latest()->get();
-
+        $orders = $this->getOrder('0');
         return view('ecommerce.orders.awaiting-payment', compact('orders'));
     }
 
     public function awaitingConfirm()
     {
-        $orders = $this->getOrder()->where('status', 1)->latest()->get();
-
+        $orders = $this->getOrder(1);
         return view('ecommerce.orders.awaiting-confirm', compact('orders'));
     }
 
     public function process()
     {
-        $orders = $this->getOrder()->where('status', 2)->latest()->get();
-
+        $orders = $this->getOrder(2);
         return view('ecommerce.orders.process', compact('orders'));
     }
 
     public function sent()
     {
-        $orders = $this->getOrder()->where('status', 3)->latest()->get();
-
+        $orders = $this->getOrder(3);
         return view('ecommerce.orders.sent', compact('orders'));
     }
 
     public function done()
     {
-        $orders = $this->getOrder()->where('status', 4)->latest()->get();
-
+        $orders = $this->getOrder(4);
         return view('ecommerce.orders.done', compact('orders'));
     }
 
@@ -134,5 +136,51 @@ class OrderController extends Controller
         $pdf = \PDF::loadView('ecommerce.orders.pdf', compact('order'));
 
         return $pdf->stream();
+    }
+
+    public function acceptOrder(Order $order)
+    {
+        if (!Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
+            return redirect(route('order.show', $order->invoice));
+        }
+
+        $order->update(['status' => 4]);
+
+        return redirect()->back()->with(['success' => 'Order Confirmed']);
+    }
+
+    public function returnForm(Order $order)
+    {
+        return view('ecommerce.orders.return-form', compact('order'));
+    }
+
+    public function returnProcess($id)
+    {
+        $this->validate(request(), [
+            'reason' => 'required|string',
+            'refund_transfer' => 'required|string',
+            'photo' => 'required|image|mimes:jpg,png,jpeg'
+        ]);
+
+        $return = OrderReturn::where('order_id', $id)->first();
+
+        if ($return) return redirect()->back(with(['error' => 'Request Refund on Process']));
+
+        if (request()->hasFile('photo')) {
+
+            $file = request()->photo;
+            $filename = time() . Str::random(8) . '.' . $file->extension();
+            $file->storeAs('return', $filename);
+
+            OrderReturn::create([
+                'order_id' => $id,
+                'photo' => 'return/' . $filename,
+                'reason' => request()->reason,
+                'refund_transfer' => request()->refund_transfer,
+                'status' => 0,
+            ]);
+        }
+
+        return redirect()->back()->with(['success' => 'Request Refund Sent']);
     }
 }

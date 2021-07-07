@@ -10,6 +10,7 @@ class LoginController extends Controller
 {
     public function show()
     {
+        session(['link' => url()->previous()]);
         return view('ecommerce.auth.login');
     }
 
@@ -29,7 +30,7 @@ class LoginController extends Controller
         );
 
         if ($user) {
-            return redirect()->to(RouteServiceProvider::HOME);
+            return redirect(session('link'));
         }
 
         return redirect()->back()->with(['error' => 'These credentials do not match our records. ']);

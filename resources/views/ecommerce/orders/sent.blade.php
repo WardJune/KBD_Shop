@@ -56,6 +56,16 @@
                             @endforeach
                         </div>
                         <div class="card-footer bg-transparent d-flex justify-content-md-end">
+                            @if ($order->status == 3)
+                                <form action="{{ route('order.accept', $order->id) }}" class="inline mr-md-2"
+                                    onsubmit="return confirm('r u sure ?')" method="POST">
+                                    @csrf
+                                    @method('patch')
+
+                                    <button type="submit" class="btn btn-warning rounded-0">Receive
+                                        Order</button>
+                                </form>
+                            @endif
                             <a href="{{ route('order.show', $order->invoice) }}"
                                 class="btn btn-warning rounded-0">Details</a>
                         </div>

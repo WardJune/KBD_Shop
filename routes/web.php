@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Ecommerce\Auth\EmailVerificationController;
@@ -53,6 +54,18 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	// Product Route
 	Route::resource('product', ProductController::class);
 	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');
+
+	// Orders Route
+	Route::group(['prefix' => 'orders'], function () {
+		Route::get('/', [AdminOrderController::class, 'index'])->name('orders.index');
+		Route::get('/{order:invoice}', [AdminOrderController::class, 'show'])->name('orders.show');
+		Route::delete('/{order:id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
+		Route::get('/payment/{order:invoice}', [AdminOrderController::class, 'acceptPayment'])->name('orders.approve-payment');
+		Route::post('/shipping', [AdminOrderController::class, 'shippingOrder'])->name('orders.shipping');
+
+		Route::get('/return/{order:invoice}', [AdminOrderController::class, 'returnShow'])->name('orders.return');
+		Route::post('/return/{value}', [AdminOrderController::class, 'approveReturn'])->name('orders.approve-return');
+	});
 });
 /// End Of Admin Routes
 
@@ -137,8 +150,13 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function ()
 	Route::get('process', [OrderController::class, 'process'])->name('order.process');
 	Route::get('sent', [OrderController::class, 'sent'])->name('order.sent');
 	Route::get('done', [OrderController::class, 'done'])->name('order.done');
+	Route::get('/{order:invoice}', [OrderController::class, 'show'])->name('order.show');
+
 	Route::get('/confirm-payment/{order:invoice}', [OrderController::class, 'paymentForm'])->name('payment.form');
 	Route::post('/confirm-payment', [OrderController::class, 'savePayment'])->name('payment.save');
-	Route::get('/{order:invoice}', [OrderController::class, 'show'])->name('order.show');
 	Route::get('/pdf/{order:invoice}', [OrderController::class, 'pdf'])->name('order.show-pdf');
+	Route::patch('/accept/{order:id}', [OrderController::class, 'acceptOrder'])->name('order.accept');
+
+	Route::get('/return/{order:invoice}', [OrderController::class, 'returnForm'])->name('order.return-form');
+	Route::post('/return/{order:invoice}', [OrderController::class, 'returnProcess'])->name('order.return');
 });

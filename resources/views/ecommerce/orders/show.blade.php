@@ -8,6 +8,9 @@
                 @include('layouts.ecommerce.nav.sidebar-profile')
             </div>
             <div class="col-md-10">
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card shadow-none bg-secondary rounded-0">
@@ -103,9 +106,23 @@
                         <div class="card bg-secondary rounded-0 shadow-sm">
                             <div class="card-header bg-transparent d-flex justify-content-between">
                                 <span class="h4 d-block">Details</span>
-                                @if ($order->status == 4)
-                                    <a href="{{ route('order.show-pdf', $order->invoice) }}" target="_blank"
-                                        class="btn btn-sm btn-warning rounded-0">Print invoice</a>
+                                @if ($order->status >= 3)
+
+                                    @if ($order->status == 4)
+                                        <a href="{{ route('order.show-pdf', $order->invoice) }}" target="_blank"
+                                            class="btn btn-sm btn-warning rounded-0">Print invoice</a>
+                                    @else
+
+                                        <form action="{{ route('order.accept', $order->id) }}" class="inline"
+                                            onsubmit="return confirm('r u sure ?')" method="POST">
+                                            @csrf
+                                            @method('patch')
+
+                                            <button type="submit" class="btn btn-sm btn-warning rounded-0">Receive
+                                                Order</button>
+                                        </form>
+                                    @endif
+
                                 @endif
                             </div>
                             <div class="card-body">
