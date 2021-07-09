@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-
+    /// getOrder by condition / parameter where id = auth id 
     private function getOrder($status = null)
     {
         if ($status != null) {
@@ -25,6 +25,40 @@ class OrderController extends Controller
         }
         return $orders;
     }
+
+    /// getTelegram curl 
+    private function getTelegram($url, $params)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url . $params);
+
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+        $content = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($content, true);
+    }
+
+    /// private sendmessage function for bot telegram
+    private function sendMessage($invoice, $reason)
+    {
+        // get token telegram from env file
+        $key = env('TELEGRAM_KEY');
+        // request getTelegram
+        $chat = $this->getTelegram('https://api.telegram.org/' . $key . '/getUpdates', '');
+
+        if ($chat['ok']) {
+            //get id penerima telegram
+            $chat_id = $chat['result'][0]['message']['chat']['id'];
+
+            $text = "Hey Admin, Ada yang baru nich . Pesanan dengan InvoiceID '$invoice'. Melakukan permintaan return / refund dengan alasan '$reason' , Buruan cek!";
+
+            return $this->getTelegram('https://api.telegram.org/' . $key . '/sendMessage', '?chat_id=' . $chat_id . '&text=' . $text);
+        }
+    }
+
 
     public function dashboard()
     {
@@ -180,6 +214,10 @@ class OrderController extends Controller
                 'status' => 0,
             ]);
         }
+
+        $order = Order::where('id', $id)->first();
+
+        $this->sendMessage($order->invoice, request()->reason);
 
         return redirect()->back()->with(['success' => 'Request Refund Sent']);
     }

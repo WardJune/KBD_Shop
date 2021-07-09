@@ -160,3 +160,5 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function ()
 	Route::get('/return/{order:invoice}', [OrderController::class, 'returnForm'])->name('order.return-form');
 	Route::post('/return/{order:invoice}', [OrderController::class, 'returnProcess'])->name('order.return');
 });
+
+Route::get('/coba', [OrderController::class, 'sendMessage']);

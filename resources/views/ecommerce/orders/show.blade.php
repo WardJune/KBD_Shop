@@ -31,7 +31,7 @@
                             <div class="card-body">
                                 <table>
                                     <tr>
-                                        <td width="30%">Full Name</td>
+                                        <td width="35%">Full Name</td>
                                         <td width="6%">:</td>
                                         <th>{{ $order->customer_name }}</th>
                                     </tr>
@@ -43,10 +43,18 @@
                                     <tr>
                                         <td>Address</td>
                                         <td>:</td>
-                                        <th>{{ $order->customer_address }}, {{ $order->district->name }}
+                                        <th><span class="text-wrap">{{ $order->customer_address }}</span>,
+                                            {{ $order->district->name }}
                                             {{ $order->district->city->name }},
                                             {{ $order->district->city->province->name }}</th>
                                     </tr>
+                                    @if ($order->return_count == 1)
+                                        <tr>
+                                            <td>Request Return</td>
+                                            <td>:</td>
+                                            <th>{!! $order->return->status_label !!}</th>
+                                        </tr>
+                                    @endif
                                 </table>
                             </div>
                         </div>
@@ -89,8 +97,6 @@
                                             <td>Transfer Proof</td>
                                             <td> :</td>
                                             <th>
-                                                <img src="{{ asset('storage/' . $order->payment->proof) }}" width="50px"
-                                                    height="50px" alt="">
                                                 <a href="{{ asset('storage/' . $order->payment->proof) }}"
                                                     target="_blank">Detail</a>
                                             </th>
@@ -106,24 +112,28 @@
                         <div class="card bg-secondary rounded-0 shadow-sm">
                             <div class="card-header bg-transparent d-flex justify-content-between">
                                 <span class="h4 d-block">Details</span>
-                                @if ($order->status >= 3)
+                                <div class="">
+                                    @if ($order->status >= 3)
+                                        @if ($order->status == 4)
+                                            <a href="{{ route('order.show-pdf', $order->invoice) }}" target="_blank"
+                                                class="btn btn-sm btn-warning rounded-0">Print invoice</a>
+                                        @else
+                                            <form action="{{ route('order.accept', $order->id) }}" class="inline"
+                                                onsubmit="return confirm('r u sure ?')" method="POST">
+                                                @csrf
+                                                @method('patch')
 
-                                    @if ($order->status == 4)
-                                        <a href="{{ route('order.show-pdf', $order->invoice) }}" target="_blank"
-                                            class="btn btn-sm btn-warning rounded-0">Print invoice</a>
-                                    @else
+                                                @if ($order->status == 3 && $order->return_count == 0)
+                                                    <a href="{{ route('order.return-form', $order->invoice) }}"
+                                                        class="btn btn-warning btn-sm rounded-0">Return</a>
+                                                @endif
 
-                                        <form action="{{ route('order.accept', $order->id) }}" class="inline"
-                                            onsubmit="return confirm('r u sure ?')" method="POST">
-                                            @csrf
-                                            @method('patch')
-
-                                            <button type="submit" class="btn btn-sm btn-warning rounded-0">Receive
-                                                Order</button>
-                                        </form>
+                                                <button type="submit" class="btn btn-sm btn-warning rounded-0">Receive
+                                                    Order</button>
+                                            </form>
+                                        @endif
                                     @endif
-
-                                @endif
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
