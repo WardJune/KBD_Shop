@@ -57,6 +57,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 
 	// Orders Route
 	Route::group(['prefix' => 'orders'], function () {
+		Route::get('/report', [AdminOrderController::class, 'orderReport'])->name('orders.report');
+		Route::get('/report/pdf/{daterange}/{title}', [AdminOrderController::class, 'orderReportPdf'])->name('report.order-pdf');
+
+		Route::get('/report-return', [AdminOrderController::class, 'orderReturnReport'])->name('orders.report-return');
+
 		Route::get('/', [AdminOrderController::class, 'index'])->name('orders.index');
 		Route::get('/{order:invoice}', [AdminOrderController::class, 'show'])->name('orders.show');
 		Route::delete('/{order:id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
@@ -160,5 +165,3 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function ()
 	Route::get('/return/{order:invoice}', [OrderController::class, 'returnForm'])->name('order.return-form');
 	Route::post('/return/{order:invoice}', [OrderController::class, 'returnProcess'])->name('order.return');
 });
-
-Route::get('/coba', [OrderController::class, 'sendMessage']);

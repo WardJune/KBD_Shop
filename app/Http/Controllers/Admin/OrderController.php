@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderMail;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -81,5 +82,65 @@ class OrderController extends Controller
         $order->update(['status' => 4]);
 
         return redirect()->back();
+    }
+
+    /// Order Report
+    public function orderReport()
+    {
+        // init 30 days range on load
+        // start of month
+        $start = Carbon::now()->startOfMonth()->format('Y-m-d H:i:s');
+        // end of month
+        $end = Carbon::now()->endOfMonth()->format('Y-m-d H:i:s');
+
+        if (request()->date != '') {
+            $date = explode(' - ', request()->date);
+            $start = Carbon::parse($date[0])->format('Y-m-d') . ' 00:00:01';
+            $end = Carbon::parse($date[1])->format('Y-m-d') . ' 23:59:59';
+        }
+        $title = "Order Report";
+        $orders = Order::whereBetween('created_at', [$start, $end])->get();
+
+        return view('admin.orders.report-order', compact('orders', 'title'));
+    }
+
+    public function orderReportPdf($daterange, $title)
+    {
+        $date = explode('+', $daterange);
+
+        $start = Carbon::parse($date[0])->format('Y-m-d' .  ' 00:00:01');
+        $end = Carbon::parse($date[1])->format('Y-m-d' .  ' 23:59:59');
+
+        if ($title == 'return-order-report') {
+            $orders = Order::has('return')->whereBetween('created_at', [$start, $end])->get();
+            $title = 'Laporan Return Order';
+        } else {
+            $orders = Order::whereBetween('created_at', [$start, $end])->get();
+            $title = 'Laporan Order';
+        }
+
+        $pdf = \PDF::loadView('admin.orders.report-pdf', compact('orders', 'date', 'title'));
+
+        return $pdf->stream();
+    }
+
+
+    public function orderReturnReport()
+    {
+        // init 30 days range on load
+        // start of month
+        $start = Carbon::now()->startOfMonth()->format('Y-m-d H:i:s');
+        // end of month
+        $end = Carbon::now()->endOfMonth()->format('Y-m-d H:i:s');
+
+        if (request()->date != '') {
+            $date = explode(' - ', request()->date);
+            $start = Carbon::parse($date[0])->format('Y-m-d') . ' 00:00:01';
+            $end = Carbon::parse($date[1])->format('Y-m-d') . ' 23:59:59';
+        }
+        $title = "Return Order Report";
+        $orders = Order::has('return')->whereBetween('created_at', [$start, $end])->get();
+
+        return view('admin.orders.report-order', compact('orders', 'title'));
     }
 }

@@ -49,12 +49,44 @@
                             </ul>
                         </div>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('orders.index') }}">
-                            <i class="ni ni-bullet-list-67 text-danger"></i> <span
-                                class="nav-link-text">{{ __('Orders') }}</span>
+                        <a class="nav-link" href="#order" data-toggle="collapse" role="button" aria-expanded="true"
+                            aria-controls="order">
+                            <i class="ni ni-bullet-list-67 text-danger"></i>
+                            <span class="nav-link-text">{{ __('Orders') }}</span>
                         </a>
+
+                        <div class="collapse hide" id="order">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('orders.index') }}">
+                                        <span class="nav-link-text">{{ __('Orders Management') }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#navbar-multilevel" class="nav-link" data-toggle="collapse" role="button"
+                                        aria-expanded="true" aria-controls="navbar-multilevel">Report</a>
+                                    <div class="collapse show" id="navbar-multilevel" style="">
+                                        <ul class="nav nav-sm flex-column">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('orders.report') }}">
+                                                    <span class="nav-link-text">{{ __('Orders Report') }}</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('orders.report-return') }}">
+                                                    <span
+                                                        class="nav-link-text">{{ __('Return Orders Report') }}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('admin/category') }}">
                             <i class="ni ni-collection text-info"></i> <span

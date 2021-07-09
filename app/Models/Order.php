@@ -10,7 +10,7 @@ class Order extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $with = ['district.city.province', 'details'];
+    protected $with = ['district.city.province', 'details', 'customer'];
     protected $withCount = ['return'];
 
     public function district()
