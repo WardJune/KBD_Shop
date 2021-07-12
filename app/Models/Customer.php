@@ -37,7 +37,7 @@ class Customer extends Authenticatable implements MustVerifyEmail
 
     public function carts()
     {
-        return $this->belongsToMany(Cart::class);
+        return $this->hasMany(Cart::class);
     }
 
     public function orders()

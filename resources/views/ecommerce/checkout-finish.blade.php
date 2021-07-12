@@ -16,7 +16,13 @@
     {{-- breadcrumb --}}
 
     <div class="container my-7">
-        <h3 class="text-center text-warning mb-5">Thank you. Your order has been received</h3>
+        <div class="mb-5 text-center">
+            <h3 class="text-center text-warning">Thank you. Your order has been received</h3>
+            @if ($order->payment_count < 1)
+                <span class="d-block text-muted">After you make payment, please confirm payment via the link below</span>
+                <a href="{{ route('payment.form', $order->invoice) }}" class="">Confirm Payment</a>
+            @endif
+        </div>
         <div class="row">
             <div class="col-md-6">
                 <h4 class="border-bottom">Order Info</h4>
@@ -33,7 +39,7 @@
                         <ul class="list-unstyled">
                             <li>: {{ $order->invoice }}</li>
                             <li>: {{ $order->created_at }}</li>
-                            <li>: IDR {{ number_format($order->subtotal) }}</li>
+                            <li>: IDR {{ number_format($order->total) }}</li>
                             <li>: Bank Transfer</li>
                         </ul>
                     </div>
@@ -88,11 +94,11 @@
                             </tr>
                             <tr>
                                 <th colspan="2">SHIPPING</th>
-                                <td>IDR 0 </td>
+                                <td>IDR {{ number_format($order->cost) }}</td>
                             </tr>
                             <tr>
                                 <th colspan="2">TOTAL</th>
-                                <th>IDR {{ number_format($order->subtotal) }}</th>
+                                <th>IDR {{ number_format($order->total) }}</th>
                             </tr>
                         </tbody>
                     </table>

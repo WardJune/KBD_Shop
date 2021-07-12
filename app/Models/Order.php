@@ -11,7 +11,7 @@ class Order extends Model
 
     protected $guarded = [];
     protected $with = ['district.city.province', 'details', 'customer'];
-    protected $withCount = ['return'];
+    protected $withCount = ['return', 'payment'];
 
     public function district()
     {
@@ -45,6 +45,11 @@ class Order extends Model
             return '<span class="text-warning">Sent</span>';
         }
         return '<span class="text-warning">Done</span>';
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->subtotal + $this->cost;
     }
 
     public function return()

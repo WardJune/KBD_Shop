@@ -10,7 +10,6 @@ class Cart extends Model
     use HasFactory;
 
     protected $guarded = [];
-    // protected $with = ['product'];
 
     public function user()
     {

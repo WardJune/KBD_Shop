@@ -147,7 +147,7 @@ Route::group(['middleware' => 'auth:customer'], function () {
 	Route::post('wishlist', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
 	Route::post('wishlist/destroy/{wishlist:id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 });
-
+/// Order routes
 Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function () {
 	Route::get('dashboard', [OrderController::class, 'dashboard'])->name('order.dashboard');
 	Route::get('a-payment', [OrderController::class, 'awaitingPayment'])->name('order.a-payment');
@@ -165,3 +165,5 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function ()
 	Route::get('/return/{order:invoice}', [OrderController::class, 'returnForm'])->name('order.return-form');
 	Route::post('/return/{order:invoice}', [OrderController::class, 'returnProcess'])->name('order.return');
 });
+
+Route::get('test', [CartController::class, 'getCourier']);

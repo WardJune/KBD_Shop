@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Province;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,7 @@ class CartController extends Controller
 
     public function show()
     {
-        $carts = Cart::where('customer_id', $this->getId())->get();
+        $carts = $this->getCart()->get();
         // total all the cart price
         $subTotal = $carts->sum(function ($cart) {
             return $cart->product->price * $cart->qty;
@@ -109,8 +110,11 @@ class CartController extends Controller
             $subTotal = $carts->sum(function ($cart) {
                 return $cart->product->price * $cart->qty;
             });
+            $weight = $carts->sum(function ($cart) {
+                return $cart->product->weight * $cart->qty;
+            });
 
-            return view('ecommerce.checkout', compact('carts', 'subTotal', 'provinces', 'addresses'));
+            return view('ecommerce.checkout', compact('carts', 'subTotal', 'provinces', 'addresses', 'weight'));
         }
 
         return redirect(route('cart.show'));
@@ -124,7 +128,8 @@ class CartController extends Controller
             'customer_address' => 'required|string',
             'province_id' => 'required',
             'city_id' => 'required',
-            'district_id' => 'required'
+            'district_id' => 'required',
+            'courier' => 'required'
         ]);
         // begin trandsaction
         DB::beginTransaction();
@@ -134,6 +139,7 @@ class CartController extends Controller
             $subTotal = $carts->get()->sum(function ($cart) {
                 return $cart->product->price * $cart->qty;
             });
+            $shipping = explode('-', request()->courier);
             // create Order
             $order = Order::create([
                 'invoice' => 'KBDS-' . time(),
@@ -142,7 +148,9 @@ class CartController extends Controller
                 'customer_phone' => request()->customer_phone,
                 'customer_address' => request()->customer_address,
                 'district_id' => request()->district_id,
-                'subtotal' => $subTotal
+                'subtotal' => $subTotal,
+                'cost' => $shipping[2],
+                'shipping' => "$shipping[0]-$shipping[1]"
             ]);
 
             foreach ($carts->get() as $cart) {
@@ -174,5 +182,34 @@ class CartController extends Controller
         }
 
         return abort(403, "I wouldn't do that if i were you.");
+    }
+
+    public function getCourier()
+    {
+        $this->validate(request(), [
+            'destination' => 'required',
+            'weight' => 'required|integer'
+        ]);
+
+        $url = 'https://api.rajaongkir.com/starter/cost';
+        $client = new Client();
+        $response = $client->request('POST', $url, [
+            'headers' => [
+                'content-type' => 'application/x-www-form-urlencoded',
+                'key' => env('RAJA_ONGKIR_KEY')
+            ],
+            'form_params' => [
+                'origin' => 445,
+                'destination' => request()->destination,
+                // 'destination' => 114,
+                'weight' => request()->weight,
+                // 'weight' => 1000,
+                'courier' => 'jne'
+            ]
+        ]);
+
+        $body = json_decode($response->getBody(), true);
+
+        return $body;
     }
 }

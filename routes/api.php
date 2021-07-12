@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Ecommerce\CartController;
 use App\Http\Controllers\RegionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,3 +23,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('city', [RegionController::class, 'getCity']);
 Route::get('district', [RegionController::class, 'getDistrict']);
 Route::get('address', [RegionController::class, 'getAddress']);
+Route::post('cost', [CartController::class, 'getCourier']);
