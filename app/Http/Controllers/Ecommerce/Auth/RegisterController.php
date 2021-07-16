@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ecommerce\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterCustomerRequest;
 use App\Models\Customer;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -11,27 +12,34 @@ use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
+    /**
+     * Menampilkan Halaman Register Customer
+     * 
+     * @return \Illuminate\View\View
+     */
     public function show()
     {
         return view('ecommerce.auth.register');
     }
 
-    public function handle()
+    /**
+     * Method ini mengatasi Customer Register
+     * Membuat Data Customer
+     * 
+     * @param RegisterCustomerRequest $request
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function handle(RegisterCustomerRequest $request)
     {
-        $this->validate(request(), [
-            'name' => 'required|string|max:255',
-            'phone' => 'required',
-            'gender' => 'required',
-            'email' => 'required|email|unique:customers,email',
-            'password' => 'required|string|min:8|confirmed'
-        ]);
-
         $user = Customer::create([
-            'name' => request()->name,
-            'phone' => request()->phone,
-            'gender' => request()->gender,
-            'email' => request()->email,
-            'password' => Hash::make(request()->password)
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'gender' => $request->gender,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
         ]);
 
         event(new Registered($user));

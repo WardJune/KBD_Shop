@@ -14,11 +14,20 @@ use App\Http\Controllers\Ecommerce\OrderController;
 use App\Http\Controllers\Ecommerce\ProfileController;
 use App\Http\Controllers\Ecommerce\WishlistController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 
-/// Admin Routes
+/*
+  |--------------------------------------------------------------------------
+  |--------------------------------------------------------------------------
+  | Route Halaman Admin
+*/
+
 Route::get('/search', [SearchController::class, 'index'])->name('product.search');
-//? Auth admin
+
+
+/*
+  |--------------------------------------------------------------------------
+  | Authentication Route Admin
+*/
 Route::group(['prefix' => 'admin'], function () {
 	// Authentication Routes...
 	Route::get('login', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login.admin');
@@ -35,7 +44,10 @@ Route::group(['prefix' => 'admin'], function () {
 	Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\ResetPasswordController@showResetForm');
 	Route::post('password/reset', 'App\Http\Controllers\Auth\ResetPasswordController@reset');
 });
-//? End of Auth Admin
+/*
+	| Authentication Route Admin
+	|--------------------------------------------------------------------------
+*/
 
 Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 
@@ -45,23 +57,24 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 
-	// Category route
+	// Category Routes...
 	Route::resource('category', 'App\Http\Controllers\Admin\CategoryController', ['except' => ['show', 'create']]);
 
-	// Merk Route
+	// Merk Routes...
 	Route::resource('merk', 'App\Http\Controllers\Admin\MerkController')->except(['show', 'create']);
 
-	// Product Route
+	// Product Routes...
 	Route::resource('product', ProductController::class);
 	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');
 
-	// Orders Route
+	// Orders Routes...
 	Route::group(['prefix' => 'orders'], function () {
+		// Order Reports...
 		Route::get('/report', [AdminOrderController::class, 'orderReport'])->name('orders.report');
 		Route::get('/report/pdf/{daterange}/{title}', [AdminOrderController::class, 'orderReportPdf'])->name('report.order-pdf');
-
 		Route::get('/report-return', [AdminOrderController::class, 'orderReturnReport'])->name('orders.report-return');
 
+		// Order Management...
 		Route::get('/', [AdminOrderController::class, 'index'])->name('orders.index');
 		Route::get('/{order:invoice}', [AdminOrderController::class, 'show'])->name('orders.show');
 		Route::delete('/{order:id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
@@ -69,85 +82,103 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		Route::post('/shipping', [AdminOrderController::class, 'shippingOrder'])->name('orders.shipping');
 
 		Route::get('/return/{order:invoice}', [AdminOrderController::class, 'returnShow'])->name('orders.return');
-		Route::post('/return/{value}', [AdminOrderController::class, 'approveReturn'])->name('orders.approve-return');
+		Route::post('/return/{value}', [AdminOrderController::class, 'confirmReturn'])->name('orders.approve-return');
 	});
 });
-/// End Of Admin Routes
+/*
+  | Route Halaman Admin
+  |--------------------------------------------------------------------------
+  |--------------------------------------------------------------------------
+*/
 
-//! User Auth Routes
 
+/*
+	|--------------------------------------------------------------------------
+	|--------------------------------------------------------------------------
+  | Route Halaman Customer / User
+*/
+
+/*
+	|--------------------------------------------------------------------------
+  | Authentication & Profile Routes Customer / User
+*/
 Route::group(['middleware' => 'guest:customer'], function () {
-	/// register
+	// Register Routes...
 	Route::get('register', [RegisterController::class, 'show'])->name('register');
 	Route::post('register', [RegisterController::class, 'handle'])->name('register');
 
-	/// login
+	// Login Routes...
 	Route::get('login', [LoginController::class, 'show'])->name('login');
 	Route::post('login', [LoginController::class, 'handle'])->name('login');
 
-	/// forgot password
+	// Forgot Password Routes...
 	Route::get('forgot-password', [ResetPasswordController::class, 'show'])->name('password.request');
 	Route::post('forgot-password/request', [ResetPasswordController::class, 'request'])->name('password.email');
 	Route::get('forgot-password/{token}', [ResetPasswordController::class, 'formReset'])->name('password.reset');
 	Route::post('reset-password', [ResetPasswordController::class, 'update'])->name('password.update');
 });
 
-/// logout
+// Logout Route...
 Route::post('logout', [LogoutController::class, 'handle'])->name('logout');
 
-/// verify
+// Verify Email Routes...
 Route::group(['middleware' => 'auth:customer'], function () {
 	Route::post('verify-email/request', [EmailVerificationController::class, 'request'])->middleware('auth:customer')->name('verification.request');
 	Route::get('verify/email', [EmailVerificationController::class, 'show'])->name('verification.notice');
 	Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('auth:customer', 'signed')->name('verification.verify');
 });
 
-/// profile
+// Customer / User Profile Routes...
 Route::group(['middleware' => 'auth:customer', 'prefix' => 'profile'], function () {
-	// Edit user info
+	// Edit user info...
 	Route::get('', [ProfileController::class, 'show'])->name('profile.user');
 	Route::patch('', [ProfileController::class, 'userEdit'])->name('profile.user-edit');
-	// Change password
+	// Change password...
 	Route::get('/change-password', [ProfileController::class, 'userPassword'])->name('profile.password-edit');
 	Route::patch('/change-password', [ProfileController::class, 'userPasswordUpdate'])->name('profile.password-update');
-	// Address book route
+	// Address book routes...
 	Route::group(['prefix' => 'address-book'], function () {
 		Route::get('/', [ProfileController::class, 'showAddress'])->name('profile.address');
 		Route::get('/add', [ProfileController::class, 'showAddressForm'])->name('profile.address-form');
 		Route::post('/', [ProfileController::class, 'addressHandle'])->name('profile.address-add');
-		Route::get('/{id}/edit', [ProfileController::class, 'edit'])->name('profile.address-edit');
-		Route::patch('/{id}/edit', [ProfileController::class, 'update'])->name('profile.address-update');
-		Route::delete('/{id}/delete', [ProfileController::class, 'destroy'])->name('profile.address-destroy');
+		Route::get('/{addressBook:id}/edit', [ProfileController::class, 'edit'])->name('profile.address-edit');
+		Route::patch('/{addressBook:id}/edit', [ProfileController::class, 'update'])->name('profile.address-update');
+		Route::delete('/{addressBook:id}/delete', [ProfileController::class, 'destroy'])->name('profile.address-destroy');
 	});
 });
 
-//! End of User Auth Routes
+/*
+	| Authentication Routes Customer / User
+	|--------------------------------------------------------------------------
+*/
 
+// Front Page Routes...
 Route::get('/', [FrontController::class, 'index'])->name('front');
 Route::get('/product', [FrontController::class, 'product'])->name('front.product');
-Route::get('/category/{slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
+Route::get('/category/{category:slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
 Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('front.show');
 
-/// cart routes
+// Cart routes...
 Route::group(['middleware' => ['auth:customer', 'verified'], 'prefix' => 'cart'], function () {
 	Route::get('/', [CartController::class, 'show'])->name('cart.show');
 	Route::post('/add', [CartController::class, 'addToCart'])->name('cart.add');
 	Route::post('/update', [CartController::class, 'updateCart'])->name('cart.update');
 	Route::post('/empty', [CartController::class, 'emptyCart'])->name('cart.empty');
-	Route::get('/destroy/{cart:id}', [CartController::class, 'destroy'])->name('cart.destroy');
-
+	Route::get('/destroy/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+	// Checkout Routes...
 	Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 	Route::post('/checkout', [CartController::class, 'processCheckout'])->name('cart.process-checkout');
 	Route::get('/checkout/order/{order:invoice}', [CartController::class, 'checkoutFinish'])->name('cart.finish');
 });
 
-/// wishlist routes
+// Wishlist routes...
 Route::group(['middleware' => 'auth:customer'], function () {
 	Route::get('wishlist', [WishlistController::class, 'show'])->name('wishlist.show');
 	Route::post('wishlist', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
 	Route::post('wishlist/destroy/{wishlist:id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 });
-/// Order routes
+
+// Order routes...
 Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function () {
 	Route::get('dashboard', [OrderController::class, 'dashboard'])->name('order.dashboard');
 	Route::get('a-payment', [OrderController::class, 'awaitingPayment'])->name('order.a-payment');
@@ -157,13 +188,21 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function ()
 	Route::get('done', [OrderController::class, 'done'])->name('order.done');
 	Route::get('/{order:invoice}', [OrderController::class, 'show'])->name('order.show');
 
+	//Payment Routes...
 	Route::get('/confirm-payment/{order:invoice}', [OrderController::class, 'paymentForm'])->name('payment.form');
 	Route::post('/confirm-payment', [OrderController::class, 'savePayment'])->name('payment.save');
 	Route::get('/pdf/{order:invoice}', [OrderController::class, 'pdf'])->name('order.show-pdf');
 	Route::patch('/accept/{order:id}', [OrderController::class, 'acceptOrder'])->name('order.accept');
 
+	// Return Order Routes...
 	Route::get('/return/{order:invoice}', [OrderController::class, 'returnForm'])->name('order.return-form');
 	Route::post('/return/{order:invoice}', [OrderController::class, 'returnProcess'])->name('order.return');
 });
 
-Route::get('test', [CartController::class, 'getCourier']);
+/*
+	| Route Halaman Customer / User
+	|--------------------------------------------------------------------------
+	|--------------------------------------------------------------------------
+*/
+
+Route::get('test', [CartController::class, 'test']);

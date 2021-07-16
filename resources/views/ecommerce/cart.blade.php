@@ -14,7 +14,7 @@
         </div>
     </div>
     {{-- breadcrumb --}}
-    @if ($carts->count() > 0)
+    @if ($cart && $cart->products->count() > 0)
 
         <div class="container mb-7">
             <table class="table table-borderless cart">
@@ -36,53 +36,54 @@
                     </tr>
                 </thead>
                 <tbody class="">
-                    @foreach ($carts as $cart)
+                    @foreach ($cart->products as $product)
                         <form method="post">
                             @csrf
-                            <input type="hidden" name="cart_id[]" value="{{ $cart->id }}">
+                            <input type="hidden" name="" value="">
                             <tr class="border-bottom">
                                 <th class="align-middle">
-                                    <a href="{{ route('front.show', $cart->product->slug) }}">
+                                    <a href="{{ route('front.show', $product->slug) }}">
                                         <div class="media align-items-center">
-                                            <img src="{{ asset('/storage/' . $cart->product->image) }}" class="mr-3"
+                                            <img src="{{ asset('/storage/' . $product->image) }}" class="mr-3"
                                                 width="75px">
                                             <div class="media-body">
-                                                <h5 class="mt-0">{{ $cart->product->name }}</h5>
+                                                <h5 class="mt-0">{{ $product->name }}</h5>
                                             </div>
                                         </div>
                                     </a>
                                 </th>
-                                <td class="align-middle">IDR {{ number_format($cart->product->price) }}</td>
+                                <td class="align-middle">IDR {{ number_format($product->price) }}</td>
                                 <td class="align-middle">
                                     <div class=" d-flex border-bottom border-neutral px-0">
                                         <button
-                                            onclick="var result = document.getElementById('sst{{ $cart->product_id }}'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                            onclick="var result = document.getElementById('sst{{ $product->id }}'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
                                             class="btn btn-sm shadow-none--hover mr-0" type="button">
                                             <i class="fas fa-minus"></i>
                                         </button>
 
                                         <input class="form-control form-control-flush text-center" type="text" name="qty[]"
-                                            id="sst{{ $cart->product_id }}" maxlength="5" value="{{ $cart['qty'] }}"
+                                            id="sst{{ $product->id }}" maxlength="5" value="{{ $product->pivot->qty }}"
                                             class="input-text qty">
 
-                                        <input type="hidden" name="product_id[]" value="{{ $cart->product_id }}">
+                                        <input type="hidden" name="product_id[]" value="{{ $product->id }}">
 
                                         <button
-                                            onclick="var result = document.getElementById('sst{{ $cart->product_id }}'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                            onclick="var result = document.getElementById('sst{{ $product->id }}'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                                             class="btn btn-sm shadow-none--hover" type="button">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
                                 </td>
-                                <td class="align-middle">IDR {{ number_format($cart->qty * $cart->product->price) }}</td>
-                                <td class="align-middle"><a href="{{ route('cart.destroy', $cart->id) }}"><i
+                                <td class="align-middle">IDR {{ number_format($product->pivot->qty * $product->price) }}
+                                </td>
+                                <td class="align-middle"><a href="{{ route('cart.destroy', $product->id) }}"><i
                                             class="fas fa-times"></i></a></td>
                             </tr>
                     @endforeach
                     <tr class="border-bottom">
                         <th colspan="3" class="text-right">SUB TOTAL <span class="d-block font-weight-normal">Total Before
                                 Shipping</span></th>
-                        <td colspan="2">IDR {{ number_format($subTotal) }}</td>
+                        <td colspan="2">IDR {{ number_format($subTotal ?? 0) }}</td>
                     </tr>
                     {{-- buttons --}}
                     <tr>

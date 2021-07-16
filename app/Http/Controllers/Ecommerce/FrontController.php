@@ -6,11 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Wishlist;
-use Illuminate\Http\Request;
 
 class FrontController extends Controller
 {
-    public function getId()
+    /**
+     * Get user id yang sedang Login
+     * 
+     * @return $id/false
+     */
+    private function getId()
     {
         if (auth('customer')->check()) {
             $id = auth('customer')->user()->id;
@@ -19,31 +23,59 @@ class FrontController extends Controller
         return false;
     }
 
+    /**
+     * Show Halaman Home pada aplikasi 
+     * 
+     * @var array $products  Query data Product 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-        $product = Product::latest()->take(3)->get();
-        return view('ecommerce.home', compact('product'));
+        $products = Product::whereStatus(1)
+            ->latest()
+            ->take(3)
+            ->get();
+        return view('ecommerce.home', compact('products'));
     }
 
+    /**
+     * Show Halaman semua Product
+     * 
+     * @var array $products
+     * @return \Illuminate\View\View
+     */
     public function product()
     {
-        $products = Product::latest()->paginate(12);
+        $products = Product::with(['merk', 'category'])->whereStatus(1)->latest()->paginate(12);
         return view('ecommerce.product', compact('products'));
     }
 
-    public function categoryProduct($slug)
+    /**
+     * Show Halaman semua Product berdasarkan Category
+     * 
+     * @param Category $category  Select spesifik category berdasarkan slug
+     * @var array $product  Query Data product berdasarkan Category
+     * @return \Illuminate\View\View
+     */
+    public function categoryProduct(Category $category)
     {
-        $products = Category::where('slug', $slug)->first()->products()->latest()->paginate(12);
+        $products = $category->products()->whereStatus(1)->latest()->paginate(12);
         return view('ecommerce.product', compact('products'));
     }
 
+    /**
+     * Show Halaman Product dengan spesifik
+     * 
+     * @param Product $product  Select spesifik product berdasarkan slug
+     * @var array $whislist  Query data wishlist
+     * @return \Illuminate\View\View
+     */
     public function show(Product $product)
     {
         $wishlist = Wishlist::where('product_id', $product->id)
             ->where('customer_id', $this->getId())
             ->first();
 
-        // dd($wishlist);
         return view('ecommerce.show', compact('product', 'wishlist'));
     }
 }

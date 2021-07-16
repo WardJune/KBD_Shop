@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::composer('ecommerce.*', CategoryComposer::class);
+        View::composer('layouts.ecommerce.nav.navbar', CategoryComposer::class);
         Paginator::defaultView('pagination::default');
         //
     }

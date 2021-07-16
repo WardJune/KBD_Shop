@@ -9,7 +9,7 @@ class Product extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $with = ['category', 'merk'];
+    // protected $with = ['category', 'merk'];
     protected $casts = [
         'desc' => 'array'
     ];
@@ -34,6 +34,6 @@ class Product extends Model
 
     public function carts()
     {
-        return $this->hasMany(Cart::class);
+        return $this->belongsToMany(Cart::class);
     }
 }

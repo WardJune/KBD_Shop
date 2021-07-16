@@ -6,22 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddressRequest;
 use App\Models\AddressBook;
 use App\Models\City;
-use App\Models\Customer;
 use App\Models\District;
 use App\Models\Province;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
-use function PHPUnit\Framework\isEmpty;
 
 class ProfileController extends Controller
 {
-    // edit user informaton
+    /**
+     * Menampilkan Halaman Profile Customer Form untuk mengubah data Profile dari Customer 
+     * 
+     * @return \Illuminate\View\View
+     */
     public function show()
     {
         return view('ecommerce.user.profile');
     }
 
+    /**
+     * Update data profile customer
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function userEdit()
     {
         $this->validate(request(), [
@@ -35,12 +40,22 @@ class ProfileController extends Controller
         return back()->with(['status' => 'success']);
     }
 
-    // edit password user 
+    /**
+     * Menampilkan Halaman Form untuk mengubah customer Password
+     * 
+     * @return \Illuminate\View\View
+     */
     public function userPassword()
     {
         return view('ecommerce.user.password');
     }
 
+    /**
+     * Upadate customer Password
+     * 
+     * @var string $oldPassword  Pengecekan terhadap password lama Customer
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function userPasswordUpdate()
     {
         $this->validate(request(), [
@@ -61,25 +76,44 @@ class ProfileController extends Controller
         return back()->withErrors(['old_password' => 'Invalid Current Password']);
     }
 
-    // address book
+    /**
+     * Menampilkan Halaman AddressBook
+     * 
+     * @var string|int  $user_id
+     * @var array       $addresses  Query data dari AddressBook berdasarkan customer Id
+     * @return \Illuminate\View\View
+     */
     public function showAddress()
     {
         $user_id = auth('customer')->user()->id;
-        $addresses = AddressBook::where('customer_id', $user_id)->get();
+        $addresses = AddressBook::whereCustomerId($user_id)->get();
 
         return view('ecommerce.user.address-book', compact('addresses'));
     }
 
+    /**
+     * Menampilkan Halaman Form untuk membuat AddressBook
+     * 
+     * @var array $provinces  Query data dari Province
+     * @return \Illuminate\View\View
+     */
     public function showAddressForm()
     {
         $provinces = Province::latest()->get();
         return view('ecommerce.user.address-book-form', compact('provinces'));
     }
 
+    /**
+     * Membuat AddressBook baru
+     * 
+     * @param AddressRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function addressHandle(AddressRequest $request)
     {
-        $request->all();
-        $address = AddressBook::create([
+        AddressBook::create([
             'customer_id' => auth('customer')->user()->id,
             'title' => $request->title,
             'customer_name' => $request->customer_name,
@@ -91,22 +125,36 @@ class ProfileController extends Controller
         return redirect(route('profile.address'));
     }
 
-    public function edit($id)
+    /**
+     * Menampilkan Halaman edit dari spesifik AddressBook
+     * 
+     * @param AddressBook $addressBook
+     * @var array $province
+     * @var array $cities
+     * @var array $districts
+     * @return \Illuminate\View\View
+     */
+    public function edit(AddressBook $addressBook)
     {
-        $address = AddressBook::where('id', $id)->first();
         $provinces = Province::latest()->get();
-        $cities = City::where('province_id', $address->district->province->id)->get();
-        $districts = District::where('province_id', $address->district->province->id)
-            ->where('city_id', $address->district->city->id)
-            ->get();
-        return view('ecommerce.user.address-book-edit', compact('provinces', 'cities', 'districts', 'address'));
+        $cities = City::where('province_id', $addressBook->district->province->id)->get();
+        $districts = District::where('city_id', $addressBook->district->city->id)->get();
+
+        return view('ecommerce.user.address-book-edit', compact('provinces', 'cities', 'districts', 'addressBook'));
     }
 
-    public function update($id, AddressRequest $request)
+    /**
+     * Update Spesifik AddressBook
+     * 
+     * @param AddressBook $addressBook
+     * @param AddressRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function update(AddressBook $addressBook, AddressRequest $request)
     {
-        $request->all();
-        $address = AddressBook::find($id);
-        $address->update([
+        $addressBook->update([
             'customer_id' => auth('customer')->user()->id,
             'title' => $request->title,
             'customer_name' => $request->customer_name,
@@ -118,9 +166,16 @@ class ProfileController extends Controller
         return redirect(route('profile.address'))->with(['status' => 'success']);
     }
 
-    public function destroy($id)
+    /**
+     * Delete Spesifik AddressBook
+     * 
+     * @param AddressBook $addressBook
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     */
+    public function destroy(AddressBook $addressBook)
     {
-        AddressBook::find($id)->delete();
+        $addressBook->delete();
         return back()->with(['status' => 'success']);
     }
 }

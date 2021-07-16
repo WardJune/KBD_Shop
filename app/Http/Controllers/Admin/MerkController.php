@@ -12,21 +12,22 @@ use Illuminate\Support\Str;
 class MerkController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan Halaman Admin Merk
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
         $merk = Merk::orderBy('id', 'asc')->paginate('10');
-
         return view('admin.merks.index', compact(['merk']));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Membuat Data Merk
      *
      * @return \Illuminate\Http\Response
+     * 
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
@@ -45,24 +46,20 @@ class MerkController extends Controller
             $merk['image'] = 'default.jpg';
         }
         $merk['slug'] = Str::slug($request->name);
-
         Merk::create($merk);
 
         return redirect(route('merk.index'))->with(['success' => 'New Merk has beed added']);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Update Spesifik Data Merk
+     * 
+     * @param Request $request
+     * @param Merk $merk
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Merk $merk)
     {
@@ -82,18 +79,17 @@ class MerkController extends Controller
         } else {
             $merks['image'] = $merk->image;
         }
-
-        // update database
         $merk->update($merks);
 
         return redirect(route('merk.index'))->with(['success' => 'Merk has been updated']);
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Menghapus Spesifik Data Merk
+     * 
+     * @param Merk $merk
+     * 
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Merk $merk)
     {

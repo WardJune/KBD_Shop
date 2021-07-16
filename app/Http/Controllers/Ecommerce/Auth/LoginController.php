@@ -8,12 +8,26 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
+    /**
+     * Menampilkan Halaman Login
+     * 
+     * @return \Illuminate\View\View 
+     */
     public function show()
     {
         session(['link' => url()->previous()]);
         return view('ecommerce.auth.login');
     }
 
+    /**
+     * Menangani Login Attempt Customer
+     * 
+     * @param Request $request
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function handle(Request $request)
     {
         $this->validate($request, [

@@ -10,14 +10,16 @@ class Cart extends Model
     use HasFactory;
 
     protected $guarded = [];
+    protected $with = ['products'];
 
     public function user()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class)
+            ->withPivot(['qty']);
     }
 }

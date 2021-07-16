@@ -75,7 +75,7 @@
                                                 {{ $order->district->city->name }},
                                                 {{ $order->district->city->province->name }}</label>
                                         </td>
-                                        <td class="align-middle">Rp {{ number_format($order->subtotal) }}</td>
+                                        <td class="align-middle">Rp {{ number_format($order->total) }}</td>
                                         <td class="align-middle">{{ $order->created_at->format('d-m-Y') }}</td>
                                         <td class="align-middle">
                                             {!! $order->status_label !!}

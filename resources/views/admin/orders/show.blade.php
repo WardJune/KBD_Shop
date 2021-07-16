@@ -31,12 +31,17 @@
                         <h4 class="align-self-center">
                             Order Detail
                         </h4>
-                        <div class>
+                        <div class="d-md-flex justify-content-between">
                             {{-- show order status 1 (awaiting confirmation) / payment status 0 --}}
-                            @if ($order->status == 1 && $order->payment->status == 0)
-                                <a href="{{ route('orders.approve-payment', $order->invoice) }}"
-                                    class="btn btn-primary btn-sm">Receive Payment</a>
-                            @endif
+                            <form action="{{ route('orders.destroy', $order->id) }}" method="post">
+                                @csrf
+                                @method('delete')
+                                @if ($order->status == 1 && $order->payment->status == 0)
+                                    <a href="{{ route('orders.approve-payment', $order->invoice) }}"
+                                        class="btn btn-primary btn-sm">Receive Payment</a>
+                                @endif
+                                <button class="btn btn-danger btn-sm">Delete Order</button>
+                            </form>
                         </div>
                     </div>
                     <div class="card-body">
@@ -48,6 +53,10 @@
                                     <tr>
                                         <th width="30%">Name</th>
                                         <td>{{ $order->customer_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>{{ $order->customer->email }}</td>
                                     </tr>
                                     <tr>
                                         <th>Phone Number</th>
@@ -144,12 +153,17 @@
                                             <td>{{ $detail->qty }}</td>
                                             <td>Rp {{ number_format($detail->price) }}</td>
                                             <td>{{ $detail->weight }} gr</td>
-                                            <td>Rp {{ number_format($detail->qty * $detail->price) }}</td>
+                                            <td>Rp {{ number_format($detail->total) }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
+                                        <td class="text-right" colspan="4">Shipping : <span
+                                                class="font-weight-bold">{{ $order->shipping }}</span></td>
+                                        <td>Rp {{ number_format($order->cost) }}</td>
+                                    </tr>
+                                    <tr>
                                         <th class="text-right" colspan="4">Total</th>
-                                        <th>Rp {{ number_format($order->subtotal) }}</th>
+                                        <th>Rp {{ number_format($order->total) }}</th>
                                     </tr>
                                 </table>
                             </div>

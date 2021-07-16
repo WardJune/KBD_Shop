@@ -20,4 +20,9 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function getTotalAttribute()
+    {
+        return $this->price * $this->qty;
+    }
 }

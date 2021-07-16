@@ -9,7 +9,7 @@ class City extends Model
 {
     use HasFactory;
 
-    protected $with = ['province'];
+    // protected $with = ['province'];
 
     public function province()
     {

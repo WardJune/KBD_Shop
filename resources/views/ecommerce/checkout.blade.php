@@ -127,22 +127,22 @@
                 <div class="card shadow-none border rounded-0">
                     <div class="card-body">
                         <h3 class="mb-4">ORDER REVIEW</h3>
-                        @foreach ($carts as $cart)
+                        @foreach ($cart->products as $item)
 
                             <div class="row mb-3">
                                 <div class="col-md-7 ">
                                     <div class="media">
                                         <img class="mr-3 rounded-sm" width="64" height="64"
-                                            src="{{ asset('/storage/' . $cart->product->image) }}" alt="">
+                                            src="{{ asset('/storage/' . $item->image) }}" alt="">
                                         <div class="media-body align-self-center">
                                             <span class="text-sm">
-                                                {{ \Str::limit($cart->product->name, 14) }}</span>
-                                            <span class="d-block text-sm text-muted">x{{ $cart->qty }}</span>
+                                                {{ \Str::limit($item->name, 14) }}</span>
+                                            <span class="d-block text-sm text-muted">x{{ $item->pivot->qty }}</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-5 align-self-center text-right">
-                                    IDR {{ number_format($cart->product->price) }}
+                                    IDR {{ number_format($item->price) }}
                                 </div>
                             </div>
                         @endforeach

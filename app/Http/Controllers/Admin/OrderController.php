@@ -14,7 +14,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::withCount(['return'])->latest();
+        $orders = Order::with(['district.city.province'])->withCount(['return'])->latest();
 
         // search query keyword
         if (request()->keyword != '') {
@@ -34,21 +34,50 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
+    /**
+     * Menghapus Spesifik Order beserta Relasi yang terkait
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Order $order)
     {
         $order->delete();
         $order->details()->delete();
-        Storage::delete($order->payment->proof);
-        $order->payment()->delete();
+
+        if ($order->payment_count > 0) {
+            Storage::delete($order->payment->proof);
+            $order->payment()->delete();
+
+            if ($order->return_count > 0) {
+                Storage::delete($order->return->photo);
+                $order->return()->delete();
+            }
+        }
 
         return redirect(route('orders.index'));
     }
 
+    /**
+     * Menampilkan Halaman Spesifik Order
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\View\View
+     */
     public function show(Order $order)
     {
         return view('admin.orders.show', compact('order'));
     }
 
+    /**
+     * Method ini melakukan Penerimaan Pembayaran Order 
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function acceptPayment(Order $order)
     {
         $order->payment->update(['status' => 1]);
@@ -56,26 +85,42 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Method ini mengatasi Status Pengiriman Order
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function shippingOrder()
     {
         $order = Order::where('id', request()->order_id)->first();
-
         $order->update([
             'status' => 3,
             'tracking_number' => request()->tracking_number,
         ]);
-
         Mail::to($order->customer->email)->send(new OrderMail($order));
-
         return redirect()->back();
     }
 
+    /**
+     * Menampilkan Halaman Order Return/Refund
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\View\View
+     */
     public function returnShow(Order $order)
     {
         return view('admin.orders.return', compact('order'));
     }
 
-    public function approveReturn($status)
+    /**
+     * Method ini melakukan Confirmasi Terhadap Request Return yang dilakukan oleh Customer
+     * 
+     * @param mixed $status
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function confirmReturn($status)
     {
         $order = Order::where('id', request()->order_id)->first();
         $order->return->update(['status' => $status]);
@@ -84,7 +129,11 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
-    /// Order Report
+    /**
+     * Laporan Order
+     * 
+     * @return \Illuminate\View\View
+     */
     public function orderReport()
     {
         // init 30 days range on load
@@ -99,11 +148,19 @@ class OrderController extends Controller
             $end = Carbon::parse($date[1])->format('Y-m-d') . ' 23:59:59';
         }
         $title = "Order Report";
-        $orders = Order::whereBetween('created_at', [$start, $end])->get();
+        $orders = Order::with(['district.city.province'])->whereBetween('created_at', [$start, $end])->get();
 
         return view('admin.orders.report-order', compact('orders', 'title'));
     }
 
+    /**
+     * Method ini menangani pembuatan PDF berdasarkan Laporan yang di Ekspor
+     * 
+     * @param mixed $daterange
+     * @param mixed $title
+     * 
+     * @return void
+     */
     public function orderReportPdf($daterange, $title)
     {
         $date = explode('+', $daterange);
@@ -125,6 +182,11 @@ class OrderController extends Controller
     }
 
 
+    /**
+     * Laporan Return Order
+     * 
+     * @return \Illuminate\View\View
+     */
     public function orderReturnReport()
     {
         // init 30 days range on load
@@ -139,7 +201,7 @@ class OrderController extends Controller
             $end = Carbon::parse($date[1])->format('Y-m-d') . ' 23:59:59';
         }
         $title = "Return Order Report";
-        $orders = Order::has('return')->whereBetween('created_at', [$start, $end])->get();
+        $orders = Order::with(['district.city.province'])->has('return')->whereBetween('created_at', [$start, $end])->get();
 
         return view('admin.orders.report-order', compact('orders', 'title'));
     }

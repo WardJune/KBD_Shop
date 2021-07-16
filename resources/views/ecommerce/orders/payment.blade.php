@@ -61,7 +61,7 @@
 
                                     <div class="form-group row">
                                         <label class="col-md-3" for="">Amount</label>
-                                        <input type="number" name="amount" value="{{ $order->subtotal }}"
+                                        <input type="number" name="amount" value="{{ $order->subtotal + $order->cost }}"
                                             class="col-md-6 form-control rounded-0 form-control-sm" readonly>
                                         @error('amount')
                                             <p class="text-danger">{{ $message }}</p>

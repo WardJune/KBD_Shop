@@ -16,23 +16,21 @@ use Illuminate\Support\Str;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan Halaman Admin Product Index
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
-        $product = Product::latest()->paginate('10');
-        return view('admin.product.index', [
-            'product' => $product,
-            'category' => Category::orderBy('name', 'ASC')->get()
-        ]);
+        $products = Product::with(['category', 'merk'])->latest()->paginate('10');
+        $categories = Category::orderBy('name', 'ASC')->get();
+        return view('admin.product.index', compact('products', 'categories'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan Halaman Form Create/Add Product
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -43,18 +41,19 @@ class ProductController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Method ini menambahkan Data Baru Product
+     * 
+     * @param ProductRequest $validate
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(ProductRequest $validate)
     {
         $product = $validate->all();
-        // check apakah ada gambar
         if ($validate->hasFile('image')) {
             $file = $validate->image;
-            // nama file kombinasi waktu + slug 
             $filename = Str::slug($validate->name) . '.' . $validate->image->extension();
             $file->storeAs('products', $filename);
 
@@ -71,16 +70,10 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan Halman Form Untuk mengubah Spesifik Data Product
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Product $product
+     * @return \Illuminate\View\View
      */
     public function edit(Product $product)
     {
@@ -92,11 +85,14 @@ class ProductController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Mengubah/Update Spesifik Data Prouct
+     * 
+     * @param ProductRequest $validate
+     * @param Product $product
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(ProductRequest $validate, Product $product)
     {
@@ -118,10 +114,11 @@ class ProductController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Menghapus Spesifik Data Product
+     * 
+     * @param Product $product
+     * 
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Product $product)
     {
@@ -131,7 +128,15 @@ class ProductController extends Controller
         return redirect(route('product.index'))->with(['success' => 'The Product has been deletd']);
     }
 
-    // mass upload
+    /**
+     * Method ini melakukan Penginputan Data Product dalam jumlah yang besar dalama satu waktu
+     * 
+     * @param Request $request
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function massUpload(Request $request)
     {
         $request->validate([

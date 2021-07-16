@@ -9,8 +9,6 @@ class District extends Model
 {
     use HasFactory;
 
-    protected $with = ['city', 'province'];
-
     public function city()
     {
         return $this->belongsTo(City::class);

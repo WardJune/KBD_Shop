@@ -36,6 +36,11 @@
                                         <th>{{ $order->customer_name }}</th>
                                     </tr>
                                     <tr>
+                                        <td>Email</td>
+                                        <td>:</td>
+                                        <th>{{ $order->customer->email }}</th>
+                                    </tr>
+                                    <tr>
                                         <td>Phone Number</td>
                                         <td>:</td>
                                         <th>{{ $order->customer_phone }}</th>
@@ -144,22 +149,33 @@
                                                 <th>Price</th>
                                                 <th>Quantity</th>
                                                 <th>Weight</th>
+                                                <th>SubTotal</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @forelse ($order->details as $row)
+                                            @foreach ($order->details as $row)
                                                 <tr>
-                                                    <td>{{ $row->product->name }}</td>
+                                                    <td><span class="text-wrap">{{ $row->product->name }}</span></td>
                                                     <td>{{ number_format($row->price) }}</td>
                                                     <td>{{ $row->qty }} Item</td>
                                                     <td>{{ $row->weight }} gr</td>
+                                                    <td>IDR {{ number_format($row->total) }}</td>
                                                 </tr>
-                                            @empty
-                                                <tr>
+                                            @endforeach
+                                            {{-- <tr>
                                                     <td colspan="4" class="text-center">Tidak ada data</td>
-                                                </tr>
-                                            @endforelse
+                                                </tr> --}}
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td class="text-right" colspan="4">Shipping : {{ $order->shipping }}</td>
+                                                <td>IDR {{ number_format($order->cost) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-right" colspan="4">Total</th>
+                                                <th>IDR {{ number_format($order->total) }}</th>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>

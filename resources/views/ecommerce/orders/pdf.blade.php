@@ -158,14 +158,20 @@
                         {{ $row->product->name }}<br>
                         <strong>Harga</strong>: Rp {{ number_format($row->price) }} x {{ $row->qty }}
                     </td>
-                    <td>Rp {{ number_format($row->price * $row->qty) }}</td>
+                    <td>Rp {{ number_format($row->total) }}</td>
                 </tr>
             @endforeach
 
             <tr class="total">
                 <td></td>
                 <td>
-                    Subtotal: Rp {{ number_format($order->subtotal) }}
+                    Shipping ({{ $order->shipping }}): Rp {{ number_format($order->cost) }}
+                </td>
+            </tr>
+            <tr class="total">
+                <td></td>
+                <td>
+                    Total: Rp {{ number_format($order->total) }}
                 </td>
             </tr>
 

@@ -34,11 +34,11 @@
                             {{ $order->district->name }} - {{ $order->district->city->name }},
                             {{ $order->district->city->province->name }}</label>
                     </td>
-                    <td class="text-center">Rp {{ number_format($order->subtotal) }}</td>
+                    <td class="text-center">Rp {{ number_format($order->total) }}</td>
                     <td class="text-center">{{ $order->created_at->format('d-m-Y') }}</td>
                 </tr>
 
-                @php $total += $order->subtotal @endphp
+                @php $total += $order->total @endphp
             @empty
                 <tr>
                     <td colspan="6" class="text-center">No Data</td>

@@ -10,7 +10,7 @@ class AddressBook extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $with = ['district'];
+    protected $with = ['district.city.province'];
 
     public function customer()
     {

@@ -3,41 +3,70 @@
 namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckoutRequest;
 use App\Models\AddressBook;
 use App\Models\Cart;
-use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Province;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
+    /**
+     * Get user id yang sedang Login
+     * 
+     * @var object $id
+     * @return $id
+     */
     private function getId()
     {
         $id = auth('customer')->user()->id;
         return $id;
     }
 
+    /**
+     * Get cart dari User yang sedang login
+     * 
+     * @var object $cart
+     * @return object
+     */
     private function getCart()
     {
-        $carts = Cart::where('customer_id', $this->getId());
-        return $carts;
+        $cart = Cart::whereCustomerId($this->getId())->first();
+        return $cart;
     }
 
+    /**
+     * Menampilkan Halaman Cart
+     * 
+     * @var object $cart 
+     * @var string|int $subTotal  Total price dari data Cart
+     * @return \Illuminate\View\View
+     */
     public function show()
     {
-        $carts = $this->getCart()->get();
-        // total all the cart price
-        $subTotal = $carts->sum(function ($cart) {
-            return $cart->product->price * $cart->qty;
-        });
-        return view('ecommerce.cart', compact('carts', 'subTotal'));
+        $cart = $this->getCart();
+        if ($cart && $cart->products->count() > 0) {
+            $subTotal = $cart->products->sum(function ($product) {
+                return $product->price * $product->pivot->qty;
+            });
+            return view('ecommerce.cart', compact('cart', 'subTotal'));
+        }
+        return view('ecommerce.cart', compact('cart'));
     }
 
+    /**
+     * Menambahkan item ke Cart
+     * 
+     * @var object $cart 
+     * @var object $product     Data Product dari Cart
+     * @var string|int $qty     Jumlah qty
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function addToCart()
     {
         $this->validate(request(), [
@@ -45,124 +74,163 @@ class CartController extends Controller
             'product_id' => 'required|exists:products,id'
         ]);
 
-        $cart = Cart::where('customer_id', $this->getId())
-            ->where('product_id', request()->product_id)
-            ->first();
-
+        $cart = $this->getCart();
+        /** $cart ?? update/add item : buat cart  */
         if ($cart) {
-            $qty = $cart->qty + request()->qty;
-            $cart->update(['qty' => $qty]);
+            $product = $cart->products()->whereId(request('product_id'))->first();
+
+            /** $product ?? update qty pada pivot table : attach item baru cart pada pivot table */
+            if ($product) {
+                $qty = $product->pivot->qty + request('qty');
+                $cart->products()->updateExistingPivot(request()->product_id, ['qty' => $qty]);
+            } else {
+                $cart->products()->attach(request('product_id'), ['qty' => request('qty')]);
+            }
         } else {
-            Cart::create([
+            $cart_create = Cart::create([
                 'customer_id' => $this->getId(),
-                'product_id' => request()->product_id,
-                'qty' => request()->qty
             ]);
+            $cart_create->products()->attach(request()->product_id, ['qty' => request('qty')]);
         }
+
         if (request()->cart) {
             return redirect()->back()->with(['success' => 'ok']);
         } else {
             return redirect()->route('cart.show');
         }
-
-        dd(request()->all());
     }
 
+    /**
+     * Update data Cart
+     * 
+     * @var array $product_id
+     * @var object $cart
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function updateCart()
     {
         $product_id = request()->product_id;
-        // loop product_id
+        $cart = $this->getCart();
+
         foreach ($product_id as $key => $value) {
-            // qty == 0 ? delete cart : update qty cart
-            if (request()->qty[$key] == 0) {
-                Cart::find(request()->cart_id[$key])->delete();
+            // qty == 0 ? detach single row : update qty pivot
+            if (request()->qty[$key] == 0) {;
+                $cart->products()->detach($value);
             } else {
-                Cart::find(request()->cart_id[$key])->update(['qty' => request()->qty[$key]]);
+                $cart->products()->updateExistingPivot($value, ['qty' => request()->qty[$key]]);
             }
         }
         return back();
     }
 
-    public function destroy(Cart $cart)
+    /**
+     * Delete Item data dari Cart
+     * 
+     * @var object $product
+     * @param string|int $product_id
+     * @return \Illuminate\Http\RedirectResponse|abort
+     */
+    public function destroy($product_id)
     {
-        if ($cart->customer_id == $this->getId()) {
-            $cart->delete();
+        $product = $this->getCart()->products()->where('product_id', $product_id)->first();
+        if ($product) {
+            $this->getCart()->products()->detach($product_id);
             return back();
         } else {
             return abort(403, 'You are not supposed to do that :(');
         }
     }
 
+    /**
+     * Menghapus semua isi item pada Cart
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function emptyCart()
     {
-        $carts = $this->getCart();
-        $carts->delete();
-
+        $this->getCart()->products()->detach();
         return back();
     }
 
+    /**
+     * Menampilkan Halaman Checkout
+     *  
+     * @var object $cart
+     * @var object $addresses
+     * @var object $provinces
+     * @var string|int $subTotal
+     * @var string|int $weight
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function checkout()
     {
-        if ($this->getCart()->get()->count() > 0) {
-            $addresses = AddressBook::where('customer_id', $this->getId())->get();
+        $cart = $this->getCart();
+
+        if ($cart->products->count() > 0) {
+            $addresses = AddressBook::whereCustomerId($this->getId())->get();
             $provinces = Province::latest()->get();
-            $carts = $this->getCart()->get();
-            $subTotal = $carts->sum(function ($cart) {
-                return $cart->product->price * $cart->qty;
+            $subTotal = $cart->products->sum(function ($product) {
+                return $product->price * $product->pivot->qty;
             });
-            $weight = $carts->sum(function ($cart) {
-                return $cart->product->weight * $cart->qty;
+            $weight = $cart->products->sum(function ($product) {
+                return $product->weight * $product->pivot->qty;
             });
 
-            return view('ecommerce.checkout', compact('carts', 'subTotal', 'provinces', 'addresses', 'weight'));
+            return view('ecommerce.checkout', compact('cart', 'subTotal', 'provinces', 'addresses', 'weight'));
         }
 
         return redirect(route('cart.show'));
     }
 
-    public function processCheckout()
+    /**
+     * Proses checkout menggunakan Transaction 
+     * Membuat data pada Order dan OrderDetail
+     * Menghapus Cart dan item yang terkait 
+     * 
+     * @param CheckoutRequest $request
+     * 
+     * @var object $cart
+     * @var string|int $subTotal
+     * @var string[]|false $shipping
+     * @var mixed $order
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws Exception|\Illuminate\Validation\ValidationException
+     */
+    public function processCheckout(CheckoutRequest $request)
     {
-        $this->validate(request(), [
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string',
-            'customer_address' => 'required|string',
-            'province_id' => 'required',
-            'city_id' => 'required',
-            'district_id' => 'required',
-            'courier' => 'required'
-        ]);
-        // begin trandsaction
         DB::beginTransaction();
 
         try {
             $carts = $this->getCart();
-            $subTotal = $carts->get()->sum(function ($cart) {
-                return $cart->product->price * $cart->qty;
+            $subTotal = $carts->products->sum(function ($product) {
+                return $product->price * $product->pivot->qty;
             });
-            $shipping = explode('-', request()->courier);
-            // create Order
+
+            $shipping = explode('-', $request->courier);
+
             $order = Order::create([
-                'invoice' => 'KBDS-' . time(),
+                'invoice' => 'KBDS-' . time() . \Str::random(3),
                 'customer_id' => $this->getId(),
-                'customer_name' => request()->customer_name,
-                'customer_phone' => request()->customer_phone,
-                'customer_address' => request()->customer_address,
-                'district_id' => request()->district_id,
+                'customer_name' => $request->customer_name,
+                'customer_phone' => $request->customer_phone,
+                'customer_address' => $request->customer_address,
+                'district_id' => $request->district_id,
                 'subtotal' => $subTotal,
                 'cost' => $shipping[2],
                 'shipping' => "$shipping[0]-$shipping[1]"
             ]);
 
-            foreach ($carts->get() as $cart) {
+            foreach ($carts->products as $product) {
                 OrderDetail::create([
                     'order_id' => $order->id,
-                    'product_id' => $cart->product_id,
-                    'price' => $cart->product->price,
-                    'qty' => $cart->qty,
-                    'weight' => $cart->product->weight,
+                    'product_id' => $product->id,
+                    'price' => $product->price,
+                    'qty' => $product->pivot->qty,
+                    'weight' => $product->weight,
                 ]);
             }
-
+            $carts->products()->detach();
             $carts->delete();
 
             DB::commit();
@@ -175,15 +243,32 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * Menampilkan Halaman CheckoutFinish
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\Http\RedirectResponse|abort
+     */
     public function checkoutFinish(Order $order)
     {
         if ($order->customer_id == $this->getId()) {
             return view('ecommerce.checkout-finish', compact('order'));
         }
-
         return abort(403, "I wouldn't do that if i were you.");
     }
 
+    /**
+     * Method API yang diambil dari API RajaOngkir
+     * 
+     * @api
+     * 
+     * @var string $url
+     * @var \GuzzleHttp\Client $client
+     * @var \Psr\Http\Message\ResponseInterface $response
+     * 
+     * @return mixed $body
+     */
     public function getCourier()
     {
         $this->validate(request(), [
@@ -196,14 +281,12 @@ class CartController extends Controller
         $response = $client->request('POST', $url, [
             'headers' => [
                 'content-type' => 'application/x-www-form-urlencoded',
-                'key' => env('RAJA_ONGKIR_KEY')
+                'key' => config('api.rajaongkir_key'),
             ],
             'form_params' => [
                 'origin' => 445,
                 'destination' => request()->destination,
-                // 'destination' => 114,
                 'weight' => request()->weight,
-                // 'weight' => 1000,
                 'courier' => 'jne'
             ]
         ]);

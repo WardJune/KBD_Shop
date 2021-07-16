@@ -6,7 +6,7 @@
          </div>
          <div class="card-body">
              @foreach ($order->details as $detail)
-                 <div class="row mb-3">
+                 <div class="row mb-2">
                      <div class="col-md-7 ">
                          <div class="media">
                              <img class="mr-3 rounded-sm" width="64" height="64"
@@ -18,11 +18,17 @@
                              </div>
                          </div>
                      </div>
-                     <div class="col-md-5 align-self-center text-right text-warning">
+                     <div class="col-md-5 align-self-center text-right text-muted">
                          IDR {{ number_format($detail->product->price) }}
                      </div>
                  </div>
              @endforeach
+             <hr class="mb-md-3">
+             <div class="d-md-flex justify-content-between">
+                 <span class="d-block text-muted">{{ $order->details->count() }} Product</span>
+                 <span class="d-block">Total <span class="text-warning">IDR
+                         {{ number_format($order->total) }}</span></span>
+             </div>
          </div>
          <div class="card-footer bg-transparent d-flex justify-content-md-end">
              @if ($order->status == 3 && $order->return_count == 0)

@@ -3,30 +3,43 @@
 namespace App\Http\Controllers\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PaymentRequest;
+use App\Http\Requests\ReturnRequest;
 use App\Models\Order;
 use App\Models\OrderReturn;
 use App\Models\Payment;
-// use Barryvdh\DomPDF\PDF;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    /// getOrder by condition / parameter where id = auth id 
+    /**
+     * Get semua Order &/ Berdasarkan parameter status
+     * 
+     * @param null $status
+     * 
+     * @return mixed $order
+     */
     private function getOrder($status = null)
     {
+        $orders = Order::withCount(['return'])->where('customer_id', auth('customer')->user()->id);
         if ($status != null) {
-            $orders = Order::withCount(['return'])->where('customer_id', auth('customer')->user()->id)
-                ->where('status', $status)->latest()->get();
-        } else {
-            $orders = Order::withCount(['return'])->where('customer_id', auth('customer')->user()->id);
+            $orders = $orders->where('status', $status)->latest()->get();
         }
         return $orders;
     }
 
-    /// getTelegram curl 
+    /**
+     * Method curl untuk Telegram
+     * 
+     * @param mixed $url
+     * @param mixed $params
+     * 
+     * @var mixed $body
+     * 
+     * @return mixed
+     */
     private function getTelegram($url, $params)
     {
         $ch = curl_init();
@@ -38,19 +51,28 @@ class OrderController extends Controller
         $content = curl_exec($ch);
         curl_close($ch);
 
-        return json_decode($content, true);
+        $body = json_decode($content, true);
+        return $body;
     }
 
-    /// private sendmessage function for bot telegram
+    /**
+     * Method untuk mengirimkan pesan(retun product) kepada Admin melalui Telegram 
+     * 
+     * @param mixed $invoice
+     * @param mixed $reason
+     * 
+     * @var mixed|\Illuminate\Config\Repository $key
+     * @var mixed $chat     Get chat response dari method getTelegram
+     * 
+     * @return void
+     */
     private function sendMessage($invoice, $reason)
     {
-        // get token telegram from env file
-        $key = env('TELEGRAM_KEY');
-        // request getTelegram
+        $key = config('api.telegram_key');
         $chat = $this->getTelegram('https://api.telegram.org/' . $key . '/getUpdates', '');
 
         if ($chat['ok']) {
-            //get id penerima telegram
+            /** Get pernerima pesan telegram (Admin) */
             $chat_id = $chat['result'][0]['message']['chat']['id'];
 
             $text = "Hey Admin, Ada yang baru nich . Pesanan dengan InvoiceID '$invoice'. Melakukan permintaan return / refund dengan alasan '$reason' , Buruan cek!";
@@ -59,43 +81,85 @@ class OrderController extends Controller
         }
     }
 
-
+    /**
+     * Menampilkan Halaman Dashboard order
+     * 
+     * @var mixed $orders
+     * @return \Illuminate\View\View
+     */
     public function dashboard()
     {
         $orders = $this->getOrder()->latest()->get();
         return view('ecommerce.orders.dashboard', compact('orders'));
     }
 
+    /**
+     * Menampilkan Halaman AwaitingPayment order
+     * 
+     * @var mixed $orders
+     * @return \Illuminate\View\View
+     */
     public function awaitingPayment()
     {
         $orders = $this->getOrder('0');
         return view('ecommerce.orders.awaiting-payment', compact('orders'));
     }
 
+    /**
+     * Menampilkan Halaman AwaitingConfirm order
+     * 
+     * @var mixed $orders
+     * @return \Illuminate\View\View
+     */
     public function awaitingConfirm()
     {
         $orders = $this->getOrder(1);
         return view('ecommerce.orders.awaiting-confirm', compact('orders'));
     }
 
+    /**
+     * Menampilkan Halaman Process order
+     * 
+     * @var mixed $orders
+     * @return \Illuminate\View\View
+     */
     public function process()
     {
         $orders = $this->getOrder(2);
         return view('ecommerce.orders.process', compact('orders'));
     }
 
+    /**
+     * Menampilkan Halaman Sent order
+     * 
+     * @var mixed $orders
+     * @return \Illuminate\View\View
+     */
     public function sent()
     {
         $orders = $this->getOrder(3);
         return view('ecommerce.orders.sent', compact('orders'));
     }
 
+    /**
+     * Menampilkan Halaman Done order
+     * 
+     * @var mixed $orders
+     * @return \Illuminate\View\View
+     */
     public function done()
     {
         $orders = $this->getOrder(4);
         return view('ecommerce.orders.done', compact('orders'));
     }
 
+    /**
+     * Menampilkan Halaman Spesifik Order
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\View\View|abort
+     */
     public function show(Order $order)
     {
         if (Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
@@ -104,6 +168,13 @@ class OrderController extends Controller
         return abort(403, 'You are not supposed to do that :(');
     }
 
+    /**
+     * Menampilkan Halaman Form Payment
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\View\View|abort
+     */
     public function paymentForm(Order $order)
     {
         if (Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
@@ -112,35 +183,36 @@ class OrderController extends Controller
         return abort(403, 'You are not supposed to do that :(');
     }
 
-    public function savePayment()
+    /**
+     * Method ini melakukan savePayment untuk Order yang menlakukan konformaso pembayaran
+     * Membuat Data Payment berdasarkan Order
+     * 
+     * @param PaymentRequest $request
+     * 
+     * @var mixed $order
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws Exception|\Illuminate\Validation\ValidationException
+     */
+    public function savePayment(PaymentRequest $request)
     {
-        $this->validate(request(), [
-            'invoice' => 'required|exists:orders,invoice',
-            'name' => 'required|string',
-            'transfer_to' => 'required|string',
-            'transfer_date' => 'required',
-            'amount' => 'required|integer',
-            'proof' => 'required|image|mimes:jpg,jpeg,png'
-        ]);
-
         DB::beginTransaction();
 
         try {
-            // get order
-            $order = $this->getOrder()->where('invoice', request()->invoice)->first();
+            $order = $this->getOrder()->where('invoice', $request->invoice)->first();
 
             //  make sure the status is 0 && there is image file
-            if ($order->status == 0 && request()->hasFile('proof')) {
-                $file = request()->proof;
-                $filename = request()->invoice . '-proof.' . $file->extension();
+            if ($order->status == 0 && $request->hasFile('proof')) {
+                $file = $request->proof;
+                $filename = $request->invoice . '-proof.' . $file->extension();
                 $file->storeAs('proofs', $filename);
 
                 Payment::create([
                     'order_id' => $order->id,
-                    'name' => request()->name,
-                    'transfer_to' => request()->transfer_to,
-                    'transfer_date' => request()->transfer_date,
-                    'amount' => request()->amount,
+                    'name' => $request->name,
+                    'transfer_to' => $request->transfer_to,
+                    'transfer_date' => $request->transfer_date,
+                    'amount' => $request->amount,
                     'proof' => 'proofs/' . $filename,
                     'status' => false
                 ]);
@@ -156,11 +228,18 @@ class OrderController extends Controller
             return redirect()->back()->with(['error' => 'Make sure you enter the data correctly']);
         } catch (\Exception $e) {
             DB::rollBack();
-
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }
 
+    /**
+     * Menampilkan Halaman/ PDF Invoice 
+     * 
+     * @param Order $order
+     * 
+     * @var mixed $pdf
+     * @return \Illuminate\Http\RedirectResponse|mixed 
+     */
     public function pdf(Order $order)
     {
         if (!Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
@@ -172,6 +251,13 @@ class OrderController extends Controller
         return $pdf->stream();
     }
 
+    /**
+     * Method ini menjalankan Penerimaan Pesanan oleh Customer
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function acceptOrder(Order $order)
     {
         if (!Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
@@ -183,41 +269,55 @@ class OrderController extends Controller
         return redirect()->back()->with(['success' => 'Order Confirmed']);
     }
 
+    /**
+     * Menampilkan Halaman return Order
+     * 
+     * @param Order $order
+     * 
+     * @return \Illuminate\View\View|abort
+     */
     public function returnForm(Order $order)
     {
-        return view('ecommerce.orders.return-form', compact('order'));
+        if (Gate::forUser(auth('customer')->user())->allows('order-show', $order)) {
+            return view('ecommerce.orders.return-form', compact('order'));
+        }
+        return abort(403, 'You are not supposed to do that :(');
     }
 
-    public function returnProcess($id)
+    /**
+     * Method ini menangani Process Retrun Order 
+     * Membuat data OrderReturn
+     * 
+     * @param ReturnRequest $request
+     * @param mixed $id
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     * 
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function returnProcess(ReturnRequest $request, $id)
     {
-        $this->validate(request(), [
-            'reason' => 'required|string',
-            'refund_transfer' => 'required|string',
-            'photo' => 'required|image|mimes:jpg,png,jpeg'
-        ]);
-
+        $order = Order::whereId($id)->first();
         $return = OrderReturn::where('order_id', $id)->first();
+        if ($return) return back()->with(['error' => 'Request Refund on Process']);
 
-        if ($return) return redirect()->back(with(['error' => 'Request Refund on Process']));
+        if ($request->hasFile('photo')) {
 
-        if (request()->hasFile('photo')) {
-
-            $file = request()->photo;
-            $filename = time() . Str::random(8) . '.' . $file->extension();
+            $file = $request->photo;
+            $filename =  $order->invoice . '-return.' . $file->extension();
             $file->storeAs('return', $filename);
 
             OrderReturn::create([
                 'order_id' => $id,
                 'photo' => 'return/' . $filename,
-                'reason' => request()->reason,
-                'refund_transfer' => request()->refund_transfer,
+                'reason' => $request->reason,
+                'refund_transfer' => $request->refund_transfer,
                 'status' => 0,
             ]);
         }
 
-        $order = Order::where('id', $id)->first();
-
-        $this->sendMessage($order->invoice, request()->reason);
+        /** mengirim pesan ke Admin Melalui Telegram */
+        $this->sendMessage($order->invoice, $request->reason);
 
         return redirect()->back()->with(['success' => 'Request Refund Sent']);
     }
