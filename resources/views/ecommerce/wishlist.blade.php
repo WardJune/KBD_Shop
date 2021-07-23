@@ -53,14 +53,15 @@
                                     </a>
                                 </th>
                                 <td class="align-middle">IDR {{ number_format($wishlist->product->price) }}</td>
-                                <td class="align-middle">In Stock</td>
-                                <td class="align-middle"><button class="btn btn-sm btn-default rounded-0" type="submit"
+                                <td class="align-middle">{{ $wishlist->stock_label }}</td>
+                                <td class="align-middle"><button {{ $wishlist->button_status }}
+                                        class="btn btn-sm btn-default rounded-0" type="submit"
                                         formaction="{{ route('cart.add') }}">Add To
                                         Cart</button>
                                 </td>
                                 <td class="align-middle"><a data-toggle="tooltip" data-placement="right" title="Delete"
                                         href="{{ route('wishlist.show') }}" onclick="event.preventDefault();
-                                        document.getElementById('deleteForm{{ $i }}').submit();"><i
+                                                document.getElementById('deleteForm{{ $i }}').submit();"><i
                                             class="fas fa-times"></i></a>
                                 </td>
                             </tr>

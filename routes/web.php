@@ -13,6 +13,7 @@ use App\Http\Controllers\Ecommerce\FrontController;
 use App\Http\Controllers\Ecommerce\OrderController;
 use App\Http\Controllers\Ecommerce\ProfileController;
 use App\Http\Controllers\Ecommerce\WishlistController;
+use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,6 +67,17 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	// Product Routes...
 	Route::resource('product', ProductController::class);
 	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');
+
+	// Inventory Routes...
+	Route::get('inventory/getsales/{product:id}', [InventoryController::class, 'getSales'])->name('inventory.get-sales');
+	Route::get('inventory/gethistories/{product:id}', [InventoryController::class, 'getHistories'])->name('inventory.get-histories');
+	Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
+	Route::get('inventory/{key}/summary', [InventoryController::class, 'adjustSummary'])->name('inventory.adjust-summary');
+	Route::get('inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust');
+	Route::post('inventory/adjust', [InventoryController::class, 'update'])->name('inventory.update');
+	Route::get('inventory/{product:slug}/sales', [InventoryController::class, 'showSales'])->name('inventory.history-sales');
+
+	Route::get('inventory/{product:slug}/adj', [InventoryController::class, 'showHistories'])->name('inventory.history-adj');
 
 	// Orders Routes...
 	Route::group(['prefix' => 'orders'], function () {
@@ -205,4 +217,4 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function ()
 	|--------------------------------------------------------------------------
 */
 
-Route::get('test', [CartController::class, 'test']);
+Route::get('test', [AdminOrderController::class, 'test']);

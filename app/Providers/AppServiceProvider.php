@@ -28,6 +28,5 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('layouts.ecommerce.nav.navbar', CategoryComposer::class);
         Paginator::defaultView('pagination::default');
-        //
     }
 }

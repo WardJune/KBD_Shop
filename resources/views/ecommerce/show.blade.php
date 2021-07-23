@@ -59,7 +59,7 @@
                                 <li>{{ $desc }}</li>
                             @endforeach
                         </ul>
-                        <form action="" method="post">
+                        <form method="post">
                             @csrf
                             {{-- input hidden id --}}
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -82,15 +82,20 @@
                                     </button>
                                     {{-- end button --}}
                                 </div>
-                                @error('qty')
-                                    <small class="text-danger ml-2">{{ $message }}</small>
-                                @enderror
+                                <div class="ml-md-2">Stock : <span
+                                        class="font-weight-bold">{{ $product->stock->qty }}</span>
+                                </div>
                             </div>
+                            @error('qty')
+                                <div class="mt-md--3">
+                                    <small class="text-danger ml-2">{{ $message }}</small>
+                                </div>
+                            @enderror
                             <hr class="border-dark my-3">
 
                             <div class="row mb-3">
                                 <div class="col-md-8 col-8">
-                                    <button type="submit" class="btn btn-danger btn-block"
+                                    <button {{ $product->button_status }} type="submit" class="btn btn-danger btn-block"
                                         formaction="{{ route('cart.add', ['cart' => 'cart']) }}">ADD TO
                                         CART
                                     </button>
@@ -106,7 +111,7 @@
                                 </div>
                             </div>
 
-                            <button class="btn btn-warning btn-block" type="submit"
+                            <button {{ $product->button_status }} class="btn btn-warning btn-block" type="submit"
                                 formaction="{{ route('cart.add', ['buy' => 'buy']) }}">BUY IT NOW
                             </button>
                         </form>

@@ -93,17 +93,35 @@
                                 class="nav-link-text">{{ __('Category') }}</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('admin/merk') }}">
                             <i class="ni ni-archive-2 text-warning"></i> <span
                                 class="nav-link-text">{{ __('Merk') }}</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('admin/product') }}">
-                            <i class="ni ni-shop text-success"></i><span
-                                class="nav-link-text">{{ __('Product') }}</span>
+                        <a class="nav-link" href="#product" data-toggle="collapse" role="button" aria-expanded="true"
+                            aria-controls="product">
+                            <i class="ni ni-shop text-success"></i>
+                            <span class="nav-link-text">{{ __('Products') }}</span>
                         </a>
+
+                        <div class="collapse hide" id="product">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url('admin/product') }}">
+                                        <span class="nav-link-text">{{ __('All Products') }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('inventory.index') }}">
+                                        <span class="nav-link-text">{{ __('Inventory') }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 </ul>
                 <!-- Divider -->

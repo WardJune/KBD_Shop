@@ -22,6 +22,13 @@ class Product extends Model
         return '<span class="badge badge-success">Active</span>';
     }
 
+    public function getButtonStatusAttribute()
+    {
+        if ($this->stock->qty <= 0) {
+            return 'disabled';
+        }
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -35,5 +42,20 @@ class Product extends Model
     public function carts()
     {
         return $this->belongsToMany(Cart::class);
+    }
+
+    public function stock()
+    {
+        return $this->hasOne(ProductStock::class);
+    }
+
+    public function orderDetail()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
+
+    public function histories()
+    {
+        return $this->hasMany(History::class);
     }
 }

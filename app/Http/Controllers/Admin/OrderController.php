@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderMail;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -204,5 +205,28 @@ class OrderController extends Controller
         $orders = Order::with(['district.city.province'])->has('return')->whereBetween('created_at', [$start, $end])->get();
 
         return view('admin.orders.report-order', compact('orders', 'title'));
+    }
+
+
+    public function test()
+    {
+        // ->format('Y-m-d H:i:s')
+        $order = OrderDetail::find(6)->created_at;
+        $now = Carbon::now()->format('Y-m-d H:i:s');
+        // $da = $order->addHour(24);
+        $de = '2021-07-16 13:46:37';
+
+        if ($de == $order->format('Y-m-d H:i:s')) {
+            return 'true';
+        } else {
+            $arr = [1, 2, 3, 4, 5];
+            foreach ($arr as $ar) {
+                if ($ar == 4) {
+                    return 'stop';
+                }
+            }
+        }
+        return $order;
+        // return $od->created_at->format('Y-m-d H:i:s');
     }
 }

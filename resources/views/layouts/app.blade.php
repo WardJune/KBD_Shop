@@ -17,7 +17,15 @@
     <link href="{{ asset('assets') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <!-- Argon CSS -->
     <link type="text/css" href="{{ asset('assets') }}/css/argon.min.css" rel="stylesheet">
+    <link type="text/css" href="{{ asset('assets') }}/css/own.css" rel="stylesheet">
+    <!-- Data table -->
+    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet"
+        href="{{ asset('assets') }}/vendor/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet"
+        href="{{ asset('assets') }}/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css">
     {{-- <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.0.0" rel="stylesheet"> --}}
+
 </head>
 
 <body class="{{ $class ?? '' }}">

@@ -15,8 +15,18 @@
     </div>
     {{-- breadcrumb --}}
     @if ($cart && $cart->products->count() > 0)
-
         <div class="container mb-7">
+            @if (session('message'))
+                <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
+                    <span class="alert-text text-sm text-capitalize">{{ session('message') }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            {{-- @if (session()->has('message'))
+                <div class="alert alert-danger rounded-0 text-capitalize">{{ session('message') }}</div>
+            @endif --}}
             <table class="table table-borderless cart">
                 <thead>
                     <tr>

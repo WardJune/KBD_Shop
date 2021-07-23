@@ -12,11 +12,11 @@ class SearchController extends Controller
     public function index()
     {
         $keyword = request('keyword');
-        $product = Product::where("name", "like", "%$keyword%")->latest()->paginate('10');
+        $products = Product::with(['category', 'merk'])->where("name", "like", "%$keyword%")->latest()->paginate('10');
 
         return view('admin.product.index', [
-            'product' => $product,
-            'category' => Category::all()
+            'products' => $products,
+            'categories' => Category::all()
         ]);
     }
 }

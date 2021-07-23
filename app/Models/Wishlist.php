@@ -20,4 +20,20 @@ class Wishlist extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function getStockLabelAttribute()
+    {
+        if ($this->product->stock->qty <= 0) {
+            return 'Out of Stock';
+        }
+
+        return 'In Stock';
+    }
+
+    public function getButtonStatusAttribute()
+    {
+        if ($this->product->stock->qty <= 0) {
+            return 'disabled';
+        }
+    }
 }

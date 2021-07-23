@@ -9,6 +9,7 @@ use App\Jobs\ProductJob;
 use App\Models\Category;
 use App\Models\Merk;
 use App\Models\Product;
+use App\Models\ProductStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -22,7 +23,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['category', 'merk'])->latest()->paginate('10');
+        $products = Product::with(['category', 'merk'])->latest()->paginate(10);
         $categories = Category::orderBy('name', 'ASC')->get();
         return view('admin.product.index', compact('products', 'categories'));
     }
@@ -65,7 +66,11 @@ class ProductController extends Controller
         $product['type'] = null;
         $product['desc'] = $validate->desc;
 
-        Product::create($product);
+        $product_create = Product::create($product);
+
+        ProductStock::create([
+            'product_id' => $product_create->id
+        ]);
         return redirect(route('product.index'))->with(['success' => 'The New Product has been added']);
     }
 
@@ -123,9 +128,10 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         Storage::delete($product->image);
+        $product->stock->delete();
         $product->delete();
 
-        return redirect(route('product.index'))->with(['success' => 'The Product has been deletd']);
+        return redirect(route('product.index'))->with(['success' => 'The Product has been deleted']);
     }
 
     /**

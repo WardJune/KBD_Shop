@@ -8,6 +8,7 @@ use App\Models\AddressBook;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Product;
 use App\Models\Province;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
@@ -74,6 +75,12 @@ class CartController extends Controller
             'product_id' => 'required|exists:products,id'
         ]);
 
+        /** cek stock product */
+        $product_stock = Product::whereId(request()->product_id)->first();
+        if (request()->qty > $product_stock->stock->qty) {
+            return back()->withErrors(['qty' => 'Maximum quantity to purchase this item is ' . $product_stock->stock->qty]);
+        }
+
         $cart = $this->getCart();
         /** $cart ?? update/add item : buat cart  */
         if ($cart) {
@@ -111,6 +118,13 @@ class CartController extends Controller
     {
         $product_id = request()->product_id;
         $cart = $this->getCart();
+
+        /** cek stock product */
+        foreach ($product_id as $key => $id) {
+            if (request()->qty[$key] > Product::whereId($id)->first()->stock->qty) {
+                return back()->with(['message' => 'some products from your cart exceed the quantity from stock']);
+            }
+        }
 
         foreach ($product_id as $key => $value) {
             // qty == 0 ? detach single row : update qty pivot
@@ -228,6 +242,11 @@ class CartController extends Controller
                     'price' => $product->price,
                     'qty' => $product->pivot->qty,
                     'weight' => $product->weight,
+                ]);
+
+                $product_qty = ($product->stock->qty - $product->pivot->qty);
+                $product->stock->update([
+                    'qty' => $product_qty
                 ]);
             }
             $carts->products()->detach();
