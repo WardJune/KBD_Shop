@@ -33,14 +33,23 @@
                         </h4>
                         <div class="d-md-flex justify-content-between">
                             {{-- show order status 1 (awaiting confirmation) / payment status 0 --}}
-                            <form action="{{ route('orders.destroy', $order->id) }}" method="post">
+                            <form method="post">
                                 @csrf
-                                @method('delete')
+                                {{-- @method('delete') --}}
                                 @if ($order->status == 1 && $order->payment->status == 0)
                                     <a href="{{ route('orders.approve-payment', $order->invoice) }}"
                                         class="btn btn-primary btn-sm">Receive Payment</a>
                                 @endif
-                                <button class="btn btn-danger btn-sm">Delete Order</button>
+                                @if ($order->deleted_at == null)
+                                    <button class="btn btn-danger btn-sm"
+                                        formaction="{{ route('orders.destroy', $order->id) }}">Delete Order</button>
+                                @else
+                                    <button class="btn btn-success btn-sm"
+                                        formaction="{{ route('orders.restore', $order->id) }}">Restore</button>
+                                    <button class="btn btn-danger btn-sm"
+                                        formaction="{{ route('orders.force-destroy', $order->id) }}">Delete Order
+                                        Permanently</button>
+                                @endif
                             </form>
                         </div>
                     </div>
@@ -67,7 +76,7 @@
                                         <td><span class="text-wrap">{{ $order->customer_address }}</span>,
                                             {{ $order->district->name }} -
                                             {{ $order->district->city->name }},
-                                            {{ $order->district->city->province->name }}</td>
+                                            {{ $order->district->province->name }}</td>
                                     </tr>
                                     <tr>
                                         <th>Order Status</th>

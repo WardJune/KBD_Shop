@@ -23,6 +23,7 @@ class CreateOrdersTable extends Migration
             $table->foreignId('district_id');
             $table->integer('subtotal');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

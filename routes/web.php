@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Ecommerce\Auth\EmailVerificationController;
 use App\Http\Controllers\Ecommerce\Auth\LoginController;
 use App\Http\Controllers\Ecommerce\Auth\LogoutController;
@@ -23,7 +24,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/search', [SearchController::class, 'index'])->name('product.search');
-
 
 /*
   |--------------------------------------------------------------------------
@@ -52,8 +52,16 @@ Route::group(['prefix' => 'admin'], function () {
 
 Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 
+
 	Route::get('/', 'App\Http\Controllers\HomeController@index')->name('home');
-	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
+	Route::resource('customer', 'App\Http\Controllers\CustomerController', ['except' => ['show']]);
+
+	Route::post('customer/deleted/{id}', [CustomerController::class, 'force'])->name('customer.force-delete');
+	Route::post('customer/restore/{id}', [CustomerController::class, 'restore'])->name('customer.restore');
+	Route::get('customer/deleted', [CustomerController::class, 'deletedUser'])->name('customer.deleted');
+	Route::post('customer/delete-all', [CustomerController::class, 'deleteAll'])->name('customer.delete-all');
+	Route::post('customer/restore-all', [CustomerController::class, 'restoreAll'])->name('customer.restore-all');
+
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
@@ -88,8 +96,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 
 		// Order Management...
 		Route::get('/', [AdminOrderController::class, 'index'])->name('orders.index');
-		Route::get('/{order:invoice}', [AdminOrderController::class, 'show'])->name('orders.show');
-		Route::delete('/{order:id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
+		Route::get('/deleted', [AdminOrderController::class, 'showDeleted'])->name('orders.deleted');
+		Route::get('/{invoice}', [AdminOrderController::class, 'show'])->name('orders.show');
+		Route::post('/deleted/{id}', [AdminOrderController::class, 'forceDestroy'])->name('orders.force-destroy');
+		Route::post('/{order:id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
+		Route::post('/restore/{id}', [AdminOrderController::class, 'restore'])->name('orders.restore');
 		Route::get('/payment/{order:invoice}', [AdminOrderController::class, 'acceptPayment'])->name('orders.approve-payment');
 		Route::post('/shipping', [AdminOrderController::class, 'shippingOrder'])->name('orders.shipping');
 

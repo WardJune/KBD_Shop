@@ -27,7 +27,7 @@
                                 class="nav-link-text">{{ __('Dashboard') }}</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button"
                             aria-expanded="true" aria-controls="navbar-examples">
                             <i class="fab fa-laravel text-danger"></i>
@@ -42,12 +42,19 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('user.index') }}">
+                                    <a class="nav-link" href="{{ route('customer.index') }}">
                                         <span class="nav-link-text">{{ __('User Management') }}</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
+                    </li> --}}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('customer.index') }}">
+                            <i class="fas fa-users-cog text-warning"></i> <span
+                                class="nav-link-text">{{ __('User Management') }}</span>
+                        </a>
                     </li>
 
                     <li class="nav-item">
@@ -88,14 +95,14 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('admin/category') }}">
+                        <a class="nav-link" href="{{ route('category.index') }}">
                             <i class="ni ni-collection text-info"></i> <span
                                 class="nav-link-text">{{ __('Category') }}</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('admin/merk') }}">
+                        <a class="nav-link" href="{{ route('merk.index') }}">
                             <i class="ni ni-archive-2 text-warning"></i> <span
                                 class="nav-link-text">{{ __('Merk') }}</span>
                         </a>
@@ -111,7 +118,7 @@
                         <div class="collapse hide" id="product">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ url('admin/product') }}">
+                                    <a class="nav-link" href="{{ route('product.index') }}">
                                         <span class="nav-link-text">{{ __('All Products') }}</span>
                                     </a>
                                 </li>

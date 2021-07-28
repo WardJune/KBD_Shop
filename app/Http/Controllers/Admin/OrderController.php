@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
+    /**
+     * Menampilkan halaman index Order
+     * 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $orders = Order::with(['district.city.province'])->withCount(['return'])->latest();
@@ -36,7 +41,33 @@ class OrderController extends Controller
     }
 
     /**
-     * Menghapus Spesifik Order beserta Relasi yang terkait
+     * Menampilkan halaman Deleted Orders
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function showDeleted()
+    {
+        $orders = Order::onlyTrashed()->with(['district.city.province'])->withCount(['return'])->latest();
+
+        if (request()->keyword != '') {
+            $orders = $orders->where(function ($keyword) {
+                $keyword->where('customer_name', 'like', '%' . request()->keyword . '%')
+                    ->orWhere('invoice', 'like', '%' . request()->keyword . '%')
+                    ->orWhere('customer_address', 'like', '%' . request()->keyword . '%');
+            });
+        }
+
+        if (request()->status != '') {
+            $orders = $orders->where('status', request()->status);
+        }
+
+        $orders = $orders->paginate(10);
+
+        return view('admin.orders.show-deleted', compact('orders'));
+    }
+
+    /**
+     * Menghapus sementara Spesifik Order 
      * 
      * @param Order $order
      * 
@@ -45,18 +76,47 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         $order->delete();
-        $order->details()->delete();
+
+        return redirect(route('orders.index'));
+    }
+
+    /**
+     * Menghapus secara permanent spesifik Order beserta relasi yang terkait
+     * 
+     * @param mixed $id
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function forceDestroy($id)
+    {
+        $order = Order::withTrashed()->whereId($id)->first();
+
+        $order->details()->forceDelete();
 
         if ($order->payment_count > 0) {
             Storage::delete($order->payment->proof);
-            $order->payment()->delete();
+            $order->payment()->forceDelete();
 
             if ($order->return_count > 0) {
                 Storage::delete($order->return->photo);
-                $order->return()->delete();
+                $order->return->ForceDelete();
             }
         }
+        $order->forceDelete();
 
+        return redirect(route('orders.deleted'));
+    }
+
+    /**
+     * Merestore Order yang telah dihapus sementara
+     * 
+     * @param mixed $id
+     * 
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($id)
+    {
+        $order = Order::withTrashed()->whereId($id)->restore();
         return redirect(route('orders.index'));
     }
 
@@ -67,8 +127,9 @@ class OrderController extends Controller
      * 
      * @return \Illuminate\View\View
      */
-    public function show(Order $order)
+    public function show($invoice)
     {
+        $order = Order::withTrashed()->whereInvoice($invoice)->first();
         return view('admin.orders.show', compact('order'));
     }
 
@@ -149,7 +210,7 @@ class OrderController extends Controller
             $end = Carbon::parse($date[1])->format('Y-m-d') . ' 23:59:59';
         }
         $title = "Order Report";
-        $orders = Order::with(['district.city.province'])->whereBetween('created_at', [$start, $end])->get();
+        $orders = Order::with(['district.city.province'])->withTrashed()->whereBetween('created_at', [$start, $end])->get();
 
         return view('admin.orders.report-order', compact('orders', 'title'));
     }
@@ -170,10 +231,10 @@ class OrderController extends Controller
         $end = Carbon::parse($date[1])->format('Y-m-d' .  ' 23:59:59');
 
         if ($title == 'return-order-report') {
-            $orders = Order::has('return')->whereBetween('created_at', [$start, $end])->get();
+            $orders = Order::withTrashed()->has('return')->whereBetween('created_at', [$start, $end])->get();
             $title = 'Laporan Return Order';
         } else {
-            $orders = Order::whereBetween('created_at', [$start, $end])->get();
+            $orders = Order::withTrashed()->whereBetween('created_at', [$start, $end])->get();
             $title = 'Laporan Order';
         }
 
@@ -202,7 +263,7 @@ class OrderController extends Controller
             $end = Carbon::parse($date[1])->format('Y-m-d') . ' 23:59:59';
         }
         $title = "Return Order Report";
-        $orders = Order::with(['district.city.province'])->has('return')->whereBetween('created_at', [$start, $end])->get();
+        $orders = Order::with(['district.city.province'])->withTrashed()->has('return')->whereBetween('created_at', [$start, $end])->get();
 
         return view('admin.orders.report-order', compact('orders', 'title'));
     }

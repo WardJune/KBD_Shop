@@ -12,12 +12,11 @@
                             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                                 <li class="breadcrumb-item"><a href="{{ route('home') }}"><i class="fas fa-home"></i></a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Orders</li>
+                                <li class="breadcrumb-item " aria-current="page"><a
+                                        href="{{ route('orders.index') }}">Orders</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Deleted Orders</li>
                             </ol>
                         </nav>
-                    </div>
-                    <div class="col-lg-6 col-5 text-right">
-                        <a href="{{ route('orders.deleted') }}" class="btn btn-sm btn-success">Deleted Order</a>
                     </div>
                 </div>
             </div>
@@ -30,9 +29,9 @@
                 <div class="card">
                     <div class="card-header border-0">
                         <div class="d-flex justify-content-between">
-                            <h4 class="align-self-center">Order Lists</h4>
+                            <h4 class="align-self-center">Deleted Order Lists</h4>
                             <!-- FORM UNTUK FILTER DAN PENCARIAN -->
-                            <form action="{{ route('orders.index') }}" method="get">
+                            <form action="{{ route('orders.deleted') }}" method="get">
                                 <div class="d-flex justify-content-between">
                                     <select name="status" class="form-control mr-2">
                                         <option value="">Filter Status</option>
@@ -101,7 +100,7 @@
                                             @endif
                                         </td>
                                         <td class="align-middle">
-                                            <form action="{{ route('orders.destroy', $order->id) }}" method="post">
+                                            <form action="{{ route('orders.force-destroy', $order->id) }}" method="post">
                                                 @csrf
                                                 {{-- @method('delete') --}}
                                                 <a href="{{ route('orders.show', $order->invoice) }}"

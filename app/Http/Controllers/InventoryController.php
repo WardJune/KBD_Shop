@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\History;
 use App\Models\Product;
 use App\Models\ProductStock;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class InventoryController extends Controller
 {
@@ -126,7 +124,7 @@ class InventoryController extends Controller
     public function getSales(Product $product)
     {
         if (request()->ajax()) {
-            $data = $product->orderDetail()->latest()->get();
+            $data = $product->orderDetail()->withTrashed()->latest()->get();
             return \DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('created_at', function ($row) {

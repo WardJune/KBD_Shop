@@ -23,6 +23,7 @@ class CreatePaymentsTable extends Migration
             $table->string('proof')->nullable();
             $table->boolean('status')->false(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
