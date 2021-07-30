@@ -26,11 +26,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // * * * * * /usr/local/bin/php /path_laravel/artisan schedule:run >> /dev/null 2>&1
+        // * * * * * /opt/lampp/bin/php /run/media/cold/Local\ Disk/Code\ W/xampp/htdocs/kbd/artisan schedule:run >> /dev/null 2>&1
         // $schedule->command('inspire')->hourly();
-        $schedule->call(function () {
-            Log::info(Carbon::now());
-        })->everyMinute();
+
+        // cancel new order
+        $schedule->command('order:cancel')->dailyAt('22.59');
+        // confirm order
+        $schedule->command('order:done')->dailyAt('22.59');
     }
 
     /**

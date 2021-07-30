@@ -97,12 +97,12 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		// Order Management...
 		Route::get('/', [AdminOrderController::class, 'index'])->name('orders.index');
 		Route::get('/deleted', [AdminOrderController::class, 'showDeleted'])->name('orders.deleted');
+		Route::post('/shipping', [AdminOrderController::class, 'shippingOrder'])->name('orders.shipping');
 		Route::get('/{invoice}', [AdminOrderController::class, 'show'])->name('orders.show');
 		Route::post('/deleted/{id}', [AdminOrderController::class, 'forceDestroy'])->name('orders.force-destroy');
 		Route::post('/{order:id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 		Route::post('/restore/{id}', [AdminOrderController::class, 'restore'])->name('orders.restore');
 		Route::get('/payment/{order:invoice}', [AdminOrderController::class, 'acceptPayment'])->name('orders.approve-payment');
-		Route::post('/shipping', [AdminOrderController::class, 'shippingOrder'])->name('orders.shipping');
 
 		Route::get('/return/{order:invoice}', [AdminOrderController::class, 'returnShow'])->name('orders.return');
 		Route::post('/return/{value}', [AdminOrderController::class, 'confirmReturn'])->name('orders.approve-return');

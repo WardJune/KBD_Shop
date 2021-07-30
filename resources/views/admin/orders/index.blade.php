@@ -85,14 +85,14 @@
                                             <strong>{{ $order->customer_name }}</strong><br>
                                             <span class="d-block"><strong>Telp:</strong>
                                                 {{ $order->customer_phone }}</span>
-                                            <label><strong>Address:</strong>
+                                            <label class="text-wrap"><strong>Address:</strong>
                                                 {{ \Str::limit($order->customer_address, 10) }} ,
                                                 {{ $order->district->name }} -
                                                 {{ $order->district->city->name }},
                                                 {{ $order->district->city->province->name }}</label>
                                         </td>
                                         <td class="align-middle">Rp {{ number_format($order->subtotal) }}</td>
-                                        <td class="align-middle">{{ $order->created_at->format('d-m-Y') }}</td>
+                                        <td class="align-middle">{{ $order->created_at->format('d-m-Y h:i:s') }}</td>
                                         <td class="align-middle">
                                             {!! $order->status_label !!}
                                             @if ($order->return_count > 0)

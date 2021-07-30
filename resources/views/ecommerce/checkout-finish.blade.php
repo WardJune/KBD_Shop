@@ -20,7 +20,10 @@
             <h3 class="text-center text-warning">Thank you. Your order has been received</h3>
             @if ($order->payment_count < 1)
                 <span class="d-block text-muted">After you make payment, please confirm payment via the link below</span>
-                <a href="{{ route('payment.form', $order->invoice) }}" class="">Confirm Payment</a>
+                <span class="d-block text-default mb-md-2">Confirm payment before 23:00, otherwise the order will be
+                    automatically
+                    canceled</span>
+                <a href="{{ route('payment.form', $order->invoice) }}">Confirm Payment</a>
             @endif
         </div>
         <div class="row">
