@@ -40,6 +40,11 @@
                                     <a href="{{ route('orders.approve-payment', $order->invoice) }}"
                                         class="btn btn-primary btn-sm">Receive Payment</a>
                                 @endif
+                                @if ($order->status == 3)
+                                    <button class="btn btn-info btn-sm"
+                                        formaction="{{ route('orders.confirm-order', $order->invoice) }}">Accept
+                                        Order</button>
+                                @endif
                                 @if ($order->deleted_at == null)
                                     <button class="btn btn-danger btn-sm"
                                         formaction="{{ route('orders.destroy', $order->id) }}">Delete Order</button>
@@ -73,7 +78,8 @@
                                     </tr>
                                     <tr>
                                         <th class="align-middle">Address</th>
-                                        <td><span class="text-wrap">{{ $order->customer_address }}</span>,
+                                        <td class="text-wrap"><span
+                                                class="text-wrap">{{ $order->customer_address }}</span>,
                                             {{ $order->district->name }} -
                                             {{ $order->district->city->name }},
                                             {{ $order->district->province->name }}</td>

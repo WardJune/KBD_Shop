@@ -199,8 +199,9 @@
                     //loop data
                     $.each(html.rajaongkir.results[0].costs, function(key, item) {
                         let courier =
-                            `jne - ${item.service}(Rp ${new Intl.NumberFormat().format(item.cost[0].value)})`
-                        let value = `jne-${item.service}-${item.cost[0].value}`
+                            `jne - ${item.service} (Rp ${new Intl.NumberFormat().format(item.cost[0].value)}) Etd (${item.cost[0].etd})`
+                        let value =
+                            `jne-${item.service}.${item.cost[0].value}.(${item.cost[0].etd} days)`
 
                         $('#courier').append(`<option value="${value}">${courier}</option>`)
                     })
@@ -208,11 +209,11 @@
             });
         })
         $('#courier').on('change', function() {
-            let val = $(this).val().split('-')
-            $('#ongkir').text(`IDR ${new Intl.NumberFormat().format(val[2])}`)
+            let val = $(this).val().split('.')
+            $('#ongkir').text(`IDR ${new Intl.NumberFormat().format(val[1])}`)
 
             let subtotal = '{{ $subTotal }}'
-            let total = parseInt(subtotal) + parseInt(val[2])
+            let total = parseInt(subtotal) + parseInt(val[1])
             $('#total').text(`IDR ${new Intl.NumberFormat().format(total)}`)
         })
         // on change province_id
@@ -236,9 +237,9 @@
                     // city
                     $('#city_id').empty();
                     $.each(html.city, function(key, item) {
-                        $('#city_id').append(`<option ${item.id == html.data.district.city.id ?
-                            'selected' : ''}  value="${item.id}"> ${item.name}
-                            </option>`)
+                        $('#city_id').append(
+                            `<option ${item.id == html.data.district.city.id ? 'selected' : ''}  value="${item.id}"> ${item.name}</option>`
+                        )
                     })
                     // district
                     $('#district_id').empty()
@@ -264,11 +265,11 @@
 
                     $.each(html.rajaongkir.results[0].costs, function(key, item) {
                         let courier =
-                            `jne - ${item.service}(Rp${new Intl.NumberFormat().format(item.cost[0].value)})`
-                        let value = `jne-${item.service}-${item.cost[0].value}`
+                            `jne - ${item.service} (Rp${new Intl.NumberFormat().format(item.cost[0].value)}) Etd (${item.cost[0].etd})`
+                        let value =
+                            `jne-${item.service}.${item.cost[0].value}.(${item.cost[0].etd} days)`
 
-                        $('#courier').append('<option value="' + value + '">' + courier +
-                            '</option>')
+                        $('#courier').append(`<option value="${value}">${courier}</option>`)
                     })
                 }
             });

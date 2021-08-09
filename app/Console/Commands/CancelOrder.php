@@ -40,10 +40,11 @@ class CancelOrder extends Command
      */
     public function handle()
     {
-        $orders = Order::where(function ($q) {
-            $q->where('status', 0)
-                ->where('created_at', '<', now()->subMinutes(10));
-        })->get();
+        $orders = Order::withTrashed()
+            ->where(function ($q) {
+                $q->where('status', 0)
+                    ->where('created_at', '<', now()->subMinutes(10));
+            })->get();
 
         foreach ($orders as $order) {
             Log::info('order');

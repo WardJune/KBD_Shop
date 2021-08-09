@@ -156,7 +156,7 @@
                                             @foreach ($order->details as $row)
                                                 <tr>
                                                     <td><span class="text-wrap">{{ $row->product->name }}</span></td>
-                                                    <td>{{ number_format($row->price) }}</td>
+                                                    <td>IDR {{ number_format($row->price) }}</td>
                                                     <td>{{ $row->qty }} Item</td>
                                                     <td>{{ $row->weight }} gr</td>
                                                     <td>IDR {{ number_format($row->total) }}</td>

@@ -180,7 +180,7 @@ class CartController extends Controller
     {
         $cart = $this->getCart();
 
-        if ($cart->products->count() > 0) {
+        if ($cart && $cart->products->count() > 0) {
             $addresses = AddressBook::whereCustomerId($this->getId())->get();
             $provinces = Province::latest()->get();
             $subTotal = $cart->products->sum(function ($product) {
@@ -221,7 +221,7 @@ class CartController extends Controller
                 return $product->price * $product->pivot->qty;
             });
 
-            $shipping = explode('-', $request->courier);
+            $shipping = explode('.', $request->courier);
 
             $order = Order::create([
                 'invoice' => 'KBDS-' . time() . \Str::random(3),
@@ -231,8 +231,8 @@ class CartController extends Controller
                 'customer_address' => $request->customer_address,
                 'district_id' => $request->district_id,
                 'subtotal' => $subTotal,
-                'cost' => $shipping[2],
-                'shipping' => "$shipping[0]-$shipping[1]"
+                'cost' => $shipping[1],
+                'shipping' => "$shipping[0] $shipping[2]"
             ]);
 
             foreach ($carts->products as $product) {

@@ -96,7 +96,8 @@
                                 <td>IDR {{ number_format($order->subtotal) }}</td>
                             </tr>
                             <tr>
-                                <th colspan="2">SHIPPING</th>
+                                <th>SHIPPING</th>
+                                <td>{{ $order->shipping }}</td>
                                 <td>IDR {{ number_format($order->cost) }}</td>
                             </tr>
                             <tr>

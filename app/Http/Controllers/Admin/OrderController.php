@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\OrderMail;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\ProductStock;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,8 +20,13 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['district.city.province'])->withCount(['return'])->latest();
+        $new = Order::whereStatus(0)->count();
+        $confirm = Order::whereStatus(1)->count();
+        $process = Order::whereStatus(2)->count();
+        $sent = Order::whereStatus(3)->count();
+        $done = Order::whereStatus(4)->count();
 
+        $orders = Order::with(['district.city.province'])->withCount(['return'])->latest();
         // search query keyword
         if (request()->keyword != '') {
             $orders = $orders->where(function ($keyword) {
@@ -37,7 +42,7 @@ class OrderController extends Controller
         }
 
         $orders = $orders->paginate(10);
-        return view('admin.orders.index', compact('orders'));
+        return view('admin.orders.index', compact('orders', 'new', 'confirm', 'process', 'sent', 'done'));
     }
 
     /**
@@ -75,6 +80,25 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
+        /** order dengan status 1 forceDelete */
+        if ($order->status == 1) {
+            foreach ($order->details()->get() as $detail) {
+                $qty = $detail->product->stock->qty + $detail->qty;
+                ProductStock::whereProductId($detail->product_id)
+                    ->update(['qty' => $qty]);
+            }
+
+            if ($order->payment_count > 0) {
+                Storage::delete($order->payment->proof);
+                $order->payment()->forceDelete();
+            }
+
+            $order->details()->forceDelete();
+            $order->forceDelete();
+
+            return redirect(route('orders.index'));
+        }
+
         $order->delete();
 
         return redirect(route('orders.index'));
@@ -154,7 +178,7 @@ class OrderController extends Controller
      */
     public function shippingOrder()
     {
-        $order = Order::where('id', request()->order_id)->first();
+        $order = Order::where('id', request()->order_id)->firstOrFail();
         $order->update([
             'status' => 3,
             'tracking_number' => request()->tracking_number,
@@ -189,6 +213,12 @@ class OrderController extends Controller
         $order->update(['status' => 4]);
 
         return redirect()->back();
+    }
+
+    public function confirmOrder(Order $order)
+    {
+        $order->update(['status' => 4]);
+        return back();
     }
 
     /**

@@ -10,7 +10,7 @@
                         <h6 class="h2 text-white d-inline-block mb-0">Orders</h6>
                         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                                <li class="breadcrumb-item"><a href="{{ route('home') }}"><i class="fas fa-home"></i></a>
+                                <li class="breadcrumb-item"><a href=""><i class="fas fa-home"></i></a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Orders</li>
                             </ol>
@@ -18,6 +18,114 @@
                     </div>
                     <div class="col-lg-6 col-5 text-right">
                         <a href="{{ route('orders.deleted') }}" class="btn btn-sm btn-success">Deleted Order</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="card card-stats">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">New</h5>
+                                        <span class="h2 font-weight-bold mb-0">{{ $new }}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-purple text-white rounded-circle shadow">
+                                            <i class="fab fa-first-order"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                    <span class="text-nowrap">New Order Awaiting Payment</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="card card-stats">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Confirm</h5>
+                                        <span class="h2 font-weight-bold mb-0">{{ $confirm }}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-red text-white rounded-circle shadow">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                    <span class="text-nowrap">Awating Confirmation</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="card card-stats">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Process</h5>
+                                        <span class="h2 font-weight-bold mb-0">{{ $process }}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-orange text-white rounded-circle shadow">
+                                            <i class="fas fa-box"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                    <span class="text-nowrap">Proccesing Order</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="card card-stats">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Sent</h5>
+                                        <span class="h2 font-weight-bold mb-0">{{ $sent }}
+                                        </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-green text-white rounded-circle shadow">
+                                            <i class="fas fa-shipping-fast"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                    <span class="text-nowrap">Sending Order</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="card card-stats">
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0">Done</h5>
+                                        <span class="h2 font-weight-bold mb-0">{{ $done }}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                                            <i class="fas fa-box-open"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-3 mb-0 text-sm">
+                                    <span class="text-nowrap">Orders Done</span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SearchController;
@@ -53,7 +54,7 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 
 
-	Route::get('/', 'App\Http\Controllers\HomeController@index')->name('home');
+	Route::get('/', [DashboardController::class, 'index'])->name('home');
 	Route::resource('customer', 'App\Http\Controllers\CustomerController', ['except' => ['show']]);
 
 	Route::post('customer/deleted/{id}', [CustomerController::class, 'force'])->name('customer.force-delete');
@@ -103,6 +104,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		Route::post('/{order:id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 		Route::post('/restore/{id}', [AdminOrderController::class, 'restore'])->name('orders.restore');
 		Route::get('/payment/{order:invoice}', [AdminOrderController::class, 'acceptPayment'])->name('orders.approve-payment');
+		Route::post('/accept/{order:invoice}', [AdminOrderController::class, 'confirmOrder'])->name('orders.confirm-order');
 
 		Route::get('/return/{order:invoice}', [AdminOrderController::class, 'returnShow'])->name('orders.return');
 		Route::post('/return/{value}', [AdminOrderController::class, 'confirmReturn'])->name('orders.approve-return');
