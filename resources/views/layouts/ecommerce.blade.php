@@ -20,6 +20,8 @@
     <!-- Argon CSS -->
     <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.1.0" rel="stylesheet">
     <link type="text/css" href="{{ asset('assets') }}/css/own.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{{ asset('assets/css/algolia.css') }}">
+    @stack('css')
 
 </head>
 

@@ -45,14 +45,19 @@
                 </div>
             </div>
             <div class="navbar-nav ml-auto">
-                <a class="nav-link" href="{{ route('front.product') }}">All Product</a>
+                {{-- <a class="nav-link" href="{{ route('front.product') }}">All Product</a> --}}
                 @foreach ($category as $cat)
                     <a class="nav-link" href="{{ url('/category/' . $cat->slug) }}">{{ $cat->name }}</a>
                 @endforeach
             </div>
+
             <ul class="navbar-nav ml-lg-auto">
-                <li class="nav-item">
-                    <a class="nav-link nav-link-icon" href="#">
+                <li class="nav-item d-flex justify-content-between align-items-center position-relative">
+                    <div class="aa-input-container" id="aa-input-container">
+                        <input type="search" id="aa-search-input" class="aa-input-search"
+                            placeholder="Search product..." name="search" autocomplete="off" />
+                    </div>
+                    <a class="nav-link nav-link-icon" href="#" id="search-btn">
                         <i class="fas fa-search"></i>
                         <span class="nav-link-inner--text d-lg-none">Search</span>
                     </a>
@@ -91,7 +96,7 @@
                 <li class="nav-item">
                     <a class="nav-link nav-link-icon" href="{{ route('cart.show') }}">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="nav-link-inner--text d-lg-none">Chart</span>
+                        <span class="nav-link-inner--text d-lg-none">Cart</span>
                     </a>
                 </li>
 
@@ -100,3 +105,16 @@
         </div>
     </div>
 </nav>
+
+@push('js')
+    <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+    <script src="{{ asset('assets/js/algolia.js') }}"></script>
+
+    <script>
+        $('#search-btn').on('click', function() {
+            event.preventDefault();
+            $('#aa-search-input').toggleClass('active-search')
+        })
+    </script>
+@endpush

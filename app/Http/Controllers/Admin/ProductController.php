@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
-use App\Imports\ProductImport;
 use App\Jobs\ProductJob;
 use App\Models\Category;
 use App\Models\Merk;
 use App\Models\Product;
 use App\Models\ProductStock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class ProductController extends Controller
 {
@@ -63,7 +64,6 @@ class ProductController extends Controller
 
         $product['slug'] = Str::slug($validate->name);
         $product['status'] = $validate->status;
-        $product['type'] = null;
         $product['desc'] = $validate->desc;
 
         $product_create = Product::create($product);
@@ -82,10 +82,25 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
+        if ($product->category_id == 1) {
+            $data['size'] = DB::table('keyboard_sizes')->get();
+            $data['type'] = DB::table('key_switchs')->get();
+        } elseif ($product->category_id == 2) {
+            $data['type'] = DB::table('keycap_types')->get();
+        } else {
+            $json = [
+                ['name' => 'Clicky'],
+                ['name' => 'Linear'],
+                ['name' => 'Tactile'],
+            ];
+            $data['type'] = json_decode(json_encode($json));
+        }
+
         return view('admin.product.edit', [
             'product' => $product,
-            'category' => Category::all(),
-            'merk' => Merk::all()
+            'category' => Category::get(),
+            'merk' => Merk::get(),
+            'data' => $data
         ]);
     }
 
@@ -113,6 +128,8 @@ class ProductController extends Controller
             $products['image'] = $product->image;
         }
         $products['merk_id'] = $validate->merk_id == 'null' ? null : $validate->merk_id;
+        ($products['size'] ?? '') ? $products['size'] : $products['size'] = null;
+
         $product->update($products);
 
         return redirect(route('product.index'))->with(['success' => 'The Product has been updated']);
@@ -158,5 +175,25 @@ class ProductController extends Controller
             ProductJob::dispatch($request->category_id, $filename);
             return redirect()->back()->with(['success' => 'Upload Product has been Scheduled']);
         }
+    }
+
+    public function type()
+    {
+        if (request()->category_id == 1) {
+            $data['type'] = DB::table('key_switchs')->get();
+            $data['size'] = DB::table('keyboard_sizes')->get();
+        } elseif (request()->category_id == 2) {
+            $data['type'] = DB::table('keycap_types')->get();
+        } else {
+            $data['type'] = [
+                ['name' => 'Clicky'],
+                ['name' => 'Linear'],
+                ['name' => 'Tactile'],
+            ];
+        }
+        return response()->json([
+            'status' => '200',
+            'data' => $data
+        ]);
     }
 }

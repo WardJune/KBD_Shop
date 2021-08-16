@@ -25,6 +25,7 @@
     <link rel="stylesheet"
         href="{{ asset('assets') }}/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css">
     {{-- <link type="text/css" href="{{ asset('assets') }}/css/argon.css?v=1.0.0" rel="stylesheet"> --}}
+    @stack('css')
 
 </head>
 

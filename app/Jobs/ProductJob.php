@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Imports\ProductImport;
 use App\Models\Merk;
 use App\Models\Product;
+use App\Models\ProductStock;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -56,6 +57,8 @@ class ProductJob implements ShouldQueue
                 'slug' => Str::slug($row[0]),
                 'price' => $row[2],
                 'merk_id' => $merk->id,
+                'type' => $row[4],
+                'size' => $row[10] ?? null,
                 'category_id' => $this->category,
                 'image' => 'products/' . $filename,
                 'weight' => $row[6],
@@ -63,7 +66,11 @@ class ProductJob implements ShouldQueue
                 'fulldesc' => $row[1],
             ];
             // simpan data database
-            Product::create($data);
+            $product = Product::create($data);
+
+            ProductStock::create([
+                'product_id' => $product->id
+            ]);
         }
         Storage::delete('uploads/' . $this->filename);
     }

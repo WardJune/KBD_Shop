@@ -8,7 +8,8 @@
             <nav class="" aria-label="breadcrumb">
                 <ol class="breadcrumb bg-transparent px-0">
                     <li class="breadcrumb-item font"><a href="/">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('front.product') }}">Product</a></li>
+                    <li class="breadcrumb-item"><a
+                            href="{{ route('front.category', $product->category->slug) }}">Product</a></li>
                     <li class="breadcrumb-item active" aria-current="page">{{ $product->name }}</li>
                 </ol>
             </nav>
@@ -51,12 +52,13 @@
                 <div class="card shadow-none bg-light">
                     <div class="card-body">
                         <h2 class="mb-3">{{ $product->name }}</h2>
-                        <p class="h3 text-warning">IDR {{ number_format($product->price) }}</p>
-                        <p class="mb-4"> SKU : THISISSKU</p>
+                        <p class="h3 text-warning mb-3">IDR {{ number_format($product->price) }}</p>
                         <h4>Description</h4>
                         <ul class="pl-4">
                             @foreach ($product->desc as $desc)
-                                <li>{{ $desc }}</li>
+                                @if ($desc != null)
+                                    <li>{{ $desc }}</li>
+                                @endif
                             @endforeach
                         </ul>
                         <form method="post">
@@ -180,48 +182,20 @@
         <section class="container mt-6 mb-7 text-center justify-content-center">
             <h1>RELATED PRODUCT</h1>
             <div class="row mt-5">
-                <div class="col-md-4">
-                    <div class="card rounded-0 bg-pink">
-                        <div class="card-header bg-transparent">
-                            <!-- Title -->
-                            <h5 class="h3 mb-0">Card title</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis non
-                                dolore est fuga nobis ipsum illum eligendi nemo iure repellat, soluta, optio minus ut
-                                reiciendis voluptates enim impedit veritatis officiis.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
+                @foreach ($related as $rel)
+                    <div class="col-md-3">
+                        <a href="{{ route('front.show', $rel->slug) }}">
+                            <div class="card bg-transparent shadow-none border-0 text-center">
+                                <img class="card-img-top" src="{{ asset('/storage/' . $rel->image) }}"
+                                    alt="Image placeholder">
+                                <h5 class="h3 card-title mt-3 mb-0 font-weight-500">{{ $rel->name }}</h5>
+                                <h5 class="h3 text-warning  font-weight-normal">IDR
+                                    {{ number_format($rel->price) }}
+                                </h5>
+                            </div>
+                        </a>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card rounded-0 bg-pink">
-                        <div class="card-header bg-transparent">
-                            <!-- Title -->
-                            <h5 class="h3 mb-0">Card title</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis non
-                                dolore est fuga nobis ipsum illum eligendi nemo iure repellat, soluta, optio minus ut
-                                reiciendis voluptates enim impedit veritatis officiis.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card rounded-0 bg-pink">
-                        <div class="card-header bg-transparent">
-                            <!-- Title -->
-                            <h5 class="h3 mb-0">Card title</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis non
-                                dolore est fuga nobis ipsum illum eligendi nemo iure repellat, soluta, optio minus ut
-                                reiciendis voluptates enim impedit veritatis officiis.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </section>
     </div>

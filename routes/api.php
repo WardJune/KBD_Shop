@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Ecommerce\CartController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\RegionController;
@@ -29,3 +30,5 @@ Route::post('cost', [CartController::class, 'getCourier']);
 Route::get('/search', [InventoryController::class, 'loadData'])->name('autocomplete');
 
 Route::get('chart', [DashboardController::class, 'chart']);
+
+Route::get('type', [ProductController::class, 'type']);

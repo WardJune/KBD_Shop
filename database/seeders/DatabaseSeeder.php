@@ -20,5 +20,8 @@ class DatabaseSeeder extends Seeder
         $this->call(DistrictSeeder::class);
         $this->call(CategorySeeder::class);
         $this->call(MerkSeeder::class);
+        $this->call(KeyboardSizeSeeder::class);
+        $this->call(KeycapTypeSeeder::class);
+        $this->call(KeyboardSizeSeeder::class);
     }
 }

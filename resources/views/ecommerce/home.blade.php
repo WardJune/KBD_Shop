@@ -137,65 +137,22 @@
     {{-- popular prduct --}}
     <section class="container mt-4 text-center justify-content-center">
         <h1>POPULAR PRODUCT</h1>
-        <div class="row mt-3">
-            <div class="col-md-3">
-                <div class="card rounded-0 bg-pink">
-                    <div class="card-header bg-transparent">
-                        <!-- Title -->
-                        <h5 class="h3 mb-0">Card title</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis non
-                            dolore est fuga nobis ipsum illum eligendi nemo iure repellat, soluta, optio minus ut reiciendis
-                            voluptates enim impedit veritatis officiis.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
+        <div class="row mt-4">
+            @foreach ($popular as $pop)
+                <div class="col-md-3">
+                    <a href="{{ route('front.show', $pop->product->slug) }}">
+                        <div class="card bg-transparent shadow-none border-0 text-center">
+                            <img class="card-img-top" src="{{ asset('/storage/' . $pop->product->image) }}"
+                                alt="Image placeholder">
+                            <h5 class="h3 card-title mt-3 mb-0 font-weight-500">{{ $pop->product->name }}</h5>
+                            <h5 class="h3 text-warning  font-weight-normal">IDR {{ number_format($pop->product->price) }}
+                            </h5>
+                        </div>
+                    </a>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card rounded-0 bg-pink">
-                    <div class="card-header bg-transparent">
-                        <!-- Title -->
-                        <h5 class="h3 mb-0">Card title</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis non
-                            dolore est fuga nobis ipsum illum eligendi nemo iure repellat, soluta, optio minus ut reiciendis
-                            voluptates enim impedit veritatis officiis.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card rounded-0 bg-pink">
-                    <div class="card-header bg-transparent">
-                        <!-- Title -->
-                        <h5 class="h3 mb-0">Card title</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis non
-                            dolore est fuga nobis ipsum illum eligendi nemo iure repellat, soluta, optio minus ut reiciendis
-                            voluptates enim impedit veritatis officiis.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card rounded-0 bg-pink">
-                    <div class="card-header bg-transparent">
-                        <!-- Title -->
-                        <h5 class="h3 mb-0">Card title</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis non
-                            dolore est fuga nobis ipsum illum eligendi nemo iure repellat, soluta, optio minus ut reiciendis
-                            voluptates enim impedit veritatis officiis.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
-        <a href="#" class="btn btn-danger rounded-0">See All Products</a>
+        <a href="{{ route('front.category', 'keyboard') }}" class="btn btn-warning rounded-0">See All Products</a>
     </section>
     {{-- end popular prduct --}}
 

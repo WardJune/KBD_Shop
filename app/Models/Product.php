@@ -4,15 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
     protected $guarded = [];
     // protected $with = ['category', 'merk'];
     protected $casts = [
         'desc' => 'array'
     ];
+
+    public function searchableAs()
+    {
+        return 'products_index';
+    }
 
     public function getStatusLabelAttribute()
     {
@@ -27,6 +33,15 @@ class Product extends Model
         if ($this->stock->qty <= 0) {
             return 'disabled';
         }
+    }
+
+    public function getStockStatusAttribute()
+    {
+        if ($this->stock->qty <= 0) {
+            return '<span class="small text-muted d-block mb-md-2">Out of Stock</span>';
+        }
+
+        return '<span class="small text-muted d-block mb-md-2">In Stock</span>';
     }
 
     public function category()

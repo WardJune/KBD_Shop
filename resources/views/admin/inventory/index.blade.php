@@ -42,15 +42,15 @@
                         <span class="alert-inner--icon"><i class="ni ni-check-bold"></i></span>
                         <span class="alert-inner--text"><strong>Success!</strong> {{ session('success') }}</span>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true" class="text-dark">&times;</span>
                         </button>
-                    </div>
+                        <span aria-hidden="true" class="text-dark">&times;</span>
+
                 @endif
 
                 {{-- session error --}}
                 @if (session('error'))
-                    <div class="alert alert-secondary text-danger" role="alert"><strong>{{ session('error') }}</strong>
-                    </div>
+            </div>
+            <div class="alert alert-secondary text-danger" role="alert"><strong>{{ session('error') }}</strong>
                 @endif
 
                 <div class="card">
@@ -80,7 +80,11 @@
                                     <tr>
                                         <td>{{ $product->name }}</td>
                                         <td><span class="badge badge-warning">{{ $product->category->name }}</span></td>
-                                        <td><span class="badge badge-secondary">{{ $product->merk->name }}</span></td>
+                                        <td>
+                                            @if ($product->merk_id != null)
+                                                <span class="badge badge-secondary">{{ $product->merk->name }}</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $product->stock->qty }}</td>
                                         <td>
                                             <a href="{{ route('inventory.history-sales', $product->slug) }}"

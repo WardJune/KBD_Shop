@@ -98,7 +98,8 @@
                     {{-- buttons --}}
                     <tr>
                         <td colspan="3">
-                            <a href="{{ route('front.product') }}" class="btn btn-default rounded-0">CONTINUE
+                            <a href="{{ route('front.category', 'keyboard') }}"
+                                class="btn btn-default rounded-0">CONTINUE
                                 SHOPPING</a>
                             <button class="btn btn-default rounded-0" formaction="{{ route('cart.empty') }}">EMPTY
                                 CART</button>
@@ -117,7 +118,8 @@
     @else
         <div class="container text-center min-vh-100 ">
             <h4 class="mb-3 align-content-center">An order must have at least one item. Your cart is currently empty!</h4>
-            <a href="{{ route('front.product') }}" class="btn btn-default rounded-0 align-content-center">Continue
+            <a href="{{ route('front.category'), 'keyboard' }}"
+                class="btn btn-default rounded-0 align-content-center">Continue
                 Shopping</a>
         </div>
 

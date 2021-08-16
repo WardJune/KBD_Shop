@@ -179,8 +179,9 @@ Route::group(['middleware' => 'auth:customer', 'prefix' => 'profile'], function 
 
 // Front Page Routes...
 Route::get('/', [FrontController::class, 'index'])->name('front');
-Route::get('/product', [FrontController::class, 'product'])->name('front.product');
-Route::get('/category/{category:slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
+// Route::get('/product', [FrontController::class, 'product'])->name('front.product');
+Route::get('/category/{slug}', [FrontController::class, 'categoryProduct'])->name('front.category');
+Route::get('/product/search', [FrontController::class, 'search'])->name('front.search');
 Route::get('/product/{product:slug}', [FrontController::class, 'show'])->name('front.show');
 
 // Cart routes...
