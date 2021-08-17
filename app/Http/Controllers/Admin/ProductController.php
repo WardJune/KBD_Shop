@@ -53,7 +53,8 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $validate)
     {
-        $product = $validate->all();
+        $product = $validate->except(['value']);
+
         if ($validate->hasFile('image')) {
             $file = $validate->image;
             $filename = Str::slug($validate->name) . '.' . $validate->image->extension();
@@ -67,6 +68,16 @@ class ProductController extends Controller
         $product['desc'] = $validate->desc;
 
         $product_create = Product::create($product);
+
+        // attach specifications data
+        $value = request()->value;
+        $sync_data = collect($value)->map(function ($value) {
+            return ['value' => $value];
+        });
+
+        if ($sync_data) {
+            $product_create->specifications()->attach($sync_data);
+        }
 
         ProductStock::create([
             'product_id' => $product_create->id
@@ -116,8 +127,7 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $validate, Product $product)
     {
-        $products = $validate->all();
-
+        $products = $validate->except(['value']);
         if ($validate->hasFile('image')) {
             Storage::delete($product->image);
             $file = $validate->image;
@@ -127,6 +137,15 @@ class ProductController extends Controller
         } else {
             $products['image'] = $product->image;
         }
+
+        // sync data relasi
+        $value = request()->value;
+        $sync_data = collect($value)->map(function ($value) {
+            return ['value' => $value];
+        });
+
+        $product->specifications()->sync($sync_data);
+
         $products['merk_id'] = $validate->merk_id == 'null' ? null : $validate->merk_id;
         ($products['size'] ?? '') ? $products['size'] : $products['size'] = null;
 
@@ -146,6 +165,7 @@ class ProductController extends Controller
     {
         Storage::delete($product->image);
         $product->stock->delete();
+        $product->specifications()->detach();
         $product->delete();
 
         return redirect(route('product.index'))->with(['success' => 'The Product has been deleted']);

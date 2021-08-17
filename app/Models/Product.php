@@ -73,4 +73,10 @@ class Product extends Model
     {
         return $this->hasMany(History::class);
     }
+
+    public function specifications()
+    {
+        return $this->belongsToMany(Specification::class)
+            ->withPivot(['value']);
+    }
 }

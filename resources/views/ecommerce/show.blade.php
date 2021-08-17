@@ -158,24 +158,30 @@
                 <a class="nav-link active border-0 rounded-0" id="overview-tab" data-toggle="tab" href="#overview"
                     role="tab" aria-controls="overview" aria-selected="true">Overview</a>
             </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link border-0 rounded-0" id="specifications-tab" data-toggle="tab" href="#specifications"
-                    role="tab" aria-controls="specifications" aria-selected="false">Specifications</a>
-            </li>
+            @if ($product->specifications()->count() > 0)
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link border-0 rounded-0" id="specifications-tab" data-toggle="tab" href="#specifications"
+                        role="tab" aria-controls="specifications" aria-selected="false">Specifications</a>
+                </li>
+            @endif
         </ul>
         <div class="tab-content mt-5" id="myTabContent">
             <div class="tab-pane show active" id="overview" role="tabpanel" aria-labelledby="home-tab">
-                {!! nl2br($product->fulldesc) !!}
+                <div class="container px-md-5">
+                    {!! nl2br($product->fulldesc) !!}
+                </div>
             </div>
             <div class="tab-pane " id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa adipisci a nemo ipsam sunt vero perspiciatis
-                enim veritatis consequatur, suscipit repudiandae at inventore eligendi ullam impedit asperiores illo ex.
-                Nobis obcaecati nemo minima sapiente, numquam excepturi. Ullam, quos, quidem facere rerum officia veniam
-                obcaecati odit dolore, ipsum repellat ab harum repellendus. Inventore molestias ex natus, error commodi
-                blanditiis aliquam eos nulla quas a cupiditate porro, consequatur iusto exercitationem impedit itaque, nam
-                id nobis voluptates. Enim doloribus mollitia consectetur perferendis voluptatum dicta delectus possimus,
-                dolor facere labore modi eius, magnam dolorem velit veniam quod amet totam commodi eveniet repudiandae
-                tempora? Laborum.
+                <div class="container px-md-5">
+                    @foreach ($product->specifications as $spec)
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <h4> {{ $spec->name }} </h4>
+                            </div>
+                            <div class="col-md-4">: {{ $spec->pivot->value }}</div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
 

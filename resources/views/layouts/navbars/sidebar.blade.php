@@ -130,6 +130,14 @@
                             </ul>
                         </div>
                     </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('spec.index') }}">
+                            <i class="fas fa-certificate text-primary"></i> <span
+                                class="nav-link-text">{{ __('Specification') }}</span>
+                        </a>
+                    </li>
                 </ul>
                 <!-- Divider -->
                 <hr class="my-3">

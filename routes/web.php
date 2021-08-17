@@ -73,6 +73,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	// Merk Routes...
 	Route::resource('merk', 'App\Http\Controllers\Admin\MerkController')->except(['show', 'create']);
 
+	// Specification Routes...
+	Route::resource('spec', 'App\Http\Controllers\Admin\SpecificationController')->except(['show', 'create', 'edit']);
+
 	// Product Routes...
 	Route::resource('product', ProductController::class);
 	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');

@@ -1,5 +1,9 @@
 @extends('layouts.app', ['class' => 'bg-secondary'])
 
+@push('css')
+    <link type="text/css" rel="stylesheet" href="{{ asset('assets/css/spec.css') }}">
+@endpush
+
 @section('content')
 
     <div class="header bg-primary pb-6">
@@ -39,6 +43,7 @@
                                         value="{{ old('name') ?? $product->name }}" required>
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="desc">Description</label>
                                     <input class="form-control mb-1" type="text" name="desc[]" required
@@ -48,6 +53,46 @@
                                     <input class="form-control " type="text" name="desc[]"
                                         value="{{ $product->desc[2] }}">
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="specs" class="block">Specifications</label>
+                                    <input class="form-control " type="search" id="specs-search"
+                                        placeholder="Search specification...">
+                                </div>
+
+                                <div class="form-group mt--2 {{ $product->specifications()->count() == 0 ? 'd-none' : '' }}"
+                                    id="table-spec">
+                                    <div class="card border rounded-sm shadow-none">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th scope="col">Name</th>
+                                                        <th colspan="2" scope="col">Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbody">
+                                                    @foreach ($product->specifications as $spec)
+                                                        <tr id={{ $spec->id }}>
+                                                            <td>{{ $spec->name }}</td>
+                                                            <td>
+                                                                <input
+                                                                    class="form-control form-control-sm border-light shadow-none"
+                                                                    type="text" name="value[{{ $spec->id }}]"
+                                                                    value="{{ $spec->pivot->value }}">
+                                                            </td>
+
+                                                            <td class="text-right"><a href="javascript:void(0)"
+                                                                    onclick="destroy({{ $spec->id }})"><i
+                                                                        class="fas fa-times"></i></a></td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="description">Full Description</label>
 
@@ -134,18 +179,21 @@
                                     </select>
                                     <p class="text-danger">{{ $errors->first('merk_id') }}</p>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="price">Price</label>
                                     <input type="number" name="price" class="form-control"
                                         value="{{ old('price') ?? $product->price }}" required>
                                     <p class="text-danger">{{ $errors->first('price') }}</p>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="weight">Weight</label>
                                     <input min="0.1" step="0.1" type="number" name="weight" class="form-control"
                                         value="{{ old('weight') ?? $product->weight }}" required>
                                     <p class="text-danger">{{ $errors->first('weight') }}</p>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="image">Image</label>
                                     <div class="input-group mb-2 rounded">
@@ -158,6 +206,7 @@
                                     </div>
 
                                 </div>
+
                                 <div class="form-group">
                                     <button class="btn btn-primary btn-block">Save Changes</button>
                                 </div>
@@ -173,6 +222,9 @@
 @push('js')
     {{-- load ckeditor --}}
     <script src="https://cdn.ckeditor.com/4.13.0/standard/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+    <script src="{{ asset('assets/js/algolia-spec.js') }}"></script>
     <script>
         CKEDITOR.replace('description');
 
