@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Jobs\ProductJob;
 use App\Models\Category;
+use App\Models\Images;
 use App\Models\Merk;
 use App\Models\Product;
 use App\Models\ProductStock;
@@ -53,8 +54,8 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $validate)
     {
-        $product = $validate->except(['value']);
-
+        $product = $validate->except(['value', 'images']);
+        // dd($validate->all());
         if ($validate->hasFile('image')) {
             $file = $validate->image;
             $filename = Str::slug($validate->name) . '.' . $validate->image->extension();
@@ -69,6 +70,20 @@ class ProductController extends Controller
 
         $product_create = Product::create($product);
 
+        // multiple images
+        if ($validate->hasFile('images')) {
+            $images = $validate->images;
+            foreach ($images as $key => $image) {
+                $filename = time() . Str::random(6) . '.' . $image->extension();
+                $image->storeAs('images', $filename);
+
+                Images::create([
+                    'product_id' => $product_create->id,
+                    'name' => 'images/' . $filename
+                ]);
+            }
+        }
+
         // attach specifications data
         $value = request()->value;
         $sync_data = collect($value)->map(function ($value) {
@@ -79,6 +94,7 @@ class ProductController extends Controller
             $product_create->specifications()->attach($sync_data);
         }
 
+        // create stock
         ProductStock::create([
             'product_id' => $product_create->id
         ]);
@@ -127,7 +143,7 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $validate, Product $product)
     {
-        $products = $validate->except(['value']);
+        $products = $validate->except(['value', 'images']);
         if ($validate->hasFile('image')) {
             Storage::delete($product->image);
             $file = $validate->image;
@@ -136,6 +152,19 @@ class ProductController extends Controller
             $products['image'] = 'products/' . $filename;
         } else {
             $products['image'] = $product->image;
+        }
+
+        if ($validate->has('images')) {
+            $images = $validate->images;
+            foreach ($images as $image) {
+                $filename = time() . Str::random(6) . '.' . $image->extension();
+                $image->storeAs('images', $filename);
+
+                Images::create([
+                    'product_id' => $product->id,
+                    'name' => 'images/' . $filename
+                ]);
+            }
         }
 
         // sync data relasi
@@ -164,11 +193,25 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         Storage::delete($product->image);
+        if ($product->images()->count() > 0) {
+            foreach ($product->images() as $images) {
+                Storage::delete($images);
+            }
+            $product->images()->delete();
+        }
         $product->stock->delete();
         $product->specifications()->detach();
         $product->delete();
 
         return redirect(route('product.index'))->with(['success' => 'The Product has been deleted']);
+    }
+
+    public function destroyImage(Images $images)
+    {
+        Storage::delete($images->name);
+        $images->delete();
+
+        return back();
     }
 
     /**
@@ -197,6 +240,9 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * @return [type]
+     */
     public function type()
     {
         if (request()->category_id == 1) {

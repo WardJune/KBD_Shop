@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\View;
 
@@ -7,8 +7,9 @@ use Illuminate\View\View;
 
 class MerkComposer
 {
-  public function compose(View $view){
-    $merks = Merk::orderBy('name', 'asc')->get();
+  public function compose(View $view)
+  {
+    $merks = Merk::select('id', 'name')->orderBy('name', 'asc')->get();
 
     $view->with('merks', $merks);
   }

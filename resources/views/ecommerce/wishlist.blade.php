@@ -7,7 +7,7 @@
             <h1 class="display-4">Your Wishlist </h1>
             <nav class="" aria-label="breadcrumb">
                 <ol class="breadcrumb bg-transparent px-0">
-                    <li class="breadcrumb-item font"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item font"><a href="{{ route('front') }}">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
                 </ol>
             </nav>
@@ -60,9 +60,9 @@
                                         Cart</button>
                                 </td>
                                 <td class="align-middle"><a data-toggle="tooltip" data-placement="right" title="Delete"
-                                        href="{{ route('wishlist.show') }}" onclick="event.preventDefault();
-                                                document.getElementById('deleteForm{{ $i }}').submit();"><i
-                                            class="fas fa-times"></i></a>
+                                        href="{{ route('wishlist.show') }}"
+                                        onclick="event.preventDefault();
+                                                        document.getElementById('deleteForm{{ $i }}').submit();"><i class="fas fa-times"></i></a>
                                 </td>
                             </tr>
                         </form>
@@ -79,7 +79,7 @@
             <div class="container text-center min-vh-100 ">
                 <h4 class="mb-3 align-content-center">Your wishlist is currently empty!
                 </h4>
-                <a href="{{ route('front.product') }}" class="btn btn-default rounded-0 align-content-center">Continue
+                <a href="{{ route('front') }}" class="btn btn-default rounded-0 align-content-center">Continue
                     Shopping</a>
             </div>
         @endif

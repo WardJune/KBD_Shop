@@ -34,13 +34,17 @@ class FrontController extends Controller
      */
     public function index()
     {
-        $popular = OrderDetail::select("*", DB::raw('sum(qty) as total'))
+        $popular = OrderDetail::select('product_id', DB::raw('sum(qty) as total'))
+            ->with(['product' => function ($q) {
+                return $q->select('id', 'name', 'slug', 'image', 'price');
+            }])
             ->groupBy('product_id')
             ->orderBy('total', 'desc')
             ->take(4)
             ->get();
 
-        $products = Product::whereStatus(1)
+        $products = Product::select('name', 'slug', 'image', 'price')
+            ->whereStatus(1)
             ->latest()
             ->take(3)
             ->get();
@@ -100,7 +104,9 @@ class FrontController extends Controller
             ->firstOrFail()
             ->products()
             ->whereStatus(1)
-            ->with(['stock'])
+            ->with(['stock' => function ($q) {
+                return $q->select('qty', 'product_id');
+            }])
             ->whereStatus(1);
 
         $data = request()->all();
@@ -194,20 +200,22 @@ class FrontController extends Controller
         }
 
         $wishlist = Wishlist::where('product_id', $product->id)
-        ->where('customer_id', $this->getId())
-        ->first();
-        
+            ->where('customer_id', $this->getId())
+            ->first();
+
         // related Product
-        $related = Product::whereStatus(1)->whereHas('category', function ($q) use ($product) {
-            $q->where('name', $product->category->name);
-        })
-        ->whereNotIn('name', [$product->name])
-        ->take(4)
-        ->get();
-        
+        $related = Product::select('name', 'slug', 'image', 'price')
+            ->whereStatus(1)
+            ->whereHas('category', function ($q) use ($product) {
+                $q->where('name', $product->category->name);
+            })
+            ->whereNotIn('name', [$product->name])
+            ->take(4)
+            ->get();
+
         return view('ecommerce.show', compact('product', 'wishlist', 'related'));
     }
-    
+
     /**
      * Menampilkan halaman search
      * 

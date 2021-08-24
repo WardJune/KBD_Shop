@@ -26,7 +26,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Total User</h5>
-                                        <span class="h2 font-weight-bold mb-0">{{ $users }}</span>
+                                        <span class="h2 font-weight-bold mb-0">{{ $data['users'] }}</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-red text-white rounded-circle shadow">
@@ -47,7 +47,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Total Order</h5>
-                                        <span class="h2 font-weight-bold mb-0">{{ $order }}</span>
+                                        <span class="h2 font-weight-bold mb-0">{{ $data['order'] }}</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-orange text-white rounded-circle shadow">
@@ -69,7 +69,7 @@
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Sales</h5>
                                         <span class="h2 font-weight-bold mb-0">IDR
-                                            {{ number_format($sales) }}</span>
+                                            {{ number_format($data['sales']) }}</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-green text-white rounded-circle shadow">
@@ -78,7 +78,7 @@
                                     </div>
                                 </div>
                                 <p class="mt-3 mb-0 text-sm">
-                                    {!! $growth !!}
+                                    {!! $data['growth'] !!}
                                     <span class="text-nowrap">Since last month</span>
                                 </p>
                             </div>
@@ -91,7 +91,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Products</h5>
-                                        <span class="h2 font-weight-bold mb-0">{{ $products }}</span>
+                                        <span class="h2 font-weight-bold mb-0">{{ $data['products'] }}</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -218,7 +218,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="list">
-                                        @forelse ($orders as $order)
+                                        @forelse ($data['orders'] as $order)
                                             <tr>
                                                 <td>
                                                     <a
@@ -269,7 +269,7 @@
             },
         });
 
-        function getChart(values = {!! json_encode($salesChart->values()) !!}, keys = {!! json_encode($salesChart->keys()) !!}) {
+        function getChart(values = {!! json_encode($data['salesChart']->values()) !!}, keys = {!! json_encode($data['salesChart']->keys()) !!}) {
             Highcharts.chart('sales-chart', {
                 chart: {
                     type: 'spline'
@@ -314,29 +314,11 @@
         getChart();
 
         $('#monthly').on('click', function() {
-            $.ajax({
-                url: "{{ url('/api/chart') }}",
-                type: "GET",
-                data: {
-                    monthly: true
-                },
-                success: function(data) {
-                    getChart(data.values, data.keys)
-                }
-            })
+            getChart()
         })
 
         $('#yearly').on('click', function() {
-            $.ajax({
-                url: "{{ url('/api/chart') }}",
-                type: "GET",
-                data: {
-                    year: true
-                },
-                success: function(data) {
-                    getChart(data.values, data.keys)
-                }
-            })
+            getChart({!! json_encode($data['salesChartYearly']->values()) !!}, {!! json_encode($data['salesChartYearly']->keys()) !!})
         });
 
 
@@ -347,7 +329,7 @@
             colors: ['#F5365C'],
             title: false,
             xAxis: {
-                categories: {!! json_encode($customersChart->keys()) !!},
+                categories: {!! json_encode($data['customersChart']->keys()) !!},
                 crosshair: true
             },
             yAxis: {
@@ -371,7 +353,7 @@
             },
             series: [{
                 name: 'User',
-                data: {!! json_encode($customersChart->values()) !!}
+                data: {!! json_encode($data['customersChart']->values()) !!}
 
             }]
         });
@@ -382,7 +364,7 @@
             },
             colors: ['#11CDEF'],
             xAxis: {
-                categories: {!! json_encode($product->keys()) !!},
+                categories: {!! json_encode($data['product']->keys()) !!},
                 title: {
                     text: null
                 },
@@ -410,7 +392,7 @@
             },
             series: [{
                 name: 'Product',
-                data: {!! json_encode($product->values(), JSON_NUMERIC_CHECK) !!},
+                data: {!! json_encode($data['product']->values(), JSON_NUMERIC_CHECK) !!},
                 lineColor: "#666666"
             }, ]
         });

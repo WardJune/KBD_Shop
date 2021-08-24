@@ -79,6 +79,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	// Product Routes...
 	Route::resource('product', ProductController::class);
 	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');
+	Route::delete('product/{images:id}/images', [ProductController::class, 'destroyImage'])->name('product.image-destroy');
 
 	// Inventory Routes...
 	Route::get('inventory/getsales/{product:id}', [InventoryController::class, 'getSales'])->name('inventory.get-sales');

@@ -22,20 +22,6 @@ class InventoryController extends Controller
     }
 
     /**
-     * LoadData Product berdasarkan query
-     * 
-     * @return mixed 
-     */
-    public function loadData()
-    {
-        if (request()->has('query')) {
-            $search = request()->get('query');
-            $data = Product::where("name", "like", "%$search%")->get();
-            return response()->json($data);
-        }
-    }
-
-    /**
      * Menampilkan Halaman Inventory Adjust
      * 
      * @return \Illuminate\View\View

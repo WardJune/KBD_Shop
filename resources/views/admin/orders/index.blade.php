@@ -28,7 +28,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">New</h5>
-                                        <span class="h2 font-weight-bold mb-0">{{ $new }}</span>
+                                        <span class="h2 font-weight-bold mb-0">{{ $data['new'] }}</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-purple text-white rounded-circle shadow">
@@ -49,7 +49,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Confirm</h5>
-                                        <span class="h2 font-weight-bold mb-0">{{ $confirm }}</span>
+                                        <span class="h2 font-weight-bold mb-0">{{ $data['confirm'] }}</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-red text-white rounded-circle shadow">
@@ -70,7 +70,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Process</h5>
-                                        <span class="h2 font-weight-bold mb-0">{{ $process }}</span>
+                                        <span class="h2 font-weight-bold mb-0">{{ $data['process'] }}</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-orange text-white rounded-circle shadow">
@@ -91,7 +91,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Sent</h5>
-                                        <span class="h2 font-weight-bold mb-0">{{ $sent }}
+                                        <span class="h2 font-weight-bold mb-0">{{ $data['sent'] }}
                                         </span>
                                     </div>
                                     <div class="col-auto">
@@ -113,7 +113,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h5 class="card-title text-uppercase text-muted mb-0">Done</h5>
-                                        <span class="h2 font-weight-bold mb-0">{{ $done }}</span>
+                                        <span class="h2 font-weight-bold mb-0">{{ $data['done'] }}</span>
                                     </div>
                                     <div class="col-auto">
                                         <div class="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -186,7 +186,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($orders as $order)
+                                @forelse ($data['orders'] as $order)
                                     <tr>
                                         <td class="align-middle"><strong>{{ $order->invoice }}</strong></td>
                                         <td class="align-middle">
@@ -227,7 +227,7 @@
                             </tbody>
                         </table>
                     </div>
-                    {!! $orders->links() !!}
+                    {!! $data['orders']->links() !!}
                 </div>
             </div>
         </div>

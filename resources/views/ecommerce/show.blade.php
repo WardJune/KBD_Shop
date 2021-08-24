@@ -45,7 +45,8 @@
         <div class="row justify-content-between">
             <div class="col-md-7 bg-transparent">
                 <div class="card rounded-0 shadow-none">
-                    <img src="{{ asset('/storage/' . $product->image) }}" alt="" class="img-fluid mx-auto d-block w-75">
+                    <img src="{{ asset('/storage/' . $product->image) }}" alt="" class="img-fluid mx-auto d-block w-75"
+                        id="bigImage">
                 </div>
             </div>
             <div class="col-md-5">
@@ -123,31 +124,13 @@
         </div>
 
         <div class="row mb-5">
-            <div class="col-md-7">
-                <svg class="bd-placeholder-img img-thumbnail rounded-0 mr-2" width="75" height="75"
-                    xmlns="http://www.w3.org/2000/svg" role="img"
-                    aria-label="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera: 200x200"
-                    preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <rect width="100%" height="100%" fill="#6c757d"></rect>
-                </svg>
-                <svg class="bd-placeholder-img img-thumbnail rounded-0 mr-2" width="75" height="75"
-                    xmlns="http://www.w3.org/2000/svg" role="img"
-                    aria-label="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera: 200x200"
-                    preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <rect width="100%" height="100%" fill="#6c757d"></rect>
-                </svg>
-                <svg class="bd-placeholder-img img-thumbnail rounded-0 mr-2" width="75" height="75"
-                    xmlns="http://www.w3.org/2000/svg" role="img"
-                    aria-label="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera: 200x200"
-                    preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <rect width="100%" height="100%" fill="#6c757d"></rect>
-                </svg>
-                <svg class="bd-placeholder-img img-thumbnail rounded-0 mr-2" width="75" height="75"
-                    xmlns="http://www.w3.org/2000/svg" role="img"
-                    aria-label="A generic square placeholder image with a white border around it, making it resemble a photograph taken with an old instant camera: 200x200"
-                    preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <rect width="100%" height="100%" fill="#6c757d"></rect>
-                </svg>
+            <div class="col-md-7 mx-5">
+                <img class="thumb img-thumbnail rounded-0 mr-3" src="{{ asset('/storage/' . $product->image) }}"
+                    width="75" height="75">
+                @foreach ($product->images as $image)
+                    <img class="thumb img-thumbnail rounded-0 mr-3" src="{{ asset('/storage/' . $image->name) }}"
+                        width="75" height="75">
+                @endforeach
             </div>
         </div>
 
@@ -158,7 +141,7 @@
                 <a class="nav-link active border-0 rounded-0" id="overview-tab" data-toggle="tab" href="#overview"
                     role="tab" aria-controls="overview" aria-selected="true">Overview</a>
             </li>
-            @if ($product->specifications()->count() > 0)
+            @if ($product->specifications_count > 0)
                 <li class="nav-item" role="presentation">
                     <a class="nav-link border-0 rounded-0" id="specifications-tab" data-toggle="tab" href="#specifications"
                         role="tab" aria-controls="specifications" aria-selected="false">Specifications</a>
@@ -173,14 +156,16 @@
             </div>
             <div class="tab-pane " id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
                 <div class="container px-md-5">
-                    @foreach ($product->specifications as $spec)
-                        <div class="row mb-2">
-                            <div class="col-md-4">
-                                <h4> {{ $spec->name }} </h4>
+                    @if ($product->specifications_count > 0)
+                        @foreach ($product->specifications as $spec)
+                            <div class="row mb-2">
+                                <div class="col-md-4">
+                                    <h4> {{ $spec->name }} </h4>
+                                </div>
+                                <div class="col-md-4">: {{ $spec->pivot->value }}</div>
                             </div>
-                            <div class="col-md-4">: {{ $spec->pivot->value }}</div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
@@ -206,3 +191,13 @@
         </section>
     </div>
 @endsection
+
+@push('js')
+    <script>
+        $(document).on('mouseover', function(e) {
+            if ($(e.target).hasClass('thumb')) {
+                $('#bigImage').attr('src', e.target.src);
+            }
+        })
+    </script>
+@endpush

@@ -99,9 +99,9 @@
                                                     @method('patch')
                                                     <div class="modal-body ">
                                                         <div class="form-group">
-                                                            <label for="name" id="name">Merk Name</label>
-                                                            <input type="text" name="name" id="name" class="form-control"
-                                                                required value="{{ $spec->name }}">
+                                                            <label for="name">Merk Name</label>
+                                                            <input type="text" name="name" class="form-control" required
+                                                                value="{{ $spec->name }}">
                                                             @error('name')
                                                                 <div class="text-danger">
                                                                     {{ $message }}

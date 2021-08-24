@@ -10,7 +10,8 @@ class Product extends Model
 {
     use HasFactory, Searchable;
     protected $guarded = [];
-    // protected $with = ['category', 'merk'];
+    // protected $with = ['specifications'];
+    protected $withCount = ['specifications'];
     protected $casts = [
         'desc' => 'array'
     ];
@@ -78,5 +79,10 @@ class Product extends Model
     {
         return $this->belongsToMany(Specification::class)
             ->withPivot(['value']);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(Images::class);
     }
 }

@@ -27,8 +27,5 @@ Route::get('city', [RegionController::class, 'getCity']);
 Route::get('district', [RegionController::class, 'getDistrict']);
 Route::get('address', [RegionController::class, 'getAddress']);
 Route::post('cost', [CartController::class, 'getCourier']);
-Route::get('/search', [InventoryController::class, 'loadData'])->name('autocomplete');
-
-Route::get('chart', [DashboardController::class, 'chart']);
 
 Route::get('type', [ProductController::class, 'type']);

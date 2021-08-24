@@ -20,16 +20,16 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $new = Order::whereStatus(0)->count();
-        $confirm = Order::whereStatus(1)->count();
-        $process = Order::whereStatus(2)->count();
-        $sent = Order::whereStatus(3)->count();
-        $done = Order::whereStatus(4)->count();
+        $data['new'] = Order::whereStatus(0)->count();
+        $data['confirm'] = Order::whereStatus(1)->count();
+        $data['process'] = Order::whereStatus(2)->count();
+        $data['sent'] = Order::whereStatus(3)->count();
+        $data['done'] = Order::whereStatus(4)->count();
 
-        $orders = Order::with(['district.city.province'])->withCount(['return'])->latest();
+        $data['orders'] = Order::with(['district.city.province'])->withCount(['return'])->latest();
         // search query keyword
         if (request()->keyword != '') {
-            $orders = $orders->where(function ($keyword) {
+            $data['orders'] = $data['orders']->where(function ($keyword) {
                 $keyword->where('customer_name', 'like', '%' . request()->keyword . '%')
                     ->orWhere('invoice', 'like', '%' . request()->keyword . '%')
                     ->orWhere('customer_address', 'like', '%' . request()->keyword . '%');
@@ -38,11 +38,11 @@ class OrderController extends Controller
 
         // filter by status
         if (request()->status != '') {
-            $orders = $orders->where('status', request()->status);
+            $data['orders'] = $data['orders']->where('status', request()->status);
         }
 
-        $orders = $orders->paginate(10);
-        return view('admin.orders.index', compact('orders', 'new', 'confirm', 'process', 'sent', 'done'));
+        $data['orders'] = $data['orders']->paginate(10);
+        return view('admin.orders.index', compact('data'));
     }
 
     /**

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\View;
 
@@ -7,7 +7,8 @@ use App\Models\Category;
 
 class CategoryComposer
 {
-  public function compose(View $view){
+  public function compose(View $view)
+  {
     $category = Category::get();
 
     $view->with('category', $category);

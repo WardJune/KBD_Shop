@@ -101,9 +101,9 @@
                                                     @method('patch')
                                                     <div class="modal-body ">
                                                         <div class="form-group">
-                                                            <label for="name" id="name">Merk Name</label>
-                                                            <input type="text" name="name" id="name" class="form-control"
-                                                                required value="{{ $val->name }}">
+                                                            <label for="name">Merk Name</label>
+                                                            <input type="text" name="name" class="form-control" required
+                                                                value="{{ $val->name }}">
                                                             @error('name')
                                                                 <div class="text-danger">
                                                                     {{ $message }}
@@ -114,9 +114,7 @@
                                                         <div class="input-group mb-3 rounded">
                                                             <div class="custom-file">
                                                                 <input value="{{ $val->image }}" name="image" type="file"
-                                                                    class="custom-file-input" id="inputGroupFile01"
-                                                                    aria-describedby="inputGroupFileAddon01"
-                                                                    value="{{ old('image') }}">
+                                                                    class="custom-file-input" value="{{ old('image') }}">
                                                                 <label class="custom-file-label"
                                                                     for="inputGroupFile01">Choose
                                                                     file</label>
@@ -192,8 +190,7 @@
                             <label for="image">Image</label>
                             <div class="input-group mb-3 rounded">
                                 <div class="custom-file">
-                                    <input name="image" type="file" class="custom-file-input" id="inputGroupFile01"
-                                        aria-describedby="inputGroupFileAddon01" value="{{ old('image') }}">
+                                    <input name="image" type="file" class="custom-file-input" value="{{ old('image') }}">
                                     <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                                 </div>
                             </div>

@@ -162,6 +162,18 @@
 
                                 </div>
                                 <div class="form-group">
+                                    <label for="image">Images</label>
+                                    <div class="input-group mb-2 rounded">
+                                        <div class="custom-file">
+                                            <input name="images[]" type="file" class="custom-file-input"
+                                                value="{{ old('images') }}" multiple>
+                                            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                        </div>
+                                        <p class="text-danger">{{ $errors->first('images') }}</p>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
                                     <button class="btn btn-primary btn-block">Create New</button>
                                 </div>
                             </div>

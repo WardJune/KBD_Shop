@@ -24,7 +24,7 @@
                                     id="address_book">
                                     <option selected value="">New Address</option>
                                     @foreach ($addresses as $address)
-                                        <option selected value="{{ $address->id }}">{{ $address->title }}</option>
+                                        <option value="{{ $address->id }}">{{ $address->title }}</option>
                                     @endforeach
                                 </select>
                                 @error('address_book')
