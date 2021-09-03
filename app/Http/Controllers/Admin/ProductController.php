@@ -98,7 +98,7 @@ class ProductController extends Controller
         ProductStock::create([
             'product_id' => $product_create->id
         ]);
-        return redirect(route('product.index'))->with(['success' => 'The New Product has been added']);
+        return redirect(route('product.index'))->withToastSuccess('Succesfully Added');
     }
 
     /**
@@ -180,7 +180,7 @@ class ProductController extends Controller
 
         $product->update($products);
 
-        return redirect(route('product.index'))->with(['success' => 'The Product has been updated']);
+        return redirect(route('product.index'))->withToastSuccess('Successfully Updated');
     }
 
     /**
@@ -203,7 +203,7 @@ class ProductController extends Controller
         $product->specifications()->detach();
         $product->delete();
 
-        return redirect(route('product.index'))->with(['success' => 'The Product has been deleted']);
+        return redirect(route('product.index'))->withToastSuccess('Succesfully Deleted');
     }
 
     public function destroyImage(Images $images)
@@ -211,7 +211,7 @@ class ProductController extends Controller
         Storage::delete($images->name);
         $images->delete();
 
-        return back();
+        return back()->withToastSuccess('Succesfully Deleted');
     }
 
     /**
@@ -236,7 +236,7 @@ class ProductController extends Controller
             $file->storeAs('uploads', $filename);
 
             ProductJob::dispatch($request->category_id, $filename);
-            return redirect()->back()->with(['success' => 'Upload Product has been Scheduled']);
+            return redirect()->back()->withToastSuccess('Upload Product has been Scheduled');
         }
     }
 

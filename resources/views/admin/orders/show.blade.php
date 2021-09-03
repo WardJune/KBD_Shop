@@ -46,21 +46,71 @@
                                         Order</button>
                                 @endif
                                 @if ($order->deleted_at == null)
-                                    <button class="btn btn-danger btn-sm"
-                                        formaction="{{ route('orders.destroy', $order->id) }}">Delete Order</button>
+                                    <button onclick="event.preventDefault()" class="btn btn-danger btn-sm"
+                                        data-toggle="modal" data-target="#deleteModal">Delete
+                                        Order</button>
+
+                                    {{-- delete modal --}}
+                                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Delete Modal</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure about this one ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">No</button>
+                                                    <button class="btn btn-danger"
+                                                        formaction="{{ route('orders.destroy', $order->id) }}">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- end delete modal --}}
                                 @else
                                     <button class="btn btn-success btn-sm"
                                         formaction="{{ route('orders.restore', $order->id) }}">Restore</button>
-                                    <button class="btn btn-danger btn-sm"
-                                        formaction="{{ route('orders.force-destroy', $order->id) }}">Delete Order
-                                        Permanently</button>
+                                    <button onclick="event.preventDefault()" class="btn btn-danger btn-sm"
+                                        data-toggle="modal" data-target="#deleteModal1">Delete Order Permanently</button>
+
+                                    {{-- delete modal permanent --}}
+                                    <div class="modal fade" id="deleteModal1" tabindex="-1" role="dialog"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Delete Modal</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure? You won't be able to revert this!
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">No</button>
+                                                    <button class="btn btn-danger"
+                                                        formaction="{{ route('orders.force-destroy', $order->id) }}">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- end delete modal permanent --}}
                                 @endif
                             </form>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="row mb-md-3">
-                            <!-- BLOCK UNTUK MENAMPILKAN DATA PELANGGAN -->
                             <div class="col-md-6">
                                 <h4>Customer Details</h4>
                                 <table class="table table-bordered">
@@ -188,97 +238,4 @@
             </div>
         </div>
     </div>
-    {{-- <div class="container-fluid mt--6">
-        <div class="row">
-            <div class="col-md">
-                <div class="card">
-                    <div class="card-header border-0">
-                        <div class="d-flex justify-content-between">
-                            <h4 class="align-self-center">Order Lists</h4>
-                            <!-- FORM UNTUK FILTER DAN PENCARIAN -->
-                            <form action="{{ route('orders.index') }}" method="get">
-                                <div class="d-flex justify-content-between">
-                                    <select name="status" class="form-control mr-2">
-                                        <option value="">Filter Status</option>
-                                        <option value="0">New (awaiting payment)</option>
-                                        <option value="1">Confirm</option>
-                                        <option value="2">Process</option>
-                                        <option value="3">Sent</option>
-                                        <option value="4">Done</option>
-                                    </select>
-                                    <div class="input-group mb-3 ">
-                                        <input type="text" class="form-control" name="keyword" placeholder="Search.."
-                                            value="{{ request()->keyword }}">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-light" type="submit"
-                                                id="button-addon2">Search</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                            <!-- FORM UNTUK FILTER DAN PENCARIAN -->
-                        </div>
-                    </div>
-                    @if (session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
-
-                    @if (session('error'))
-                        <div class="alert alert-danger">{{ session('error') }}</div>
-                    @endif
-
-
-                    <!-- TABLE UNTUK MENAMPILKAN DATA ORDER -->
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th scope="col">Invoice</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Subtotal</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($orders as $order)
-                                    <tr>
-                                        <td class="align-middle"><strong>{{ $order->invoice }}</strong></td>
-                                        <td class="align-middle">
-                                            <strong>{{ $order->customer_name }}</strong><br>
-                                            <span class="d-block"><strong>Telp:</strong>
-                                                {{ $order->customer_phone }}</span>
-                                            <label><strong>Address:</strong>
-                                                {{ \Str::limit($order->customer_address, 10) }} ,
-                                                {{ $order->district->name }} -
-                                                {{ $order->district->city->name }},
-                                                {{ $order->district->city->province->name }}</label>
-                                        </td>
-                                        <td class="align-middle">Rp {{ number_format($order->subtotal) }}</td>
-                                        <td class="align-middle">{{ $order->created_at->format('d-m-Y') }}</td>
-                                        <td class="align-middle">{!! $order->status_label !!}</td>
-                                        <td class="align-middle">
-                                            <form action="{{ route('orders.destroy', $order->id) }}" method="post">
-                                                @csrf
-                                                @method('delete')
-                                                <a href="{{ route('orders.show', $order->invoice) }}"
-                                                    class="btn btn-info btn-sm">Detail</a>
-                                                <button class="btn btn-danger btn-sm">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center">No data</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    {!! $orders->links() !!}
-                </div>
-            </div>
-        </div>
-    </div> --}}
 @endsection

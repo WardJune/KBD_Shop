@@ -43,7 +43,7 @@
     {{-- start content area --}}
     @yield('content')
     {{-- end of content area --}}
-
+    @include('sweetalert::alert')
     @include('layouts.ecommerce.footers.footer')
 
     <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js') }}"></script>

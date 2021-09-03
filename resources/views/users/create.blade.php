@@ -64,7 +64,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group mb-md-3">
-                                        <select class="form-control" name="email_verified_at">
+                                        <select class="form-control" name="email_verified_at" required>
                                             <option disabled selected>Email Verification</option>
                                             <option value="user">Manual User</option>
                                             <option value="admin">Admin (Now)</option>

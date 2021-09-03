@@ -9,3 +9,11 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+.card.card-category:hover .card-img-overlay {
+    box-sizing: border-box;
+    background-color: rgba(251, 99, 64, 0.9);
+    border: 8px solid rgba(251, 99, 64, 0.9);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9) inset;
+    transition: all 400ms;
+}

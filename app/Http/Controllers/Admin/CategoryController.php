@@ -37,7 +37,9 @@ class CategoryController extends Controller
         $category['slug'] = Str::slug($request->name);
         Category::create($category);
 
-        return redirect(route('category.index'))->with(['success' => 'The New Category has been added']);
+        alert()->success('Successfully Added');
+
+        return redirect(route('category.index'));
     }
 
     /**
@@ -57,7 +59,9 @@ class CategoryController extends Controller
         ]);
         $category->update($categories);
 
-        return redirect(route('category.index'))->with(['succcess' => 'Category has been edited']);
+        alert()->success('Successfully Updated');
+
+        return redirect(route('category.index'));
     }
 
     /**
@@ -69,6 +73,9 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
-        return redirect(route('category.index'))->with(['success' => 'The Category has been deleted']);
+
+        alert()->success('Successfully Deleted');
+
+        return redirect(route('category.index'));
     }
 }

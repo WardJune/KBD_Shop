@@ -23,16 +23,6 @@
     <div class="container-fluid mt--6 ">
         <div class="row">
             <div class="col-md-8">
-                {{-- session success --}}
-                @if (session('success'))
-                    <div class="alert alert-secondary alert-dismissible fade show text-success" role="alert">
-                        <span class="alert-inner--icon"><i class="ni ni-check-bold"></i></span>
-                        <span class="alert-inner--text"><strong>Success!</strong> {{ session('success') }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true" class="text-dark">&times;</span>
-                        </button>
-                    </div>
-                @endif
                 {{-- session error --}}
                 @if (session('error'))
                     <div class="alert alert-secondary text-danger" role="alert"><strong>{{ session('error') }}</strong>

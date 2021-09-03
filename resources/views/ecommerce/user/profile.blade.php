@@ -2,10 +2,6 @@
 
 @section('content')
     <div class="container">
-        @if (session('status'))
-            <div class="alert alert-warning">{{ session('status') }}</div>
-        @endif
-
         <div class="row my-md-5">
             <div class="col-md-2">
                 @include('layouts.ecommerce.nav.sidebar-profile')

@@ -78,11 +78,38 @@
                                                 <button type="submit" class="btn btn-sm btn-info"
                                                     formaction="{{ route('customer.restore', $customer->id) }}"><span
                                                         class="fas fa-trash-restore-alt"></span></button>
-                                                <button type="submit" class="btn btn-sm btn-danger"
-                                                    formaction="{{ route('customer.force-delete', $customer->id) }}"><span
-                                                        class="fas fa-trash-alt"></span></button>
+                                                <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault()"
+                                                    data-toggle="modal"
+                                                    data-target="#deleteModal{{ $customer->id }}"><span
+                                                        class="fas fa-trash-alt"></span></a>
                                             </td>
                                         </tr>
+                                        {{-- modal delete --}}
+                                        <div class="modal fade" id="deleteModal{{ $customer->id }}" tabindex="-1"
+                                            role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Delete Modal</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Are you sure? , You won't be able to revert this!
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">No</button>
+                                                        <button
+                                                            formaction="{{ route('customer.force-delete', $customer->id) }}"
+                                                            class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- end modal delete --}}
                                     @empty
                                         <tr>
                                             <td colspan="5" class="text-center">No Data</td>

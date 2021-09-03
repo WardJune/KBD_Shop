@@ -28,7 +28,8 @@ class CustomerRequest extends FormRequest
             'phone' => 'required',
             'email' => 'email|unique:customers,email',
             'gender' => 'required',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
+            'email_verified_at' => 'required'
         ];
     }
 }

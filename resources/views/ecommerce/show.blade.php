@@ -19,7 +19,7 @@
 
     <div class="container">
 
-        @if (session('success'))
+        {{-- @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
                 <span class="alert-text text-sm">"{{ $product->name }}" has been
                     added to
@@ -40,7 +40,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-        @endif
+        @endif --}}
 
         <div class="row justify-content-between">
             <div class="col-md-7 bg-transparent">

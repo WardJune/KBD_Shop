@@ -95,13 +95,12 @@ class OrderController extends Controller
 
             $order->details()->forceDelete();
             $order->forceDelete();
-
-            return redirect(route('orders.index'));
+            return redirect(route('orders.index'))->withToastSuccess('Succesfully Deleted');
         }
 
         $order->delete();
 
-        return redirect(route('orders.index'));
+        return redirect(route('orders.index'))->withToastSuccess('Succesfully Deleted');
     }
 
     /**
@@ -126,9 +125,10 @@ class OrderController extends Controller
                 $order->return->ForceDelete();
             }
         }
+
         $order->forceDelete();
 
-        return redirect(route('orders.deleted'));
+        return redirect(route('orders.deleted'))->withToastSuccess('Successfully Deleted');
     }
 
     /**
@@ -141,7 +141,7 @@ class OrderController extends Controller
     public function restore($id)
     {
         $order = Order::withTrashed()->whereId($id)->restore();
-        return redirect(route('orders.index'));
+        return redirect(route('orders.index'))->withToastSuccess('Successfully Restored');
     }
 
     /**
@@ -168,7 +168,8 @@ class OrderController extends Controller
     {
         $order->payment->update(['status' => 1]);
         $order->update(['status' => '2']);
-        return redirect()->back();
+
+        return back()->withToastSuccess('Payment Accepted');
     }
 
     /**
@@ -184,7 +185,8 @@ class OrderController extends Controller
             'tracking_number' => request()->tracking_number,
         ]);
         Mail::to($order->customer->email)->send(new OrderMail($order));
-        return redirect()->back();
+
+        return back()->withToastSuccess('Mail Sent');
     }
 
     /**
@@ -212,13 +214,14 @@ class OrderController extends Controller
         $order->return->update(['status' => $status]);
         $order->update(['status' => 4]);
 
-        return redirect()->back();
+        return back()->withToastSuccess('Return Confirmed');
     }
 
     public function confirmOrder(Order $order)
     {
         $order->update(['status' => 4]);
-        return back();
+
+        return back()->withToastSuccess('Order Confirmed');
     }
 
     /**
@@ -296,28 +299,5 @@ class OrderController extends Controller
         $orders = Order::with(['district.city.province'])->withTrashed()->has('return')->whereBetween('created_at', [$start, $end])->get();
 
         return view('admin.orders.report-order', compact('orders', 'title'));
-    }
-
-
-    public function test()
-    {
-        // ->format('Y-m-d H:i:s')
-        $order = OrderDetail::find(6)->created_at;
-        $now = Carbon::now()->format('Y-m-d H:i:s');
-        // $da = $order->addHour(24);
-        $de = '2021-07-16 13:46:37';
-
-        if ($de == $order->format('Y-m-d H:i:s')) {
-            return 'true';
-        } else {
-            $arr = [1, 2, 3, 4, 5];
-            foreach ($arr as $ar) {
-                if ($ar == 4) {
-                    return 'stop';
-                }
-            }
-        }
-        return $order;
-        // return $od->created_at->format('Y-m-d H:i:s');
     }
 }

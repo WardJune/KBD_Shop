@@ -5,7 +5,6 @@
 @endpush
 
 @section('content')
-
     <div class="header bg-primary pb-6">
         <div class="container-fluid">
             <div class="header-body">
@@ -293,7 +292,7 @@
             const hiddenField1 = document.createElement('input')
             hiddenField1.type = 'hidden'
             hiddenField1.name = '_token'
-            hiddenField1.value = 'xNt6tHizN9tkP9AiCuLaTOmLffijUmEVCGQkvh6d'
+            hiddenField1.value = '{{ csrf_token() }}'
 
             form.appendChild(hiddenField1)
 
@@ -306,7 +305,6 @@
 
             document.body.appendChild(form)
             form.submit()
-            // console.log('ok');
         }
     </script>
 @endpush

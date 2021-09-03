@@ -209,16 +209,41 @@
                                             @endif
                                         </td>
                                         <td class="align-middle">
-                                            <form action="{{ route('orders.destroy', $order->id) }}" method="post">
-                                                @csrf
-                                                {{-- @method('delete') --}}
-                                                <a href="{{ route('orders.show', $order->invoice) }}"
-                                                    class="btn btn-info btn-sm"><span class="fas fa-eye"></span></a>
-                                                <button class="btn btn-danger btn-sm"><span
-                                                        class="fas fa-trash-alt"></span></button>
-                                            </form>
+                                            <a href="{{ route('orders.show', $order->invoice) }}"
+                                                class="btn btn-info btn-sm"><span class="fas fa-eye"></span></a>
+                                            <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                                data-target="#deleteModal{{ $order->id }}"><span
+                                                    class="fas fa-trash-alt"></span></button>
                                         </td>
                                     </tr>
+                                    {{-- delete modal --}}
+                                    <div class="modal fade" id="deleteModal{{ $order->id }}" tabindex="-1" role="dialog"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Delete Modal</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Delete this order ({{ $order->invoice }}) ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">No</button>
+                                                    <form action="{{ route('orders.destroy', $order->id) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        <button class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- end delete modal --}}
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center">No data</td>

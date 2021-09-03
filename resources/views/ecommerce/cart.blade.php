@@ -16,14 +16,14 @@
     {{-- breadcrumb --}}
     @if ($cart && $cart->products->count() > 0)
         <div class="container mb-7">
-            @if (session('message'))
+            {{-- @if (session('message'))
                 <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
                     <span class="alert-text text-sm text-capitalize">{{ session('message') }}</span>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            @endif
+            @endif --}}
             {{-- @if (session()->has('message'))
                 <div class="alert alert-danger rounded-0 text-capitalize">{{ session('message') }}</div>
             @endif --}}
@@ -46,9 +46,9 @@
                     </tr>
                 </thead>
                 <tbody class="">
-                    @foreach ($cart->products as $product)
-                        <form method="post">
-                            @csrf
+                    <form method="post">
+                        @csrf
+                        @foreach ($cart->products as $product)
                             <input type="hidden" name="" value="">
                             <tr class="border-bottom">
                                 <th class="align-middle">
@@ -67,7 +67,7 @@
                                     <div class=" d-flex border-bottom border-neutral px-0">
                                         <button
                                             onclick="var result = document.getElementById('sst{{ $product->id }}'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-                                            class="btn btn-sm shadow-none--hover mr-0" type="button">
+                                            class="btn btn-sm shadow-none--hover mr-0 shadow-none" type="button">
                                             <i class="fas fa-minus"></i>
                                         </button>
 
@@ -79,37 +79,39 @@
 
                                         <button
                                             onclick="var result = document.getElementById('sst{{ $product->id }}'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                                            class="btn btn-sm shadow-none--hover" type="button">
+                                            class="btn btn-sm shadow-none--hover shadow-none" type="button">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
                                 </td>
                                 <td class="align-middle">IDR {{ number_format($product->pivot->qty * $product->price) }}
                                 </td>
-                                <td class="align-middle"><a href="{{ route('cart.destroy', $product->id) }}"><i
-                                            class="fas fa-times"></i></a></td>
+                                <td class="align-middle"><button class="btn shadow-none--hover shadow-none"
+                                        formaction="{{ route('cart.destroy', $product->id) }}"><i
+                                            class="fas fa-times"></i></button></td>
                             </tr>
-                    @endforeach
-                    <tr class="border-bottom">
-                        <th colspan="3" class="text-right">SUB TOTAL <span class="d-block font-weight-normal">Total Before
-                                Shipping</span></th>
-                        <td colspan="2">IDR {{ number_format($subTotal ?? 0) }}</td>
-                    </tr>
-                    {{-- buttons --}}
-                    <tr>
-                        <td colspan="3">
-                            <a href="{{ route('front.category', 'keyboard') }}"
-                                class="btn btn-default rounded-0">CONTINUE
-                                SHOPPING</a>
-                            <button class="btn btn-default rounded-0" formaction="{{ route('cart.empty') }}">EMPTY
-                                CART</button>
-                            <button class="btn btn-default rounded-0" type="submit"
-                                formaction="{{ route('cart.update') }}">UPDATE CART</button>
-                        </td>
-                        <td colspan="2">
-                            <a href="{{ route('cart.checkout') }}" class="btn btn-default rounded-0">CHECKOUT</a>
-                        </td>
-                    </tr>
+                        @endforeach
+                        <tr class="border-bottom">
+                            <th colspan="3" class="text-right">SUB TOTAL <span class="d-block font-weight-normal">Total
+                                    Before
+                                    Shipping</span></th>
+                            <td colspan="2">IDR {{ number_format($subTotal ?? 0) }}</td>
+                        </tr>
+                        {{-- buttons --}}
+                        <tr>
+                            <td colspan="3">
+                                <a href="{{ route('front.category', 'keyboard') }}"
+                                    class="btn btn-default rounded-0">CONTINUE
+                                    SHOPPING</a>
+                                <button class="btn btn-default rounded-0" formaction="{{ route('cart.empty') }}">EMPTY
+                                    CART</button>
+                                <button class="btn btn-default rounded-0" type="submit"
+                                    formaction="{{ route('cart.update') }}">UPDATE CART</button>
+                            </td>
+                            <td colspan="2">
+                                <a href="{{ route('cart.checkout') }}" class="btn btn-default rounded-0">CHECKOUT</a>
+                            </td>
+                        </tr>
                     </form>
                     {{-- end of buttons --}}
                 </tbody>

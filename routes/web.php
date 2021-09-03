@@ -194,7 +194,7 @@ Route::group(['middleware' => ['auth:customer', 'verified'], 'prefix' => 'cart']
 	Route::post('/add', [CartController::class, 'addToCart'])->name('cart.add');
 	Route::post('/update', [CartController::class, 'updateCart'])->name('cart.update');
 	Route::post('/empty', [CartController::class, 'emptyCart'])->name('cart.empty');
-	Route::get('/destroy/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+	Route::post('/destroy/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 	// Checkout Routes...
 	Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 	Route::post('/checkout', [CartController::class, 'processCheckout'])->name('cart.process-checkout');
@@ -210,12 +210,12 @@ Route::group(['middleware' => 'auth:customer'], function () {
 
 // Order routes...
 Route::group(['prefix' => 'order', 'middleware' => 'auth:customer'], function () {
-	Route::get('dashboard', [OrderController::class, 'dashboard'])->name('order.dashboard');
-	Route::get('a-payment', [OrderController::class, 'awaitingPayment'])->name('order.a-payment');
-	Route::get('a-confirm', [OrderController::class, 'awaitingConfirm'])->name('order.a-confirm');
-	Route::get('process', [OrderController::class, 'process'])->name('order.process');
-	Route::get('sent', [OrderController::class, 'sent'])->name('order.sent');
-	Route::get('done', [OrderController::class, 'done'])->name('order.done');
+	Route::get('dashboard/{status?}', [OrderController::class, 'dashboard'])->name('order.dashboard');
+	// Route::get('a-payment', [OrderController::class, 'awaitingPayment'])->name('order.a-payment');
+	// Route::get('a-confirm', [OrderController::class, 'awaitingConfirm'])->name('order.a-confirm');
+	// Route::get('process', [OrderController::class, 'process'])->name('order.process');
+	// Route::get('sent', [OrderController::class, 'sent'])->name('order.sent');
+	// Route::get('done', [OrderController::class, 'done'])->name('order.done');
 	Route::get('/{order:invoice}', [OrderController::class, 'show'])->name('order.show');
 
 	//Payment Routes...

@@ -42,12 +42,12 @@
 }
 .aa-dropdown-menu {
     background-color: #fff;
-    border: 2px solid rgba(228, 228, 228, 0.3);
+    /* border: 2px solid rgba(228, 228, 228, 0.3); */
     border-top-width: 1px;
     font-family: "Montserrat", sans-serif;
     width: 275px;
     margin-top: 5px;
-    box-shadow: 4px 4px 0 rgba(241, 241, 241, 0.2);
+    /* box-shadow: 4px 4px 0 rgba(241, 241, 241, 0.2); */
     font-size: 12px;
     border-radius: 4px;
     box-sizing: border-box;
@@ -59,7 +59,7 @@
     cursor: pointer;
     -webkit-transition: 0.2s;
     transition: 0.2s;
-    /* display: -webkit-box;
+    /* display: -webkit-box;/api/article/
   display: -ms-flexbox;
   display: flex; */
     -webkit-box-pack: justify;

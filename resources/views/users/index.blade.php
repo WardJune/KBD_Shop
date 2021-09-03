@@ -129,27 +129,52 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <form method="post">
-                                    @foreach ($customers as $customer)
-                                        @csrf
-                                        @method('delete')
-                                        <tr>
-                                            <td>{{ $customer->name }}</td>
-                                            <td>
-                                                {{ $customer->email }}
-                                            </td>
-                                            <td>{{ $customer->created_at->format('h:i:s d-m-Y') }}</td>
-                                            <td>{!! $customer->is_verified_label !!}</td>
-                                            <td class="text-right">
-                                                <a href="{{ route('customer.edit', $customer->id) }}"
-                                                    class="btn btn-sm btn-info"><span class="fas fa-pencil-alt"></span></a>
-                                                <button class="btn btn-sm btn-danger"
-                                                    formaction="{{ route('customer.destroy', $customer->id) }}"><span
-                                                        class="fas fa-trash-alt"></span></button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </form>
+                                @foreach ($customers as $customer)
+                                    <tr>
+                                        <td>{{ $customer->name }}</td>
+                                        <td>
+                                            {{ $customer->email }}
+                                        </td>
+                                        <td>{{ $customer->created_at->format('h:i:s d-m-Y') }}</td>
+                                        <td>{!! $customer->is_verified_label !!}</td>
+                                        <td class="text-right">
+                                            <a href="{{ route('customer.edit', $customer->id) }}"
+                                                class="btn btn-sm btn-info"><span class="fas fa-pencil-alt"></span></a>
+                                            <button class="btn btn-sm btn-danger" data-toggle="modal"
+                                                data-target="#deleteModal{{ $customer->id }}"><span
+                                                    class="fas fa-trash-alt"></span></button>
+                                        </td>
+                                    </tr>
+                                    {{-- modal delete --}}
+                                    <div class="modal fade" id="deleteModal{{ $customer->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Delete Modal</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure about this one ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">No</button>
+                                                    <form action="{{ route('customer.destroy', $customer->id) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        @method('delete')
+                                                        <button class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- end modal delete --}}
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

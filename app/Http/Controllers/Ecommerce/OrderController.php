@@ -10,7 +10,6 @@ use App\Models\OrderReturn;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -70,7 +69,6 @@ class OrderController extends Controller
     {
         $key = config('api.telegram_key');
         $chat = $this->getTelegram('https://api.telegram.org/' . $key . '/getUpdates', '');
-
         if ($chat['ok']) {
             /** Get pernerima pesan telegram (Admin) */
             $chat_id = $chat['result'][0]['message']['chat']['id'];
@@ -87,70 +85,16 @@ class OrderController extends Controller
      * @var mixed $orders
      * @return \Illuminate\View\View
      */
-    public function dashboard()
+    public function dashboard($status = null)
     {
-        $orders = $this->getOrder()->latest()->get();
-        return view('ecommerce.orders.dashboard', compact('orders'));
-    }
-
-    /**
-     * Menampilkan Halaman AwaitingPayment order
-     * 
-     * @var mixed $orders
-     * @return \Illuminate\View\View
-     */
-    public function awaitingPayment()
-    {
-        $orders = $this->getOrder('0');
-        return view('ecommerce.orders.awaiting-payment', compact('orders'));
-    }
-
-    /**
-     * Menampilkan Halaman AwaitingConfirm order
-     * 
-     * @var mixed $orders
-     * @return \Illuminate\View\View
-     */
-    public function awaitingConfirm()
-    {
-        $orders = $this->getOrder(1);
-        return view('ecommerce.orders.awaiting-confirm', compact('orders'));
-    }
-
-    /**
-     * Menampilkan Halaman Process order
-     * 
-     * @var mixed $orders
-     * @return \Illuminate\View\View
-     */
-    public function process()
-    {
-        $orders = $this->getOrder(2);
-        return view('ecommerce.orders.process', compact('orders'));
-    }
-
-    /**
-     * Menampilkan Halaman Sent order
-     * 
-     * @var mixed $orders
-     * @return \Illuminate\View\View
-     */
-    public function sent()
-    {
-        $orders = $this->getOrder(3);
-        return view('ecommerce.orders.sent', compact('orders'));
-    }
-
-    /**
-     * Menampilkan Halaman Done order
-     * 
-     * @var mixed $orders
-     * @return \Illuminate\View\View
-     */
-    public function done()
-    {
-        $orders = $this->getOrder(4);
-        return view('ecommerce.orders.done', compact('orders'));
+        if ($status == null) {
+            $orders = $this->getOrder()->latest()->get();
+            $border['null'] = 'border-bottom border-warning active';
+        } else {
+            $orders = $this->getOrder($status);
+            $border[$status] = 'border-bottom border-warning active';
+        }
+        return view('ecommerce.orders.dashboard', compact('orders', 'border'));
     }
 
     /**
@@ -222,7 +166,8 @@ class OrderController extends Controller
 
                 DB::commit();
 
-                return redirect(route('order.show', $order->invoice))->with(['status' => 'Success, Waiting for Confirmation']);
+                toast('Success, Waiting for Confirmation', 'success');
+                return redirect(route('order.show', $order->invoice));
             }
 
             return redirect()->back()->with(['error' => 'Make sure you enter the data correctly']);
@@ -266,7 +211,7 @@ class OrderController extends Controller
 
         $order->update(['status' => 4]);
 
-        return redirect()->back()->with(['success' => 'Order Confirmed']);
+        return redirect()->back()->withToastSuccess('Order Received');
     }
 
     /**
@@ -299,7 +244,13 @@ class OrderController extends Controller
     {
         $order = Order::whereId($id)->first();
         $return = OrderReturn::where('order_id', $id)->first();
-        if ($return) return back()->with(['error' => 'Request Refund on Process']);
+
+        if ($return) {
+            alert()->info('Request Refund On Process')
+                ->autoClose(false)
+                ->showConfirmButton('Confirm', '#FA3B0F');
+            return back();
+        };
 
         if ($request->hasFile('photo')) {
 
@@ -319,6 +270,6 @@ class OrderController extends Controller
         /** mengirim pesan ke Admin Melalui Telegram */
         $this->sendMessage($order->invoice, $request->reason);
 
-        return redirect()->back()->with(['success' => 'Request Refund Sent']);
+        return redirect()->back()->withToastSuccess('Request Refund Sent');
     }
 }

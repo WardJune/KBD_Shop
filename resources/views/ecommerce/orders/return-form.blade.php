@@ -11,12 +11,6 @@
                 @include('layouts.ecommerce.nav.sidebar-profile')
             </div>
             <div class="col-md-10">
-                @if (session('success'))
-                    <div class="alert alert-success rounded-0">{{ session('success') }}</div>
-                @endif
-                @if (session('error'))
-                    <div class="alert alert-danger rounded-0">{{ session('error') }}</div>
-                @endif
                 <div class="container card shadow-none rounded-0 bg-secondary">
                     <div class="card-header bg-transparent">
                         <p class="h3">Return & Refund</p>

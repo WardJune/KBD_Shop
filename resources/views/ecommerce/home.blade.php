@@ -11,38 +11,21 @@
                 <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
             </ol>
             <div class="carousel-inner">
-                <div class="carousel-item active" data-interval="2000">
-                    <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="450"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Second slide"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#c4c4c4"></rect>
-                    </svg>
+                <div class="carousel-item active" data-interval="2500">
+                    <img width="800" height="450" role="img" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100"
+                        src="{{ asset('assets/img/banner/MKID-banner-ZOMO-Distributor_1360.jpg') }}" alt="">
                 </div>
-                <div class="carousel-item" data-interval="2000">
-                    <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="450"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Second slide"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#666"></rect>
-                    </svg>
+                <div class="carousel-item" data-interval="2500">
+                    <img width="800" height="450" role="img" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100"
+                        src="{{ asset('assets/img/banner/MKID-banner-GANSS-GK87-PRO_1360.jpg') }}" alt="">
                 </div>
-
-                <div class="carousel-item" data-interval="2000">
-                    <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="450"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Second slide"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#c4c4c4"></rect>
-                    </svg>
+                <div class="carousel-item" data-interval="2500">
+                    <img width="800" height="450" role="img" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100"
+                        src="{{ asset('assets/img/banner/MKID-banner-Tai-Hao-Indonesia_1360.jpg') }}" alt="">
                 </div>
-                <div class="carousel-item" data-interval="2000">
-                    <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="450"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Second slide"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#666"></rect>
-                    </svg>
+                <div class="carousel-item" data-interval="2500">
+                    <img width="800" height="450" role="img" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100"
+                        src="{{ asset('assets/img/banner/MKID-banner-MX-Silent-RGB-Black_1360.jpg') }}" alt="">
                 </div>
             </div>
 
@@ -54,46 +37,63 @@
     <section class="container mt-4">
         <div class="row">
             <div class="col-md-6">
-                <div class="card bg-gradient-success rounded-0">
-                    <div class="card-body">
-                        <h3 class="card-title text-white">Lorem</h3>
-                        <blockquote class="blockquote text-white mb-0">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                            <footer class="blockquote-footer text-white">Someone like me</footer>
-                        </blockquote>
+                <a href="{{ route('front.category', 'keyboard') }}">
+                    <div class="card card-category rounded-0">
+                        <img class="card-img-top rounded-0" src="{{ asset('assets/img/banner/mecha1.jpg') }}">
+                        <div class="card-img-overlay">
+                            <div class="card-body">
+                                <h1 class="card-title text-white">Mechanical Keyboard</h1>
+                                <blockquote class="blockquote text-white mb-0">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                                    </p>
+                                </blockquote>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-6">
-                <div class="card bg-gradient-info rounded-0">
-                    <div class="card-body">
-                        <h3 class="card-title text-white">Lorem</h3>
-                        <blockquote class="blockquote text-white mb-0">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                            <footer class="blockquote-footer text-white">Someone like me</footer>
-                        </blockquote>
+                <a href="{{ route('front.category', 'keycaps') }}">
+                    <div class="card card-category img-fluid rounded-0">
+                        <img class="card-img-top rounded-0" src="{{ asset('assets/img/banner/keycap1.jpg') }}">
+                        <div class="card-img-overlay">
+                            <div class="card-body">
+                                <h1 class="card-title text-white">Keycaps</h1>
+                                <blockquote class="blockquote text-white mb-0">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                                    </p>
+                                </blockquote>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-6">
-                <div class="card bg-gradient-danger rounded-0">
-                    <div class="card-body">
-                        <h3 class="card-title text-white">Lorem</h3>
-                        <blockquote class="blockquote text-white mb-0">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                            <footer class="blockquote-footer text-white">Someone like me</footer>
-                        </blockquote>
+                <a href="{{ route('front.category', 'switch') }}">
+                    <div class="card card-category img-fluid rounded-0">
+                        <img class="card-img-top rounded-0" src="{{ asset('assets/img/banner/switch1.jpg') }}">
+                        <div class="card-img-overlay">
+                            <div class="card-body">
+                                <h1 class="card-title text-white">Switch</h1>
+                                <blockquote class="blockquote text-white mb-0">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                                    </p>
+                                </blockquote>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-6">
-                <div class="card bg-gradient-primary rounded-0">
-                    <div class="card-body">
-                        <h3 class="card-title text-white">Lorem</h3>
-                        <blockquote class="blockquote text-white mb-0">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                            <footer class="blockquote-footer text-white">Someone like me</footer>
-                        </blockquote>
+                <div class="card card-category img-fluid rounded-0">
+                    <img class="card-img-top rounded-0" src="{{ asset('assets/img/banner/acc1.jpg') }}">
+                    <div class="card-img-overlay">
+                        <div class="card-body">
+                            <h1 class="card-title text-white">Accessories</h1>
+                            <blockquote class="blockquote text-white mb-0">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+                            </blockquote>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -128,7 +128,8 @@
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
                 <h1 class="display-4">Fluid jumbotron</h1>
-                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its
+                    parent.</p>
             </div>
         </div>
     </section>
@@ -161,7 +162,8 @@
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
                 <h1 class="display-4">Fluid jumbotron</h1>
-                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its
+                    parent.</p>
             </div>
         </div>
     </section>

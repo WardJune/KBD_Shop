@@ -33,7 +33,7 @@ class MerkController extends Controller
     {
         $merk = $request->validate([
             'name' => 'required|unique:merks',
-            'image' => 'required|image|mimes:png,jpg,jpeg'
+            'image' => 'image|mimes:png,jpg,jpeg'
         ]);
 
         if ($request->hasFile('image')) {
@@ -48,7 +48,9 @@ class MerkController extends Controller
         $merk['slug'] = Str::slug($request->name);
         Merk::create($merk);
 
-        return redirect(route('merk.index'))->with(['success' => 'New Merk has beed added']);
+        alert()->success('Successfully Added');
+
+        return redirect(route('merk.index'));
     }
 
     /**
@@ -81,7 +83,9 @@ class MerkController extends Controller
         }
         $merk->update($merks);
 
-        return redirect(route('merk.index'))->with(['success' => 'Merk has been updated']);
+        alert()->success('Successfully Updated');
+
+        return redirect(route('merk.index'));
     }
 
     /**
@@ -95,6 +99,9 @@ class MerkController extends Controller
     {
         Storage::delete($merk->image);
         $merk->delete();
-        return redirect(route('merk.index'))->with(['success' => 'The Data has been Deleted']);
+
+        alert()->success('Successfully Deleted');
+
+        return redirect(route('merk.index'));
     }
 }

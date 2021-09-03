@@ -24,22 +24,6 @@
     <div class="container-fluid mt--6 ">
         <div class="row">
             <div class="col-md-8">
-                {{-- session success --}}
-                @if (session('success'))
-                    <div class="alert alert-secondary alert-dismissible fade show text-success" role="alert">
-                        <span class="alert-inner--icon"><i class="ni ni-check-bold"></i></span>
-                        <span class="alert-inner--text"><strong>Success!</strong> {{ session('success') }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true" class="text-dark">&times;</span>
-                        </button>
-                    </div>
-                @endif
-                {{-- session error --}}
-                @if (session('error'))
-                    <div class="alert alert-secondary text-danger" role="alert"><strong>{{ session('error') }}</strong>
-                    </div>
-                @endif
-
                 <div class="card">
                     <div class="card-header border-0">
                         <div class="mb-0">
@@ -84,11 +68,11 @@
                                     </tr>
                                     {{-- modal for edit Merk --}}
                                     <div class="modal fade" id="editModal{{ $spec->id }}" tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Edit Modal</h5>
+                                                    <h5 class="modal-title">Edit Modal</h5>
                                                     <button type="button" class="close" data-dismiss="modal"
                                                         aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>

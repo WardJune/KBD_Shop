@@ -64,7 +64,7 @@ class CustomerController extends Controller
 
         Customer::create($customer);
 
-        return redirect(route('customer.index'))->with(['success' => 'New user has been created']);
+        return redirect(route('customer.index'))->withToastSuccess('Successfully Created');
     }
 
     /**
@@ -106,7 +106,7 @@ class CustomerController extends Controller
             'gender' => request()->gender,
             'email_verified_at' => $date,
         ]);
-        return back();
+        return back()->withToastSuccess('Successfully Updated');
     }
 
     /**
@@ -120,7 +120,7 @@ class CustomerController extends Controller
     {
         $customer->delete();
 
-        return back()->with(['success' => 'The Customer has been deleted']);
+        return back()->withToastSuccess('Successfully Deleted');
     }
 
     /**
@@ -161,7 +161,7 @@ class CustomerController extends Controller
         }
         $customer->forceDelete();
 
-        return back()->with(['success' => 'The customer has been deleted']);
+        return back()->withToastSuccess('Successfully Deleted');
     }
 
     /**
@@ -177,7 +177,7 @@ class CustomerController extends Controller
 
         $customer->restore();
 
-        return back()->with(['success' => 'The customer has been restored']);
+        return back()->withToastSuccess('Successfully Restored');
     }
 
     /**
@@ -189,7 +189,7 @@ class CustomerController extends Controller
     {
         Customer::onlyTrashed()->forceDelete();
 
-        return redirect(route('customer.index'));
+        return redirect(route('customer.index'))->withToastSuccess('Successfully Deleted');
     }
 
     /**
@@ -201,6 +201,6 @@ class CustomerController extends Controller
     {
         Customer::onlyTrashed()->restore();
 
-        return redirect(route('customer.index'));
+        return redirect(route('customer.index'))->withToastSuccess('Successfully Restored');
     }
 }

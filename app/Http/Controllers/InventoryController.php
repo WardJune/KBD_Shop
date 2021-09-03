@@ -71,7 +71,7 @@ class InventoryController extends Controller
                 'qty' => request()->qty[$key]
             ]);
         }
-
+        alert()->success('Successfully Adjust');
         return redirect()->route('inventory.adjust-summary', $history);
     }
 

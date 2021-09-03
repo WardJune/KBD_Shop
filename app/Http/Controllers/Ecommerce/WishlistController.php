@@ -41,8 +41,8 @@ class WishlistController extends Controller
             'customer_id' => $this->getId(),
             'product_id' => request()->product_id
         ]);
-
-        return back()->with(['wishlist' => 'ok']);
+        toast('Successfully Added to Wishlist', 'success');
+        return back();
     }
 
     /**

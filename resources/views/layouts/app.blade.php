@@ -30,6 +30,8 @@
 </head>
 
 <body class="{{ $class ?? '' }}">
+    @include('sweetalert::alert')
+
     @auth()
         <form id="logout-form" action="{{ route('logout.admin') }}" method="GET" style="display: none;">
             {{ csrf_field() }}

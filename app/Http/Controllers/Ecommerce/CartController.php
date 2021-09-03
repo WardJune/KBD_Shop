@@ -101,7 +101,8 @@ class CartController extends Controller
         }
 
         if (request()->cart) {
-            return redirect()->back()->with(['success' => 'ok']);
+            toast('Successfully Added to Cart', 'success');
+            return back();
         } else {
             return redirect()->route('cart.show');
         }
@@ -122,7 +123,10 @@ class CartController extends Controller
         /** cek stock product */
         foreach ($product_id as $key => $id) {
             if (request()->qty[$key] > Product::whereId($id)->first()->stock->qty) {
-                return back()->with(['message' => 'some products from your cart exceed the quantity from stock']);
+                alert()->error('Some Products From Your Cart Exceed the Quantity From Stock')
+                    ->autoClose(false)
+                    ->showConfirmButton('Confirm', '#FA3B0F');
+                return back();
             }
         }
 
@@ -181,6 +185,17 @@ class CartController extends Controller
         $cart = $this->getCart();
 
         if ($cart && $cart->products->count() > 0) {
+
+            // cek stock product
+            foreach ($cart->products as $product) {
+                if ($product->pivot->qty > Product::whereId($product->id)->first()->stock->qty) {
+                    alert()->error('Some Products From Your Cart Exceed the Quantity From Stock')
+                        ->autoClose(false)
+                        ->showConfirmButton('Confirm', '#FA3B0F');
+                    return back();
+                }
+            }
+
             $addresses = AddressBook::whereCustomerId($this->getId())->get();
             $provinces = Province::latest()->get();
             $subTotal = $cart->products->sum(function ($product) {

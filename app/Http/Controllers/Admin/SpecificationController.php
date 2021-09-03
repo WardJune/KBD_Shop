@@ -30,8 +30,8 @@ class SpecificationController extends Controller
         $spec = request()->validate(['name' => 'required|unique:specifications,name']);
 
         Specification::create($spec);
-
-        return back()->with(['success' => 'New Specification menu has beed added']);
+        alert()->success('Successfully Added');
+        return back();
     }
 
     /**
@@ -49,7 +49,8 @@ class SpecificationController extends Controller
 
         $spec->update($specs);
 
-        return back()->with(['success' => 'Specification has been updated']);
+        alert()->success('Successfully Updated');
+        return back();
     }
 
     /**
@@ -63,6 +64,8 @@ class SpecificationController extends Controller
     public function destroy(Specification $spec)
     {
         $spec->delete();
-        return back()->with(['success' => 'Specification has been deleted']);
+
+        alert()->success('Successfully Deleted');
+        return back();
     }
 }

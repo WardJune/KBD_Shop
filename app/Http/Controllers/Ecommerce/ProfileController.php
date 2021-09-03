@@ -37,7 +37,7 @@ class ProfileController extends Controller
 
         auth('customer')->user()->update(request()->all());
 
-        return back()->with(['status' => 'success']);
+        return back()->withToastSuccess('Profile Updated');
     }
 
     /**
@@ -70,7 +70,7 @@ class ProfileController extends Controller
                 'password' => Hash::make(request()->password)
             ]);
 
-            return back()->with(['status' => 'success']);
+            return back()->withToastSuccess('Password Updated');
         }
 
         return back()->withErrors(['old_password' => 'Invalid Current Password']);
@@ -113,16 +113,12 @@ class ProfileController extends Controller
      */
     public function addressHandle(AddressRequest $request)
     {
-        AddressBook::create([
-            'customer_id' => auth('customer')->user()->id,
-            'title' => $request->title,
-            'customer_name' => $request->customer_name,
-            'customer_phone' => $request->customer_phone,
-            'customer_address' => $request->customer_address,
-            'district_id' => $request->district_id
-        ]);
+        $validate = $request->except(['province_id', 'city_id']);
+        $validate['customer_id'] = auth('customer')->user()->id;
 
-        return redirect(route('profile.address'));
+        AddressBook::create($validate);
+
+        return redirect(route('profile.address'))->withToastSuccess('Successfully Added');
     }
 
     /**
@@ -154,16 +150,12 @@ class ProfileController extends Controller
      */
     public function update(AddressBook $addressBook, AddressRequest $request)
     {
-        $addressBook->update([
-            'customer_id' => auth('customer')->user()->id,
-            'title' => $request->title,
-            'customer_name' => $request->customer_name,
-            'customer_phone' => $request->customer_phone,
-            'customer_address' => $request->customer_address,
-            'district_id' => $request->district_id
-        ]);
+        $validate = $request->except(['province_id', 'city_id']);
+        $validate['customer_id'] = auth('customer')->user()->id;
 
-        return redirect(route('profile.address'))->with(['status' => 'success']);
+        $addressBook->update($validate);
+
+        return redirect(route('profile.address'))->withToastSuccess('Successfully Updated');
     }
 
     /**
@@ -176,6 +168,6 @@ class ProfileController extends Controller
     public function destroy(AddressBook $addressBook)
     {
         $addressBook->delete();
-        return back()->with(['status' => 'success']);
+        return back()->withToastSuccess('Successfully Deleted');
     }
 }
