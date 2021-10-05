@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MerkRequest;
+use App\Http\Requests\MerkUpdateRequest;
 use App\Models\Merk;
-use Facade\FlareClient\Stacktrace\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,8 +19,8 @@ class MerkController extends Controller
      */
     public function index()
     {
-        $merk = Merk::orderBy('id', 'asc')->paginate('10');
-        return view('admin.merks.index', compact(['merk']));
+        $merks = Merk::orderBy('id', 'asc')->paginate('10');
+        return view('admin.merks.index', compact(['merks']));
     }
 
     /**
@@ -29,21 +30,14 @@ class MerkController extends Controller
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(MerkRequest $request)
     {
-        $merk = $request->validate([
-            'name' => 'required|unique:merks',
-            'image' => 'image|mimes:png,jpg,jpeg'
-        ]);
+        $merk = $request->all();
 
         if ($request->hasFile('image')) {
-            $file = $request->image;
-            $filename = Str::slug($request->name) . '.' . $file->extension();
-            $file->storeAs('merks', $filename);
-
-            $merk['image'] = 'merks/' . $filename;
+            $merk['image'] = $this->imageUpdload($request->image, $request->name);
         } else {
-            $merk['image'] = 'default.jpg';
+            $merk['image'] = 'merks/default.jpg';
         }
         $merk['slug'] = Str::slug($request->name);
         Merk::create($merk);
@@ -63,21 +57,17 @@ class MerkController extends Controller
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, Merk $merk)
+    public function update(MerkUpdateRequest $request, Merk $merk)
     {
-        $merks = $request->validate([
-            'name' => 'required',
-            'image' => 'image|mimes:png,jpg,jpeg'
-        ]);
+        $merks = $request->all();
 
         if ($request->image) {
             // delete image yg sudah ada
-            Storage::delete($merk->image);
+            if ($merk->image != 'merks/default.jpg') {
+                Storage::delete($merk->image);
+            }
             // tambahkan image baru
-            $file = $request->image;
-            $filename = Str::slug($request->name) . '.' . $file->extension();
-            $file->storeAs('merks', $filename);
-            $merks['image'] = 'merks/' . $filename;
+            $merks['image'] = $this->imageUpdload($request->image, $request->name);
         } else {
             $merks['image'] = $merk->image;
         }
@@ -97,11 +87,29 @@ class MerkController extends Controller
      */
     public function destroy(Merk $merk)
     {
-        Storage::delete($merk->image);
+        if ($merk->image != 'merks/default.jpg') {
+            Storage::delete($merk->image);
+        }
         $merk->delete();
 
         alert()->success('Successfully Deleted');
 
         return redirect(route('merk.index'));
+    }
+
+    /**
+     * @param mixed $image
+     * @param mixed $name
+     * 
+     * @return string
+     */
+    private function imageUpdload($image, $name)
+    {
+        $file = $image;
+        $filename = Str::slug($name) . '.' . $file->extension();
+        $file->storeAs('merks', $filename);
+        $merk['image'] = 'merks/' . $filename;
+
+        return $merk['image'];
     }
 }

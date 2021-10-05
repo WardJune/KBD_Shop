@@ -8,7 +8,9 @@ use Laravel\Scout\Searchable;
 
 class Specification extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory
+        // , Searchable
+    ;
 
     protected $guarded = [];
 

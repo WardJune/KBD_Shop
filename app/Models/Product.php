@@ -8,7 +8,9 @@ use Laravel\Scout\Searchable;
 
 class Product extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory
+        // , Searchable
+    ;
     protected $guarded = [];
     // protected $with = ['specifications'];
     protected $withCount = ['specifications'];

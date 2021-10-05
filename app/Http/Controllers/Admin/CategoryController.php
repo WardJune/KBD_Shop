@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\CategoryUpdateRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -23,16 +25,14 @@ class CategoryController extends Controller
     /**
      * Membuat Data Category
      *
-     * @param Request $request
+     * @param CategoryRequest $request
      * 
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $category = $request->validate([
-            'name' => ['required', 'string', 'max:50', 'unique:categories']
-        ]);
+        $category = $request->all();
 
         $category['slug'] = Str::slug($request->name);
         Category::create($category);
@@ -45,18 +45,16 @@ class CategoryController extends Controller
     /**
      * Update Spesifik Data Category
      *
-     * @param Request $request
+     * @param CategoryUpdateRequest $request
      * @param Category $category
      * @return \Illuminate\Http\RedirectResponse
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
 
-    public function update(Request $request, Category $category)
+    public function update(CategoryUpdateRequest $request, Category $category)
     {
-        $categories = $request->validate([
-            'name' => ['required', 'string', 'max:50', 'unique:categories']
-        ]);
+        $categories = $request->all();
         $category->update($categories);
 
         alert()->success('Successfully Updated');

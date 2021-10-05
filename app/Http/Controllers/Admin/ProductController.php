@@ -5,19 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Jobs\ProductJob;
-use App\Models\Category;
-use App\Models\Images;
-use App\Models\Merk;
-use App\Models\Product;
-use App\Models\ProductStock;
+use App\Models\{Category, Images, Merk, Product};
+use App\Services\ProductServices;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Symfony\Component\VarDumper\Cloner\Data;
+use Illuminate\Support\Facades\{DB, Storage};
 
 class ProductController extends Controller
 {
+    protected $productServices;
+
+    public function __construct(ProductServices $productServices)
+    {
+        $this->productServices = $productServices;
+    }
     /**
      * Menampilkan Halaman Admin Product Index
      *
@@ -25,8 +25,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['category', 'merk'])->latest()->paginate(10);
         $categories = Category::orderBy('name', 'ASC')->get();
+        $products = $this->productServices->getProducts(request()->keyword);
+
         return view('admin.product.index', compact('products', 'categories'));
     }
 
@@ -38,8 +39,8 @@ class ProductController extends Controller
     public function create()
     {
         return view('admin.product.create', [
-            'category' => Category::all(),
-            'merk' => Merk::all()
+            'category' => Category::get(),
+            'merk' => Merk::get()
         ]);
     }
 
@@ -54,51 +55,11 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $validate)
     {
-        $product = $validate->except(['value', 'images']);
-        // dd($validate->all());
-        if ($validate->hasFile('image')) {
-            $file = $validate->image;
-            $filename = Str::slug($validate->name) . '.' . $validate->image->extension();
-            $file->storeAs('products', $filename);
-
-            $product['image'] = 'products/' . $filename;
+        if ($this->productServices->storeProduct($validate)) {
+            return redirect(route('product.index'))->withToastSuccess('Succesfully Added');
+        } else {
+            return back()->withToastError('Error Happend');
         }
-
-        $product['slug'] = Str::slug($validate->name);
-        $product['status'] = $validate->status;
-        $product['desc'] = $validate->desc;
-
-        $product_create = Product::create($product);
-
-        // multiple images
-        if ($validate->hasFile('images')) {
-            $images = $validate->images;
-            foreach ($images as $key => $image) {
-                $filename = time() . Str::random(6) . '.' . $image->extension();
-                $image->storeAs('images', $filename);
-
-                Images::create([
-                    'product_id' => $product_create->id,
-                    'name' => 'images/' . $filename
-                ]);
-            }
-        }
-
-        // attach specifications data
-        $value = request()->value;
-        $sync_data = collect($value)->map(function ($value) {
-            return ['value' => $value];
-        });
-
-        if ($sync_data) {
-            $product_create->specifications()->attach($sync_data);
-        }
-
-        // create stock
-        ProductStock::create([
-            'product_id' => $product_create->id
-        ]);
-        return redirect(route('product.index'))->withToastSuccess('Succesfully Added');
     }
 
     /**
@@ -109,19 +70,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        if ($product->category_id == 1) {
-            $data['size'] = DB::table('keyboard_sizes')->get();
-            $data['type'] = DB::table('key_switchs')->get();
-        } elseif ($product->category_id == 2) {
-            $data['type'] = DB::table('keycap_types')->get();
-        } else {
-            $json = [
-                ['name' => 'Clicky'],
-                ['name' => 'Linear'],
-                ['name' => 'Tactile'],
-            ];
-            $data['type'] = json_decode(json_encode($json));
-        }
+        $data = $this->productServices->editData($product->category_id);
 
         return view('admin.product.edit', [
             'product' => $product,
@@ -143,42 +92,7 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $validate, Product $product)
     {
-        $products = $validate->except(['value', 'images']);
-        if ($validate->hasFile('image')) {
-            Storage::delete($product->image);
-            $file = $validate->image;
-            $filename = Str::slug($product->slug) . '.' . $file->extension();
-            $file->storeAs('products', $filename);
-            $products['image'] = 'products/' . $filename;
-        } else {
-            $products['image'] = $product->image;
-        }
-
-        if ($validate->has('images')) {
-            $images = $validate->images;
-            foreach ($images as $image) {
-                $filename = time() . Str::random(6) . '.' . $image->extension();
-                $image->storeAs('images', $filename);
-
-                Images::create([
-                    'product_id' => $product->id,
-                    'name' => 'images/' . $filename
-                ]);
-            }
-        }
-
-        // sync data relasi
-        $value = request()->value;
-        $sync_data = collect($value)->map(function ($value) {
-            return ['value' => $value];
-        });
-
-        $product->specifications()->sync($sync_data);
-
-        $products['merk_id'] = $validate->merk_id == 'null' ? null : $validate->merk_id;
-        ($products['size'] ?? '') ? $products['size'] : $products['size'] = null;
-
-        $product->update($products);
+        $this->productServices->updateProduct($validate, $product);
 
         return redirect(route('product.index'))->withToastSuccess('Successfully Updated');
     }
@@ -192,18 +106,11 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        Storage::delete($product->image);
-        if ($product->images()->count() > 0) {
-            foreach ($product->images() as $images) {
-                Storage::delete($images);
-            }
-            $product->images()->delete();
+        if ($this->productServices->destroyProduct($product)) {
+            return redirect(route('product.index'))->withToastSuccess('Succesfully Deleted');
+        } else {
+            return redirect(route('product.index'))->withToastError('Error Happend');
         }
-        $product->stock->delete();
-        $product->specifications()->detach();
-        $product->delete();
-
-        return redirect(route('product.index'))->withToastSuccess('Succesfully Deleted');
     }
 
     public function destroyImage(Images $images)
@@ -232,7 +139,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file;
-            $filename = time() . '-product.' . $request->file->extension();
+            $filename = time() . '-product.' . $file->extension();
             $file->storeAs('uploads', $filename);
 
             ProductJob::dispatch($request->category_id, $filename);

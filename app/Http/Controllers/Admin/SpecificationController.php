@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SpecificationRequest;
 use App\Models\Specification;
 
 class SpecificationController extends Controller
@@ -21,15 +22,15 @@ class SpecificationController extends Controller
     /**
      * Menyimpan data ke Spesification table di database
      * 
+     * @param SpecificationRequest $request
+     * 
      * @return \Illuminate\Http\RedirectResponse
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store()
+    public function store(SpecificationRequest $request)
     {
-        $spec = request()->validate(['name' => 'required|unique:specifications,name']);
-
-        Specification::create($spec);
+        Specification::create($request->only(['name']));
         alert()->success('Successfully Added');
         return back();
     }
@@ -37,17 +38,16 @@ class SpecificationController extends Controller
     /**
      * Memperbarui data dari spesifik specification menu
      * 
+     * @param SpecificationRequest $request
      * @param Specification $specification
      * 
      * @return \Illuminate\Http\RedirectResponse
      * 
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Specification $spec)
+    public function update(SpecificationRequest $request, Specification $spec)
     {
-        $specs = request()->validate(['name' => 'required|unique:specifications,name',]);
-
-        $spec->update($specs);
+        $spec->update($request->only('name'));
 
         alert()->success('Successfully Updated');
         return back();

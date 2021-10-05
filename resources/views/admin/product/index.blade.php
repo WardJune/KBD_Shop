@@ -17,7 +17,7 @@
                         </nav>
                     </div>
                     <div class="col-lg-6 col-5 text-right">
-                        <form action="{{ route('product.search') }}" method="get" class="d-inline-block">
+                        <form action="{{ route('product.index') }}" method="get" class="d-inline-block">
                             <div class="form-group">
                                 <div class="input-group input-group-alternative mb-4">
                                     <div class="input-group-prepend">
@@ -38,16 +38,6 @@
     <div class="container-fluid mt--6">
         <div class="row">
             <div class="col-md">
-                {{-- alert success --}}
-                @if (session('success'))
-                    <div class="alert alert-secondary alert-dismissable fade show text-success" role="alert">
-                        <span class="alert-inner--icon"><i class="ni ni-check-bold"></i></span>
-                        <span class="alert-inner--text"><strong>Success!</strong> {{ session('success') }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true" class="text-dark">&times;</span>
-                        </button>
-                    </div>
-                @endif
 
                 {{-- session error --}}
                 @if (session('error'))
@@ -114,8 +104,8 @@
                                         </td>
                                     </tr>
                                     {{-- modal delete --}}
-                                    <div class="modal fade" id="deleteModal{{ $prod->id }}" tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="deleteModal{{ $prod->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -156,7 +146,8 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Mass Upload Form</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>

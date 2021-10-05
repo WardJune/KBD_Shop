@@ -59,7 +59,6 @@ function temp(id, name) {
                 <td>${name}</td>
                     
                 <td>
-
                   <input class="form-control form-control-sm border-light shadow-none" type="text" name="value[${id}]" id="spec" >
                 </td>
 

@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MerkController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\SpecificationController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Ecommerce\Auth\EmailVerificationController;
 use App\Http\Controllers\Ecommerce\Auth\LoginController;
@@ -68,16 +71,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 
 	// Category Routes...
-	Route::resource('category', 'App\Http\Controllers\Admin\CategoryController', ['except' => ['show', 'create']]);
+	Route::resource('category', CategoryController::class, ['except' => ['show', 'create', 'edit']]);
 
 	// Merk Routes...
-	Route::resource('merk', 'App\Http\Controllers\Admin\MerkController')->except(['show', 'create']);
+	Route::resource('merk', MerkController::class)->except(['show', 'create', 'edit']);
 
 	// Specification Routes...
-	Route::resource('spec', 'App\Http\Controllers\Admin\SpecificationController')->except(['show', 'create', 'edit']);
+	Route::resource('spec', SpecificationController::class)->except(['show', 'create', 'edit']);
 
 	// Product Routes...
-	Route::resource('product', ProductController::class);
+	Route::resource('product', ProductController::class)->except(['show']);
 	Route::post('product/bulk', [ProductController::class, 'massUpload'])->name('product.bulk');
 	Route::delete('product/{images:id}/images', [ProductController::class, 'destroyImage'])->name('product.image-destroy');
 

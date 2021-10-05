@@ -16,7 +16,7 @@ class SearchController extends Controller
 
         return view('admin.product.index', [
             'products' => $products,
-            'categories' => Category::all()
+            'categories' => Category::get()
         ]);
     }
 }

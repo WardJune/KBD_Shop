@@ -74,7 +74,6 @@
 
                                 <div class="form-group">
                                     <label for="description">Full Description</label>
-
                                     {{-- tambah id untuk digunakan ckeditor --}}
                                     <textarea name="fulldesc" id="description"
                                         class="form-control">{{ old('description') }}</textarea>

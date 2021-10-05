@@ -28,4 +28,4 @@ Route::get('district', [RegionController::class, 'getDistrict']);
 Route::get('address', [RegionController::class, 'getAddress']);
 Route::post('cost', [CartController::class, 'getCourier']);
 
-Route::get('type', [ProductController::class, 'type']);
+Route::get('type', [ProductController::class, 'type'])->name('type-catgories');

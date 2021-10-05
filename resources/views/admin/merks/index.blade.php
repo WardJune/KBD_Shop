@@ -51,7 +51,7 @@
                                 @php
                                     $i = 1;
                                 @endphp
-                                @forelse ($merk as $val)
+                                @forelse ($merks as $val)
                                     <tr>
                                         <td>{{ $i++ }}</td>
                                         <td><img src="{{ asset($val->takeImage()) }} " width="500px">
@@ -74,8 +74,8 @@
                                         </td>
                                     </tr>
                                     {{-- modal for edit Merk --}}
-                                    <div class="modal fade" id="editModal{{ $val->id }}" tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="editModal{{ $val->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -121,8 +121,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="deleteModal{{ $val->id }}" tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="deleteModal{{ $val->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -155,9 +155,9 @@
                                 @endforelse
                             </tbody>
                         </table>
-
                     </div>
                 </div>
+                {{ $merks->links() }}
             </div>
             {{-- Add New Merk Form --}}
             <div class="col-md-4">
