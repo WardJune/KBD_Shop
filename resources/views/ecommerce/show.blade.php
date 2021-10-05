@@ -19,29 +19,6 @@
 
     <div class="container">
 
-        {{-- @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
-                <span class="alert-text text-sm">"{{ $product->name }}" has been
-                    added to
-                    your cart. You can <a href="{{ route('cart.show') }}">view
-                        your cart</a> and checkout any time.</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
-
-        @if (session('wishlist'))
-            <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
-                <span class="alert-text text-sm">"{{ $product->name }}" has been
-                    added to
-                    your wishlist.</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif --}}
-
         <div class="row justify-content-between">
             <div class="col-md-7 bg-transparent">
                 <div class="card rounded-0 shadow-none">
