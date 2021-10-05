@@ -3,7 +3,9 @@
 namespace App\Jobs;
 
 use App\Imports\ProductImport;
+use App\Models\Merk;
 use App\Models\Product;
+use App\Models\ProductStock;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -41,29 +43,34 @@ class ProductJob implements ShouldQueue
         $files = (new ProductImport)->toArray(storage_path('app/public/uploads/' . $this->filename));
 
         // loop the data excel
-        foreach ($files[0] as $row ) {
-            
+        foreach ($files[0] as $row) {
+
             $explodeURL = explode('/', $row[5]);
             $explodeExtention = explode('.', end($explodeURL));
             $filename = time() . Str::random(6) . '.' . end($explodeExtention);
 
             // download gambar
             file_put_contents(storage_path('app/public/products/') . $filename, file_get_contents($row[5]));
-
+            $merk = Merk::where("name", "like", "%$row[3]%")->first();
             $data = [
                 'name' => $row[0],
                 'slug' => Str::slug($row[0]),
                 'price' => $row[2],
-                'merk_id' => $row[3] ,
+                'merk_id' => $merk->id,
+                'type' => $row[4],
+                'size' => $row[10] ?? null,
                 'category_id' => $this->category,
                 'image' => 'products/' . $filename,
                 'weight' => $row[6],
-                'desc' => [$row[7], $row[8], $row[9] ],
+                'desc' => [$row[7], $row[8], $row[9]],
                 'fulldesc' => $row[1],
             ];
             // simpan data database
-            Product::create($data);
+            $product = Product::create($data);
 
+            ProductStock::create([
+                'product_id' => $product->id
+            ]);
         }
         Storage::delete('uploads/' . $this->filename);
     }

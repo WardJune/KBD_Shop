@@ -19,11 +19,11 @@
         </div>
     </div>
 </nav> --}}
-
-<nav class="navbar navbar-horizontal navbar-expand-lg navbar-light bg-lighter">
+<nav class="navbar navbar-horizontal navbar-expand-lg navbar-light bg-lighter sticky-top">
     <div class="container">
-        <a class="navbar-brand h1" href="{{route('front')}}">KBD <span class="text-orange">Shop</span></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-default" aria-controls="navbar-default" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand h1" href="{{ route('front') }}">KBD <span class="text-orange">Shop</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-default"
+            aria-controls="navbar-default" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbar-default">
@@ -35,7 +35,9 @@
                         </a>
                     </div>
                     <div class="col-6 collapse-close">
-                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-default" aria-controls="navbar-default" aria-expanded="false" aria-label="Toggle navigation">
+                        <button type="button" class="navbar-toggler" data-toggle="collapse"
+                            data-target="#navbar-default" aria-controls="navbar-default" aria-expanded="false"
+                            aria-label="Toggle navigation">
                             <span></span>
                             <span></span>
                         </button>
@@ -43,39 +45,76 @@
                 </div>
             </div>
             <div class="navbar-nav ml-auto">
-                <a class="nav-link" href="{{route('front.product')}}">All Product</a>
+                {{-- <a class="nav-link" href="{{ route('front.product') }}">All Product</a> --}}
                 @foreach ($category as $cat)
-                <a class="nav-link" href="{{ url('/category/' . $cat->slug)}}">{{$cat->name}}</a>
+                    <a class="nav-link" href="{{ url('/category/' . $cat->slug) }}">{{ $cat->name }}</a>
                 @endforeach
             </div>
+
             <ul class="navbar-nav ml-lg-auto">
-                <li class="nav-item">
-                    <a class="nav-link nav-link-icon" href="#">
+                <li class="nav-item d-flex justify-content-between align-items-center position-relative">
+                    <div class="aa-input-container" id="aa-input-container">
+                        <input type="search" id="aa-search-input" class="aa-input-search"
+                            placeholder="Search product..." name="search" autocomplete="off" />
+                    </div>
+                    <a class="nav-link nav-link-icon" href="#" id="search-btn">
                         <i class="fas fa-search"></i>
                         <span class="nav-link-inner--text d-lg-none">Search</span>
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link nav-link-icon" href="#" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link nav-link-icon" href="#" id="navbar-default_dropdown_1" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-user"></i>
                         <span class="nav-link-inner--text d-lg-none">Profile</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        @if (auth('customer')->check())
+
+                            <div class="dropdown-header noti-title">
+                                <h6 class="text-overflow m-0"><span class="text-muted">Welcome</span>
+                                    {{ auth('customer')->user()->name }}</h6>
+                            </div>
+                            <a class="dropdown-item" href="{{ route('profile.user') }}">Profile</a>
+                            <a class="dropdown-item" href="{{ route('order.dashboard') }}">My Orders</a>
+                            <a class="dropdown-item" href="{{ route('wishlist.show') }}">Wishlist</a>
+
+                            <form class="invisible d-none" action="{{ route('logout') }}" method="post" id="logout">
+                                @csrf
+                            </form>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ route('logout') }}" class="dropdown-item"
+                                onclick="event.preventDefault(); document.getElementById('logout').submit();">
+                                <span>{{ __('Logout') }}</span>
+                            </a>
+                        @else
+                            <a class="dropdown-item" href="{{ route('login') }}">Login</a>
+                            <a class="dropdown-item" href="{{ route('register') }}">Register</a>
+                        @endif
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link nav-link-icon" href="#">
+                    <a class="nav-link nav-link-icon" href="{{ route('cart.show') }}">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="nav-link-inner--text d-lg-none">Chart</span>
+                        <span class="nav-link-inner--text d-lg-none">Cart</span>
                     </a>
                 </li>
-                
+
             </ul>
-            
+
         </div>
     </div>
 </nav>
+
+@push('js')
+    <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+    <script src="{{ asset('assets/js/algolia.js') }}"></script>
+
+    <script>
+        $('#search-btn').on('click', function() {
+            event.preventDefault();
+            $('#aa-search-input').toggleClass('active-search')
+        })
+    </script>
+@endpush

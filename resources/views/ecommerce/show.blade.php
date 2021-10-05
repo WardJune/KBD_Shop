@@ -7,8 +7,9 @@
             <h1 class="display-4">{{ $product->name }} </h1>
             <nav class="" aria-label="breadcrumb">
                 <ol class="breadcrumb bg-transparent px-0">
-                    <li class="breadcrumb-item font"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('front.product') }}">Product</a></li>
+                    <li class="breadcrumb-item font"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a
+                            href="{{ route('front.category', $product->category->slug) }}">Product</a></li>
                     <li class="breadcrumb-item active" aria-current="page">{{ $product->name }}</li>
                 </ol>
             </nav>
@@ -17,45 +18,163 @@
     {{-- breadcrumb --}}
 
     <div class="container">
+
         <div class="row justify-content-between">
             <div class="col-md-7 bg-transparent">
                 <div class="card rounded-0 shadow-none">
-                    <img src="{{ asset('/storage/' . $product->image) }}" alt="" class="img-fluid mx-auto d-block w-75">
+                    <img src="{{ asset('/storage/' . $product->image) }}" alt="" class="img-fluid mx-auto d-block w-75"
+                        id="bigImage">
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="card shadow-none bg-light">
                     <div class="card-body">
                         <h2 class="mb-3">{{ $product->name }}</h2>
-                        <p class="h3 text-warning">IDR {{ number_format($product->price) }}</p>
-                        <p class="mb-4"> SKU : THISISSKU</p>
+                        <p class="h3 text-warning mb-3">IDR {{ number_format($product->price) }}</p>
                         <h4>Description</h4>
                         <ul class="pl-4">
                             @foreach ($product->desc as $desc)
-                                <li>{{ $desc }}</li>
+                                @if ($desc != null)
+                                    <li>{{ $desc }}</li>
+                                @endif
                             @endforeach
                         </ul>
-                        <div class="form-group row">
-                            <label for="qty" class="col-md-3">Quantity : </label>
-                            <input type="number" class="form-control col-md-2 bg-transparent border-0" placeholder="1">
-                            <p class="text-danger">{{ $errors->first('weight') }}</p>
-                        </div>
-                        <hr class="border-dark my-3">
+                        <form method="post">
+                            @csrf
+                            {{-- input hidden id --}}
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                        <div class="row mb-3">
-                            <div class="col-md-8">
-                                <button type="submit" class="btn btn-danger btn-block"> ADD TO CART</button>
+                            <div class="row align-items-center mb-4">
+                                <label class="col-md-3" for="qty">Quantity:</label>
+                                {{-- button increase and decrement --}}
+                                <div class=" d-flex col-md-4 border-bottom border-neutral px-0">
+                                    <button
+                                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 1 ) result.value--;return false;"
+                                        class="btn btn-sm shadow-none--hover mr-0" type="button">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input class="form-control form-control-flush text-center" type="number" name="qty"
+                                        id="sst" min="1" minlength="1" value="1" title="Quantity:" class="input-text qty">
+                                    <button
+                                        onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                        class="btn btn-sm shadow-none--hover" type="button">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    {{-- end button --}}
+                                </div>
+                                <div class="ml-md-2">Stock : <span
+                                        class="font-weight-bold">{{ $product->stock->qty }}</span>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <button type="submit" class="btn btn-warning btn-block"><i
-                                        class="fas fa-heart"></i></button>
-                            </div>
-                        </div>
+                            @error('qty')
+                                <div class="mt-md--3">
+                                    <small class="text-danger ml-2">{{ $message }}</small>
+                                </div>
+                            @enderror
+                            <hr class="border-dark my-3">
 
-                        <button class="btn btn-warning btn-block">Buy It Now</button>
+                            <div class="row mb-3">
+                                <div class="col-md-8 col-8">
+                                    <button {{ $product->button_status }} type="submit" class="btn btn-danger btn-block"
+                                        formaction="{{ route('cart.add', ['cart' => 'cart']) }}">ADD TO
+                                        CART
+                                    </button>
+                                </div>
+                                <div class="col-md-4 col-4">
+                                    <button type="submit"
+                                        class="btn btn-block {{ $wishlist == null ? 'btn-warning' : 'btn-outline-warning' }}"
+                                        data-toggle="tooltip" data-placement="top"
+                                        title="{{ $wishlist == null ? 'Add To Wishlist' : 'Remove From Wishlist' }}"
+                                        formaction="{{ $wishlist == null ? route('wishlist.add') : route('wishlist.destroy', $wishlist->id) }}"><i
+                                            class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button {{ $product->button_status }} class="btn btn-warning btn-block" type="submit"
+                                formaction="{{ route('cart.add', ['buy' => 'buy']) }}">BUY IT NOW
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="row mb-5">
+            <div class="col-md-7 mx-5">
+                <img class="thumb img-thumbnail rounded-0 mr-3" src="{{ asset('/storage/' . $product->image) }}"
+                    width="75" height="75">
+                @foreach ($product->images as $image)
+                    <img class="thumb img-thumbnail rounded-0 mr-3" src="{{ asset('/storage/' . $image->name) }}"
+                        width="75" height="75">
+                @endforeach
+            </div>
+        </div>
+
+        <hr>
+
+        <ul class="nav nav-tabs justify-content-center border-0 mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active border-0 rounded-0" id="overview-tab" data-toggle="tab" href="#overview"
+                    role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+            </li>
+            @if ($product->specifications_count > 0)
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link border-0 rounded-0" id="specifications-tab" data-toggle="tab" href="#specifications"
+                        role="tab" aria-controls="specifications" aria-selected="false">Specifications</a>
+                </li>
+            @endif
+        </ul>
+        <div class="tab-content mt-5" id="myTabContent">
+            <div class="tab-pane show active" id="overview" role="tabpanel" aria-labelledby="home-tab">
+                <div class="container px-md-5">
+                    {!! nl2br($product->fulldesc) !!}
+                </div>
+            </div>
+            <div class="tab-pane " id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
+                <div class="container px-md-5">
+                    @if ($product->specifications_count > 0)
+                        @foreach ($product->specifications as $spec)
+                            <div class="row mb-2">
+                                <div class="col-md-4">
+                                    <h4> {{ $spec->name }} </h4>
+                                </div>
+                                <div class="col-md-4">: {{ $spec->pivot->value }}</div>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <section class="container mt-6 mb-7 text-center justify-content-center">
+            <h1>RELATED PRODUCT</h1>
+            <div class="row mt-5">
+                @foreach ($related as $rel)
+                    <div class="col-md-3">
+                        <a href="{{ route('front.show', $rel->slug) }}">
+                            <div class="card bg-transparent shadow-none border-0 text-center">
+                                <img class="card-img-top" src="{{ asset('/storage/' . $rel->image) }}"
+                                    alt="Image placeholder">
+                                <h5 class="h3 card-title mt-3 mb-0 font-weight-500">{{ $rel->name }}</h5>
+                                <h5 class="h3 text-warning  font-weight-normal">IDR
+                                    {{ number_format($rel->price) }}
+                                </h5>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </section>
     </div>
 @endsection
+
+@push('js')
+    <script>
+        $(document).on('mouseover', function(e) {
+            if ($(e.target).hasClass('thumb')) {
+                $('#bigImage').attr('src', e.target.src);
+            }
+        })
+    </script>
+@endpush

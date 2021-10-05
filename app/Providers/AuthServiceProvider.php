@@ -25,6 +25,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        //define gate untuk authorization
+        Gate::define('order-show', function ($customer, $order) {
+            // check user id == order user id
+            return $customer->id == $order->customer_id;
+        });
     }
 }

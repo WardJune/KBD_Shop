@@ -3,7 +3,7 @@
         <!-- Brand -->
         <div class="sidenav-header d-flex align-items-center">
             <a class="navbar-brand" href="./pages/dashboards/dashboard.html">
-                <img src="{{asset('assets/img/brand/blue.png')}}" class="navbar-brand-img" alt="...">
+                <img src="{{ asset('assets/img/brand/blue.png') }}" class="navbar-brand-img" alt="...">
             </a>
             <div class="ml-auto">
                 <!-- Sidenav toggler -->
@@ -23,11 +23,13 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('home') }}">
-                            <i class="ni ni-tv-2 text-primary"></i><span class="nav-link-text">{{ __('Dashboard') }}</span> 
+                            <i class="ni ni-tv-2 text-primary"></i><span
+                                class="nav-link-text">{{ __('Dashboard') }}</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="navbar-examples">
+                    {{-- <li class="nav-item">
+                        <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button"
+                            aria-expanded="true" aria-controls="navbar-examples">
                             <i class="fab fa-laravel text-danger"></i>
                             <span class="nav-link-text">{{ __('Laravel Examples') }}</span>
                         </a>
@@ -40,59 +42,109 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('user.index') }}">
+                                    <a class="nav-link" href="{{ route('customer.index') }}">
                                         <span class="nav-link-text">{{ __('User Management') }}</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('administrator/category')}}">
-                            <i class="ni ni-collection text-info"></i> <span class="nav-link-text">{{ __('Category') }}</span>
+                        <a class="nav-link" href="{{ route('customer.index') }}">
+                            <i class="fas fa-users-cog text-warning"></i> <span
+                                class="nav-link-text">{{ __('User Management') }}</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('administrator/merk')}}">
-                            <i class="ni ni-archive-2 text-warning"></i> <span class="nav-link-text">{{ __('Merk') }}</span>
+                        <a class="nav-link" href="#order" data-toggle="collapse" role="button" aria-expanded="true"
+                            aria-controls="order">
+                            <i class="ni ni-bullet-list-67 text-danger"></i>
+                            <span class="nav-link-text">{{ __('Orders') }}</span>
+                        </a>
+
+                        <div class="collapse hide" id="order">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('orders.index') }}">
+                                        <span class="nav-link-text">{{ __('Orders Management') }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#navbar-multilevel" class="nav-link" data-toggle="collapse" role="button"
+                                        aria-expanded="true" aria-controls="navbar-multilevel">Report</a>
+                                    <div class="collapse show" id="navbar-multilevel" style="">
+                                        <ul class="nav nav-sm flex-column">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('orders.report') }}">
+                                                    <span class="nav-link-text">{{ __('Orders Report') }}</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('orders.report-return') }}">
+                                                    <span
+                                                        class="nav-link-text">{{ __('Return Orders Report') }}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('category.index') }}">
+                            <i class="ni ni-collection text-info"></i> <span
+                                class="nav-link-text">{{ __('Category') }}</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('administrator/product')}}">
-                            <i class="ni ni-shop text-success"></i><span class="nav-link-text">{{ __('Product') }}</span> 
+                        <a class="nav-link" href="{{ route('merk.index') }}">
+                            <i class="ni ni-archive-2 text-warning"></i> <span
+                                class="nav-link-text">{{ __('Merk') }}</span>
                         </a>
-                    </li> 
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#product" data-toggle="collapse" role="button" aria-expanded="true"
+                            aria-controls="product">
+                            <i class="ni ni-shop text-success"></i>
+                            <span class="nav-link-text">{{ __('Products') }}</span>
+                        </a>
+
+                        <div class="collapse hide" id="product">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('product.index') }}">
+                                        <span class="nav-link-text">{{ __('All Products') }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('inventory.index') }}">
+                                        <span class="nav-link-text">{{ __('Inventory') }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('spec.index') }}">
+                            <i class="fas fa-certificate text-primary"></i> <span
+                                class="nav-link-text">{{ __('Specification') }}</span>
+                        </a>
+                    </li>
                 </ul>
                 <!-- Divider -->
                 <hr class="my-3">
                 <!-- Heading -->
-                <h6 class="navbar-heading p-0 text-muted">Documentation</h6>
+                {{-- <h6 class="navbar-heading p-0 text-muted">Documentation</h6> --}}
                 <!-- Navigation -->
                 <ul class="navbar-nav mb-md-3">
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/getting-started/overview.html" target="_blank">
-                            <i class="ni ni-spaceship"></i>
-                            <span class="nav-link-text">Getting started</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/foundation/colors.html" target="_blank">
-                            <i class="ni ni-palette"></i>
-                            <span class="nav-link-text">Foundation</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/components/alerts.html" target="_blank">
-                            <i class="ni ni-ui-04"></i>
-                            <span class="nav-link-text">Components</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/plugins/charts.html" target="_blank">
-                            <i class="ni ni-chart-pie-35"></i>
-                            <span class="nav-link-text">Plugins</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>

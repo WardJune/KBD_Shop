@@ -21,6 +21,7 @@ class CreateOrderDetailsTable extends Migration
             $table->integer('qty');
             $table->integer('weight');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

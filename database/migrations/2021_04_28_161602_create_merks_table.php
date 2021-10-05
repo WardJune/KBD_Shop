@@ -17,7 +17,7 @@ class CreateMerksTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('slug');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
